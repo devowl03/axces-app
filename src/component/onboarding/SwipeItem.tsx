@@ -1,14 +1,19 @@
 import {Image, Text, View, useWindowDimensions} from 'react-native';
 import {demoBuilding} from '../../constants/imgURL';
 import LinearGradient from 'react-native-linear-gradient';
+import {swipeItemInterface} from './data';
 
-const SwipeItem = () => {
-    const { width } = useWindowDimensions()
+const SwipeItem: React.FC<swipeItemInterface> = ({
+  imgURL,
+  title,
+  description,
+}) => {
+  const {width} = useWindowDimensions();
   return (
     <View style={{width: width}} className=" flex-1">
       <View className=" flex-1 relative">
         <Image
-          source={{uri: demoBuilding}}
+          source={{uri: imgURL}}
           resizeMode="cover"
           className=" w-full h-full"
         />
@@ -22,10 +27,10 @@ const SwipeItem = () => {
 
       <View className=" w-full bg-[#181A53] px-6 py-5">
         <Text className=" text-white font-bold text-2xl text-left">
-          Explore to turn your dreams into reality
+          {title}
         </Text>
         <Text className=" text-white/60 text-base text-left mt-2">
-          Your all-in-one destination for housing solutions
+          {description}
         </Text>
       </View>
     </View>

@@ -12,7 +12,14 @@ const SwipeSection = () => {
     <View className="flex-1 relative">
       <FlatList
         data={swiperData}
-        renderItem={() => <SwipeItem />}
+        renderItem={({item}) => (
+          <SwipeItem
+            title={item.title}
+            imgURL={item.imgURL}
+            description={item.description}
+            id={item.id}
+          />
+        )}
         horizontal
         showsHorizontalScrollIndicator={false}
         pagingEnabled
