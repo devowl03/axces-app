@@ -1,6 +1,13 @@
 import {BottomTabBarButtonProps} from '@react-navigation/bottom-tabs';
 import {Image, Text, TouchableOpacity, View} from 'react-native';
-import {activeHome, inactiveHome} from '../../constants/imgURL';
+import {
+  activeHome,
+  activeProfileTabIc,
+  activeWishlist,
+  inactiveHome,
+  profileTabIc,
+  wishlist,
+} from '../../constants/imgURL';
 
 interface Props {
   tabProps: BottomTabBarButtonProps;
@@ -12,20 +19,20 @@ interface tabIconsInterface {
   iconSelected: string;
 }
 
-export type tabs = 'Home' | 'Saved' | 'Profile';
+export type tabs = 'Home' | 'Wishlist' | 'Profile';
 
 const tabIconsData: {[key in tabs]: tabIconsInterface} = {
   Home: {
     icon: inactiveHome,
     iconSelected: activeHome,
   },
-  Saved: {
-    icon: inactiveHome,
-    iconSelected: activeHome,
+  Wishlist: {
+    icon: wishlist,
+    iconSelected: activeWishlist,
   },
   Profile: {
-    icon: inactiveHome,
-    iconSelected: activeHome,
+    icon: profileTabIc,
+    iconSelected: activeProfileTabIc,
   },
 };
 
@@ -44,13 +51,14 @@ const TabTile: React.FC<Props> = ({tabProps, title}) => {
               ? tabIconsData[title as tabs].iconSelected
               : tabIconsData[title as tabs].icon,
           }}
-          className=" w-5 h-5 mr-2"
+          resizeMode="contain"
+          className=" w-5 h-5"
         />
         {tabProps.accessibilityState?.selected && (
           <Text
             className={`${
               tabProps.accessibilityState?.selected && 'text-[#BDEA09]'
-            } font-semibold`}>
+            } font-semibold ml-2`}>
             {title}
           </Text>
         )}

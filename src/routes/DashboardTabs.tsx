@@ -35,7 +35,7 @@ const DashboardTabs = () => {
             return <TabTile tabProps={props} title={route.name} />;
           },
         })}
-        name="Saved"
+        name="Wishlist"
         component={SavedScreen}
       />
       <Tab.Screen
