@@ -2,8 +2,14 @@ import {Image, StatusBar, Text, TouchableOpacity, View} from 'react-native';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import SwipeSection from './SwipeSection';
 import {rightArrow} from '../../constants/imgURL';
+import {useNavigation, useRoute} from '@react-navigation/native';
+import { StackNavigationProp } from '@react-navigation/stack';
+import { RootStackParamList } from '../../routes/MainStack';
+
+type OnboardingNavigationProp = StackNavigationProp<RootStackParamList>;
 
 const Onboarding = () => {
+  const navigation = useNavigation<OnboardingNavigationProp>();
   return (
     <SafeAreaView edges={['bottom', 'left', 'right']} className="flex-1">
       <StatusBar
@@ -20,7 +26,9 @@ const Onboarding = () => {
           <Text className="text-[#BDEA09] text-base font-bold">Skip</Text>
         </TouchableOpacity>
 
-        <TouchableOpacity className=" w-12 h-12 rounded-full bg-[#BDEA09] flex items-center justify-center">
+        <TouchableOpacity
+          onPress={() => navigation.navigate('Dashboard')}
+          className=" w-12 h-12 rounded-full bg-[#BDEA09] flex items-center justify-center">
           <Image
             source={{uri: rightArrow}}
             resizeMode="contain"
