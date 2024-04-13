@@ -36,3 +36,6 @@ export const activeProfileTabIc =
   'https://res.cloudinary.com/krishanucloud/image/upload/v1712559962/profile_w0xhly.png';
 export const activeWishlist =
   'https://res.cloudinary.com/krishanucloud/image/upload/v1712559945/Vector_ab9m1j.png';
+export const demoUser =
+  'https://res.cloudinary.com/krishanucloud/image/upload/v1713004217/Ellipse_4_gh0bqq.png';
+export const rightArrowWhite= "https://res.cloudinary.com/krishanucloud/image/upload/v1713007075/Vector_ifhptm.png";

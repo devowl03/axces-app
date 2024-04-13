@@ -21,9 +21,13 @@ import {
   showcaseHome,
 } from '../../constants/imgURL';
 import {SafeAreaView, useSafeAreaInsets} from 'react-native-safe-area-context';
+import {useNavigation} from '@react-navigation/native';
+import {RootStackParamList} from '../../routes/MainStack';
+import {StackNavigationProp} from '@react-navigation/stack';
 
 const HomeScreen = () => {
   const insets = useSafeAreaInsets();
+  const navigation = useNavigation<StackNavigationProp<RootStackParamList>>();
   return (
     <SafeAreaView edges={['bottom', 'left', 'right']} className="flex-1">
       <StatusBar
@@ -90,7 +94,9 @@ const HomeScreen = () => {
                 What are you looking for today?
               </Text>
               <View className=" flex flex-row">
-                <TouchableOpacity className=" flex-1 flex flex-row items-center justify-center mr-2 rounded-full bg-[#BDEA09] p-3">
+                <TouchableOpacity
+                  onPress={() => navigation.navigate('PropertyListing')}
+                  className=" flex-1 flex flex-row items-center justify-center mr-2 rounded-full bg-[#BDEA09] p-3">
                   <Image
                     source={{uri: buyHouse}}
                     resizeMode="contain"
@@ -100,7 +106,9 @@ const HomeScreen = () => {
                     Buy
                   </Text>
                 </TouchableOpacity>
-                <TouchableOpacity className=" flex-1  flex flex-row items-center justify-center rounded-full bg-[#BDEA09] p-3">
+                <TouchableOpacity
+                  onPress={() => navigation.navigate('PropertyListing')}
+                  className=" flex-1  flex flex-row items-center justify-center rounded-full bg-[#BDEA09] p-3">
                   <Image
                     source={{uri: key}}
                     resizeMode="contain"
