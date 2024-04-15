@@ -38,4 +38,11 @@ export const activeWishlist =
   'https://res.cloudinary.com/krishanucloud/image/upload/v1712559945/Vector_ab9m1j.png';
 export const demoUser =
   'https://res.cloudinary.com/krishanucloud/image/upload/v1713004217/Ellipse_4_gh0bqq.png';
-export const rightArrowWhite= "https://res.cloudinary.com/krishanucloud/image/upload/v1713007075/Vector_ifhptm.png";
+export const rightArrowWhite =
+  'https://res.cloudinary.com/krishanucloud/image/upload/v1713007075/Vector_ifhptm.png';
+export const bedIcon =
+  'https://res.cloudinary.com/krishanucloud/image/upload/v1713109172/Vector_mkdhrp.png';
+export const filterIcon =
+  'https://res.cloudinary.com/krishanucloud/image/upload/v1713114671/Vector_eyjoet.png';
+export const leftIcon =
+  'https://res.cloudinary.com/krishanucloud/image/upload/v1713115060/Vector_th6wwq.png';

@@ -27,7 +27,7 @@ const ProptertyCarouselItem: React.FC<Props> = ({scrollX, item, index , length})
       key={item.id}
       style={[{
         width: width * 0.9,
-        height: 200,
+        height: 220,
       }, {
         transform: [{scaleY: scale || 1}],
       }]}

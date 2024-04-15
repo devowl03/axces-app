@@ -8,7 +8,7 @@ const PropertyListingScreen = () => {
   return (
     <SafeAreaView className="flex-1 bg-[#F2F8F6]">
       <StatusBar barStyle={'light-content'} backgroundColor={'#181A53'} />
-      <Header />
+      <Header showSearch={true} />
       <ScrollView className=" flex-1 px-6 pt-6">
         <View className=" w-full h-[370px] mb-4">
           <PropertyCard />
