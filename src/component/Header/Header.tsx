@@ -3,12 +3,14 @@ import {Image, Text, TextInput, TouchableOpacity, View} from 'react-native';
 import {filterIcon, leftIcon, searchIcon} from '../../constants/imgURL';
 interface Props {
   showSearch?: boolean;
+  title?:string;
+  centerTile?:boolean;
 }
-const Header: React.FC<Props> = ({showSearch}) => {
+const Header: React.FC<Props> = ({showSearch , title, centerTile}) => {
   const navigation = useNavigation();
   return (
     <View
-      className={`w-full flex flex-row items-center bg-[#181A53] px-6 pb-1 pt-3`}>
+      className={`w-full relative flex flex-row items-center bg-[#181A53] px-6 pb-1 pt-3`}>
       <TouchableOpacity
         onPress={() => navigation.goBack()}
         className=" w-6 h-6 flex items-start justify-center">
@@ -41,6 +43,7 @@ const Header: React.FC<Props> = ({showSearch}) => {
           </TouchableOpacity>
         </View>
       )}
+      {centerTile && <Text className=' text-white text-2xl font-medium absolute left-1/2 -translate-x-1/2'>{title}</Text>}
     </View>
   );
 };

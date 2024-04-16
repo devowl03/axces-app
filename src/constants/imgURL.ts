@@ -46,3 +46,7 @@ export const filterIcon =
   'https://res.cloudinary.com/krishanucloud/image/upload/v1713114671/Vector_eyjoet.png';
 export const leftIcon =
   'https://res.cloudinary.com/krishanucloud/image/upload/v1713115060/Vector_th6wwq.png';
+export const minus =
+  'https://res.cloudinary.com/krishanucloud/image/upload/v1713274132/Vector_umurzk.png';
+export const plus =
+  'https://res.cloudinary.com/krishanucloud/image/upload/v1713274148/Vector_qm2oyt.png';

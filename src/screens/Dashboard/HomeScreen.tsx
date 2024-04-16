@@ -226,9 +226,11 @@ const HomeScreen = () => {
               </View>
             </View>
             <View className=" px-4 pb-4">
-              <TouchableOpacity className=" p-3 rounded-full border border-[#BDEA09]">
+              <TouchableOpacity
+                onPress={() => navigation.navigate('FaqScreen')}
+                className=" p-3 rounded-full border border-[#BDEA09]">
                 <Text className=" text-[#BDEA09] text-base font-normal text-center">
-                  List Here
+                  View FAQ's
                 </Text>
               </TouchableOpacity>
             </View>
