@@ -50,3 +50,5 @@ export const minus =
   'https://res.cloudinary.com/krishanucloud/image/upload/v1713274132/Vector_umurzk.png';
 export const plus =
   'https://res.cloudinary.com/krishanucloud/image/upload/v1713274148/Vector_qm2oyt.png';
+export const coinStack =
+  'https://res.cloudinary.com/krishanucloud/image/upload/v1713356673/two_coins_in_a_stack_trnabt.png';

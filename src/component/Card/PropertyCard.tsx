@@ -9,18 +9,22 @@ const PropertyCard = () => {
   const navigation = useNavigation<StackNavigationProp<RootStackParamList>>();
   return (
     <View className=" w-full h-full bg-white rounded-b-xl">
-      <View className=" w-full h-[35%] rounded-t-xl overflow-hidden relative">
+      <TouchableOpacity
+        onPress={() => navigation.navigate('PropertyScreen', {name: 'Hello'})}
+        className=" w-full h-[35%] rounded-t-xl overflow-hidden relative">
         <CardSwiper />
-        <TouchableOpacity
-          onPress={() => navigation.navigate('PropertyScreen', {name: 'Hello'})}
+        <View
+          // onPress={() =>
+          //   navigation.navigate('PropertyScreen', {name: 'Hello'})
+          // }
           className="p-2 rounded-full bg-black/25 absolute w-8 h-8 right-2 top-1/3">
           <Image
             source={{uri: rightArrowWhite}}
             resizeMode="contain"
             className=" w-4 h-4"
           />
-        </TouchableOpacity>
-      </View>
+        </View>
+      </TouchableOpacity>
       <View className="p-3">
         <View className=" flex flex-row items-start">
           <View className=" flex-1">
