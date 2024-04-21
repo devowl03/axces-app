@@ -37,7 +37,7 @@ const tabIconsData: {[key in tabs]: tabIconsInterface} = {
 };
 
 const TabTile: React.FC<Props> = ({tabProps, title}) => {
-  console.log(tabProps.accessibilityState?.selected);
+  // console.log(tabProps.accessibilityState?.selected);
   return (
     <View className="flex-1 flex items-center ">
       <TouchableOpacity

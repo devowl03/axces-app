@@ -15,13 +15,13 @@ const ProptertyCarouselItem: React.FC<Props> = ({scrollX, item, index , length})
     index * width * 0.9 ,
     (index + 1) * width * 0.9,
   ];
-  console.log(inputRange)
+  // console.log(inputRange)
   const scale = scrollX.interpolate({
     inputRange,
     outputRange: [0.9, 1, 0.9],
     extrapolate: 'clamp',
   });
-  console.log('scale:', scale);
+  // console.log('scale:', scale);
   return (
     <Animated.Image
       key={item.id}

@@ -52,3 +52,31 @@ export const plus =
   'https://res.cloudinary.com/krishanucloud/image/upload/v1713274148/Vector_qm2oyt.png';
 export const coinStack =
   'https://res.cloudinary.com/krishanucloud/image/upload/v1713356673/two_coins_in_a_stack_trnabt.png';
+export const pinIcon =
+  'https://res.cloudinary.com/krishanucloud/image/upload/v1713600465/Vector_wr0yyz.png';
+export const whiteCoin =
+  'https://res.cloudinary.com/krishanucloud/image/upload/v1713640798/Vector_xbyuvj.png';
+export const defaultUserIc =
+  'https://res.cloudinary.com/krishanucloud/image/upload/v1713683660/Group_1_pwuwno.png';
+export const camera =
+  'https://res.cloudinary.com/krishanucloud/image/upload/v1713688338/material-symbols_photo-camera_llal6r.png';
+export const whiteHome =
+  'https://res.cloudinary.com/krishanucloud/image/upload/v1713688867/Group_cbaqj6.png';
+export const whiteWallet =
+  'https://res.cloudinary.com/krishanucloud/image/upload/v1713688851/Vector_azmhdv.png';
+export const houseRound =
+  'https://res.cloudinary.com/krishanucloud/image/upload/v1713694108/sell_property_vcmyud.png';
+export const downGrayArrow =
+  'https://res.cloudinary.com/krishanucloud/image/upload/v1713692204/Vector_yfj7en.png';
+export const blueHeart =
+  'https://res.cloudinary.com/krishanucloud/image/upload/v1713696100/Vector_lj7som.png';
+export const userIc =
+  'https://res.cloudinary.com/krishanucloud/image/upload/v1713703214/Group_czznlp.png';
+export const editPen =
+  'https://res.cloudinary.com/krishanucloud/image/upload/v1713703441/Edit_xvq74h.png';
+export const mailIc =
+  'https://res.cloudinary.com/krishanucloud/image/upload/v1713704377/Vector_oom6e0.png';
+export const phoneIc =
+  'https://res.cloudinary.com/krishanucloud/image/upload/v1713704416/Vector_qsuo15.png';
+export const lockIc =
+  'https://res.cloudinary.com/krishanucloud/image/upload/v1713704427/Vector_rxfgwk.png';

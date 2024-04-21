@@ -1,16 +1,27 @@
-import {useNavigation} from '@react-navigation/native';
+import {useNavigation, useRoute} from '@react-navigation/native';
 import {Image, Text, TextInput, TouchableOpacity, View} from 'react-native';
 import {filterIcon, leftIcon, searchIcon} from '../../constants/imgURL';
+import {StackNavigationProp} from '@react-navigation/stack';
+import {RootStackParamList} from '../../routes/MainStack';
+import {useEffect, useRef} from 'react';
 interface Props {
   showSearch?: boolean;
-  title?:string;
-  centerTile?:boolean;
+  title?: string;
+  centerTile?: boolean;
+  RightComp?: React.FC;
 }
-const Header: React.FC<Props> = ({showSearch , title, centerTile}) => {
-  const navigation = useNavigation();
+const Header: React.FC<Props> = ({
+  showSearch,
+  title,
+  centerTile,
+  RightComp,
+}) => {
+  const navigation = useNavigation<StackNavigationProp<RootStackParamList>>();
+  const router = useRoute();
+
   return (
     <View
-      className={`w-full relative flex flex-row items-center bg-[#181A53] px-6 pb-1 pt-3`}>
+      className={`w-full relative flex flex-row items-center justify-between bg-[#181A53] px-6 pb-1 pt-3`}>
       <TouchableOpacity
         onPress={() => navigation.goBack()}
         className=" w-6 h-6 flex items-start justify-center">
@@ -28,11 +39,24 @@ const Header: React.FC<Props> = ({showSearch , title, centerTile}) => {
               resizeMode="contain"
               className=" w-4 h-4 mr-2"
             />
-            <TextInput
-              className=" w-full text-base"
-              placeholder="Search"
-              placeholderTextColor="white"
-            />
+            {router.name === 'SearchPropertyScreen' ? (
+              <TextInput
+                className=" w-full text-base text-white"
+                placeholder="Search hh"
+                placeholderTextColor="white"
+                autoFocus={true}
+              />
+            ) : (
+              <TouchableOpacity
+                onPress={() => navigation.navigate('SearchPropertyScreen')}>
+                <TextInput
+                  className=" w-full text-base"
+                  placeholder="Search"
+                  placeholderTextColor="white"
+                  editable={false}
+                />
+              </TouchableOpacity>
+            )}
           </View>
           <TouchableOpacity className=" bg-[#BDEA09] rounded-full flex items-center justify-center h-12 w-12">
             <Image
@@ -43,7 +67,16 @@ const Header: React.FC<Props> = ({showSearch , title, centerTile}) => {
           </TouchableOpacity>
         </View>
       )}
-      {centerTile && <Text className=' text-white text-2xl font-medium absolute left-1/2 -translate-x-1/2'>{title}</Text>}
+      {centerTile && (
+        <Text className="text-white text-2xl font-medium absolute left-[46%]">
+          {title}
+        </Text>
+      )}
+      {RightComp && (
+        <View className=''>
+          <RightComp />
+        </View>
+      )}
     </View>
   );
 };
