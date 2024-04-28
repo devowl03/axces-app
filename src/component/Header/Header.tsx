@@ -1,6 +1,11 @@
 import {useNavigation, useRoute} from '@react-navigation/native';
 import {Image, Text, TextInput, TouchableOpacity, View} from 'react-native';
-import {filterIcon, leftIcon, searchIcon} from '../../constants/imgURL';
+import {
+  filterIcon,
+  leftBlueIcon,
+  leftIcon,
+  searchIcon,
+} from '../../constants/imgURL';
 import {StackNavigationProp} from '@react-navigation/stack';
 import {RootStackParamList} from '../../routes/MainStack';
 import {useEffect, useRef} from 'react';
@@ -9,31 +14,69 @@ interface Props {
   title?: string;
   centerTile?: boolean;
   RightComp?: React.FC;
+  lightHeader?: boolean;
+  centerLeftPercen?:number;
 }
 const Header: React.FC<Props> = ({
   showSearch,
   title,
   centerTile,
   RightComp,
+  lightHeader,
+  centerLeftPercen
 }) => {
   const navigation = useNavigation<StackNavigationProp<RootStackParamList>>();
   const router = useRoute();
 
   return (
     <View
-      className={`w-full relative flex flex-row items-center justify-between bg-[#181A53] px-6 pb-1 pt-3`}>
+      className={`w-full relative flex flex-row items-center justify-between ${
+        lightHeader ? 'bg-[#F2F8F6]' : 'bg-[#181A53]'
+      }  px-6 pb-1 pt-3`}>
       <TouchableOpacity
         onPress={() => navigation.goBack()}
         className=" w-6 h-6 flex items-start justify-center">
         <Image
-          source={{uri: leftIcon}}
+          source={{uri: lightHeader ? leftBlueIcon : leftIcon}}
           resizeMode="contain"
-          className=" w-2 h-3"
+          className=" w-4 h-5"
         />
       </TouchableOpacity>
       {showSearch && (
         <View className="flex-1 flex flex-row">
-          <View className=" bg-white/20 rounded-full mx-1 flex-1 px-3 flex flex-row items-center h-12">
+          {router.name === 'SearchPropertyScreen' ? (
+            <View className=" bg-white/20 rounded-full mx-1 flex-1 px-3 flex flex-row items-center h-12">
+              <Image
+                source={{uri: searchIcon}}
+                resizeMode="contain"
+                className=" w-4 h-4 mr-2"
+              />
+              <TextInput
+                className=" w-full text-base text-white"
+                placeholder="Search hh"
+                placeholderTextColor="white"
+                autoFocus={true}
+              />
+            </View>
+          ) : (
+            <View className=" bg-white/20 rounded-full mx-1 flex-1 px-3 flex flex-row items-center h-12">
+              <Image
+                source={{uri: searchIcon}}
+                resizeMode="contain"
+                className=" w-4 h-4 mr-2"
+              />
+              <TouchableOpacity
+                onPress={() => navigation.navigate('SearchPropertyScreen')}>
+                <TextInput
+                  className=" w-full text-base"
+                  placeholder="Search"
+                  placeholderTextColor="white"
+                  editable={false}
+                />
+              </TouchableOpacity>
+            </View>
+          )}
+           <View className=" bg-white/20 rounded-full mx-1 flex-1 px-3 flex flex-row items-center h-12">
             <Image
               source={{uri: searchIcon}}
               resizeMode="contain"
@@ -71,12 +114,15 @@ const Header: React.FC<Props> = ({
         </View>
       )}
       {centerTile && (
-        <Text className="text-white text-2xl font-medium absolute left-[46%]">
+        <Text
+          className={`${
+            lightHeader ? 'text-[#0E0E0C]' : 'text-white'
+          } text-2xl font-medium absolute left-[${centerLeftPercen ? centerLeftPercen: 46}%]`}>
           {title}
         </Text>
       )}
       {RightComp && (
-        <View className=''>
+        <View className="">
           <RightComp />
         </View>
       )}

@@ -55,7 +55,7 @@ const PropertyScreen = () => {
           <ScrollView
             showsHorizontalScrollIndicator={false}
             horizontal={true}
-            className=" h-11 w-full my-4">
+            className=" w-full my-4">
             <View className=" h-11 w-6" />
             <TouchableOpacity className="bg-white h-11 py-3 px-6 border-b-2 border-b-[#BDEA09]">
               <Text className="text-base text-black">All</Text>

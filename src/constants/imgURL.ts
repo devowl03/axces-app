@@ -80,3 +80,7 @@ export const phoneIc =
   'https://res.cloudinary.com/krishanucloud/image/upload/v1713704416/Vector_qsuo15.png';
 export const lockIc =
   'https://res.cloudinary.com/krishanucloud/image/upload/v1713704427/Vector_rxfgwk.png';
+export const leftBlueIcon =
+  'https://res.cloudinary.com/krishanucloud/image/upload/v1713820344/Vector_jdncq6.png';
+export const tapIcon =
+  'https://res.cloudinary.com/krishanucloud/image/upload/v1713821612/Vector_h79all.png';
