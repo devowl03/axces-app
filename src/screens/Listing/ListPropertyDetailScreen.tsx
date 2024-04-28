@@ -6,7 +6,7 @@ const ListPropertyDetailScreen = () => {
   return (
     <SafeAreaView className=" flex-1">
       <StatusBar backgroundColor={'#181A53'} />
-      <CenterHeader title='List Property'/>
+      <CenterHeader title="List Property" />
     </SafeAreaView>
   );
 };

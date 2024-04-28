@@ -102,9 +102,7 @@ const Header: React.FC<Props> = ({
         <Text
           className={`${
             lightHeader ? 'text-[#0E0E0C]' : 'text-white'
-          } text-2xl font-medium absolute left-[${
-            centerLeftPercen ? centerLeftPercen : 46
-          }%]`}>
+          } text-2xl font-medium absolute left-[46%]`}>
           {title}
         </Text>
       )}

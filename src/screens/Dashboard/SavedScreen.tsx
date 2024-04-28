@@ -3,6 +3,7 @@ import {SafeAreaView} from 'react-native-safe-area-context';
 import Header from '../../component/Header/Header';
 import {tapIcon} from '../../constants/imgURL';
 import PropertyCard from '../../component/Card/PropertyCard';
+import CenterHeader from '../../component/Header/CenterHeader';
 
 const SavedScreen = () => {
   return (
@@ -12,12 +13,13 @@ const SavedScreen = () => {
         backgroundColor={'transparent'}
         translucent
       />
-      <Header
+      <CenterHeader title="My Wishlist" lightMode={true} />
+      {/* <Header
         centerLeftPercen={40}
         lightHeader={true}
         centerTile={true}
         title="My Wishlist"
-      />
+      /> */}
       <ScrollView className="flex-1 bg-[#F2F8F6] px-6 pt-6">
         <View className=" flex flex-row items-center justify-start">
           <Text className=" text-[#0E0E0C] text-lg font-bold mr-2">
