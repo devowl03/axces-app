@@ -48,17 +48,20 @@ const Header: React.FC<Props> = ({
               />
             ) : (
               <TouchableOpacity
-                onPress={() => navigation.navigate('SearchPropertyScreen')}>
+              className=' border border-red-500 px-4 flex-1'
+                onPress={() => navigation.navigate('SearchPropertyScreen')}
+                // onPress={() => console.log("header check")}
+                >
                 <TextInput
-                  className=" w-full text-base"
+                  className=" w-full text-base border border-white"
                   placeholder="Search"
                   placeholderTextColor="white"
-                  editable={false}
+                  // editable={false}
                 />
               </TouchableOpacity>
             )}
           </View>
-          <TouchableOpacity className=" bg-[#BDEA09] rounded-full flex items-center justify-center h-12 w-12">
+          <TouchableOpacity onPress={() => navigation.navigate('SearchPropertyScreen')} className=" bg-[#BDEA09] rounded-full flex items-center justify-center h-12 w-12">
             <Image
               source={{uri: filterIcon}}
               resizeMode="contain"

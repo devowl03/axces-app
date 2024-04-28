@@ -6,6 +6,8 @@ import PropertyScreen from '../screens/Listing/PropertyScreen';
 import FaqScreen from '../screens/FAQ/FaqScreen';
 import SearchPropertyScreen from '../screens/Search/SearchPropertyScreen';
 import ProfileEditScreen from '../screens/Profile/ProfileEditScreen';
+import ListPropertyScreen from '../screens/Listing/ListPropertyScreen';
+import ListPropertyDetailScreen from '../screens/Listing/ListPropertyDetailScreen';
 
 export type RootStackParamList = {
   Onboard: undefined;
@@ -17,6 +19,8 @@ export type RootStackParamList = {
   FaqScreen: undefined;
   SearchPropertyScreen: undefined;
   ProfileEditScreen: undefined;
+  ListPropertyScreen: undefined;
+  ListPropertyDetailScreen: undefined;
   // Make sure 'Dashboard' is spelled correctly
   // add other screens here
 };
@@ -35,8 +39,9 @@ const MainStack = () => {
         name="SearchPropertyScreen"
         component={SearchPropertyScreen}
       />
-      {/* <Stack.Screen name="ProfileScreen" component={ProfileScreen} /> */}
       <Stack.Screen name="ProfileEditScreen" component={ProfileEditScreen} />
+      <Stack.Screen name="ListPropertyScreen" component={ListPropertyScreen} />
+      <Stack.Screen name="ListPropertyDetailScreen" component={ListPropertyDetailScreen} />
 
     </Stack.Navigator>
   );

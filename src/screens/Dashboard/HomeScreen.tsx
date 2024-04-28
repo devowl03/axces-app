@@ -29,7 +29,7 @@ const HomeScreen = () => {
   const insets = useSafeAreaInsets();
   const navigation = useNavigation<StackNavigationProp<RootStackParamList>>();
   return (
-    <SafeAreaView edges={['bottom', 'left', 'right']} className="flex-1">
+    <SafeAreaView edges={[ 'left', 'right']} className="flex-1">
       <StatusBar
         barStyle={'light-content'}
         backgroundColor={'transparent'}
@@ -37,6 +37,8 @@ const HomeScreen = () => {
       />
       <ScrollView className=" z-10 flex-1 bg-[#F2F8F6]">
         {/* Top Section */}
+        
+
 
         <View
           style={{paddingTop: insets.top}}
@@ -44,7 +46,7 @@ const HomeScreen = () => {
           <View className=" z-20 px-6 pt-6 flex flex-row justify-between">
             <View>
               <Text className=" text-white/60 font-medium text-sm">
-                Current Location
+                Current Location ahha
               </Text>
               <View className=" flex flex-row justify-start items-center">
                 <Image
@@ -139,7 +141,7 @@ const HomeScreen = () => {
               <Text className=" text-[#181A5399] text-sm">
                 Boost your income by renting or selling your property
               </Text>
-              <TouchableOpacity className=" p-3 rounded-full border border-[#BDEA09]">
+              <TouchableOpacity onPress={() => navigation.navigate('ListPropertyScreen')} className=" p-3 rounded-full border border-[#BDEA09]">
                 <Text className=" text-[#BDEA09] text-base font-normal text-center">
                   List Here
                 </Text>
