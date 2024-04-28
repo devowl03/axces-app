@@ -8,14 +8,13 @@ import {
 } from '../../constants/imgURL';
 import {StackNavigationProp} from '@react-navigation/stack';
 import {RootStackParamList} from '../../routes/MainStack';
-import {useEffect, useRef} from 'react';
 interface Props {
   showSearch?: boolean;
   title?: string;
   centerTile?: boolean;
   RightComp?: React.FC;
   lightHeader?: boolean;
-  centerLeftPercen?:number;
+  centerLeftPercen?: number;
 }
 const Header: React.FC<Props> = ({
   showSearch,
@@ -23,7 +22,7 @@ const Header: React.FC<Props> = ({
   centerTile,
   RightComp,
   lightHeader,
-  centerLeftPercen
+  centerLeftPercen,
 }) => {
   const navigation = useNavigation<StackNavigationProp<RootStackParamList>>();
   const router = useRoute();
@@ -66,35 +65,10 @@ const Header: React.FC<Props> = ({
                 className=" w-4 h-4 mr-2"
               />
               <TouchableOpacity
-                onPress={() => navigation.navigate('SearchPropertyScreen')}>
-                <TextInput
-                  className=" w-full text-base"
-                  placeholder="Search"
-                  placeholderTextColor="white"
-                  editable={false}
-                />
-              </TouchableOpacity>
-            </View>
-          )}
-           <View className=" bg-white/20 rounded-full mx-1 flex-1 px-3 flex flex-row items-center h-12">
-            <Image
-              source={{uri: searchIcon}}
-              resizeMode="contain"
-              className=" w-4 h-4 mr-2"
-            />
-            {router.name === 'SearchPropertyScreen' ? (
-              <TextInput
-                className=" w-full text-base text-white"
-                placeholder="Search hh"
-                placeholderTextColor="white"
-                autoFocus={true}
-              />
-            ) : (
-              <TouchableOpacity
-              className=' border border-red-500 px-4 flex-1'
+                className=" border border-red-500 px-4 flex-1"
                 onPress={() => navigation.navigate('SearchPropertyScreen')}
                 // onPress={() => console.log("header check")}
-                >
+              >
                 <TextInput
                   className=" w-full text-base border border-white"
                   placeholder="Search"
@@ -102,9 +76,20 @@ const Header: React.FC<Props> = ({
                   // editable={false}
                 />
               </TouchableOpacity>
-            )}
-          </View>
-          <TouchableOpacity onPress={() => navigation.navigate('SearchPropertyScreen')} className=" bg-[#BDEA09] rounded-full flex items-center justify-center h-12 w-12">
+              {/* <TouchableOpacity
+                onPress={() => navigation.navigate('SearchPropertyScreen')}>
+                <TextInput
+                  className=" w-full text-base "
+                  placeholder="Search"
+                  placeholderTextColor="white"
+                  editable={false}
+                />
+              </TouchableOpacity> */}
+            </View>
+          )}
+          <TouchableOpacity
+            onPress={() => navigation.navigate('SearchPropertyScreen')}
+            className=" bg-[#BDEA09] rounded-full flex items-center justify-center h-12 w-12">
             <Image
               source={{uri: filterIcon}}
               resizeMode="contain"
@@ -117,7 +102,9 @@ const Header: React.FC<Props> = ({
         <Text
           className={`${
             lightHeader ? 'text-[#0E0E0C]' : 'text-white'
-          } text-2xl font-medium absolute left-[${centerLeftPercen ? centerLeftPercen: 46}%]`}>
+          } text-2xl font-medium absolute left-[${
+            centerLeftPercen ? centerLeftPercen : 46
+          }%]`}>
           {title}
         </Text>
       )}
