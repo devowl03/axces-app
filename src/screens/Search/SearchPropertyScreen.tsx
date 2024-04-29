@@ -25,7 +25,9 @@ export type filterNameType =
   | 'Prize'
   | 'Built Up Area'
   | 'Furnish Type'
-  | 'Preferred Tenant';
+  | 'Preferred Tenant'
+  | 'Looking to'
+  | "I'm";
 
 interface filterInterface {
   filterName: filterNameType;

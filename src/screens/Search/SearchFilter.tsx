@@ -3,8 +3,8 @@ import {filterNameType} from './SearchPropertyScreen';
 
 interface Props {
   filterName: filterNameType;
-  value: string | null;
   options: string[];
+  value?: string | null;
   onSelectHandler?: (value: string) => void;
 }
 
