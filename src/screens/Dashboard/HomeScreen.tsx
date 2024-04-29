@@ -237,7 +237,11 @@ const HomeScreen = () => {
               </TouchableOpacity>
             </View>
           </View>
+
+          <TouchableOpacity onPress={() => navigation.navigate('UserPropertyListedScren')}><Text className=' text-black font-bold text-base my-6'>Test mode: Propertylisted Screen Click</Text></TouchableOpacity>
         </View>
+
+
       </ScrollView>
     </SafeAreaView>
   );

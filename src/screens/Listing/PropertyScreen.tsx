@@ -56,20 +56,20 @@ const PropertyScreen = () => {
             showsHorizontalScrollIndicator={false}
             horizontal={true}
             className=" w-full my-4">
-            <View className=" h-11 w-6" />
-            <TouchableOpacity className="bg-white h-11 py-3 px-6 border-b-2 border-b-[#BDEA09]">
+            <View className="  w-6" />
+            <TouchableOpacity className="bg-white  py-3 px-6 border-b-2 border-b-[#BDEA09]">
               <Text className="text-base text-black">All</Text>
             </TouchableOpacity>
-            <TouchableOpacity className="bg-white h-11 py-3 px-6 border-b-2 border-b-[#BDEA09]">
+            <TouchableOpacity className="bg-white  py-3 px-6 border-b-2 border-b-[#BDEA09]">
               <Text className="text-base text-black">Description</Text>
             </TouchableOpacity>
-            <TouchableOpacity className="bg-white h-11 py-3 px-6 border-b-2 border-b-[#BDEA09]">
+            <TouchableOpacity className="bg-white py-3 px-6 border-b-2 border-b-[#BDEA09]">
               <Text className="text-base text-black">Details</Text>
             </TouchableOpacity>
-            <TouchableOpacity className="bg-white h-11 py-3 px-6 border-b-2 border-b-[#BDEA09]">
+            <TouchableOpacity className="bg-white  py-3 px-6 border-b-2 border-b-[#BDEA09]">
               <Text className="text-base text-black">Facilities</Text>
             </TouchableOpacity>
-            <TouchableOpacity className="bg-white h-11 py-3 px-6 border-b-2 border-b-[#BDEA09]">
+            <TouchableOpacity className="bg-white  py-3 px-6 border-b-2 border-b-[#BDEA09]">
               <Text className="text-base text-black">Owner</Text>
             </TouchableOpacity>
           </ScrollView>

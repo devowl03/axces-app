@@ -9,10 +9,12 @@ import {
 } from 'react-native';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import Header from '../../component/Header/Header';
-import {useRoute} from '@react-navigation/native';
+import {useNavigation, useRoute} from '@react-navigation/native';
 import {useEffect} from 'react';
 import {pinIcon} from '../../constants/imgURL';
 import SearchFilter from './SearchFilter';
+import { StackNavigationProp } from '@react-navigation/stack';
+import { RootStackParamList } from '../../routes/MainStack';
 
 export type filterNameType =
   | 'Pincode'
@@ -44,6 +46,7 @@ const filters: filterInterface[] = [
 
 const SearchPropertyScreen = () => {
   const router = useRoute();
+  const navigation = useNavigation<StackNavigationProp<RootStackParamList>>();
 
   useEffect(() => {}, []);
   return (
@@ -114,6 +117,7 @@ const SearchPropertyScreen = () => {
       </ScrollView>
       <View className="bottom-0 left-0 right-0 px-6 py-3 bg-white shadow-lg">
         <TouchableOpacity
+        onPress={() => navigation.goBack()}
           className={`py-3 px-8 rounded-full bg-[#BDEA09] mr-4`}>
           <Text className="text-[#181A53] text-base font-medium text-center">
             View Propterty

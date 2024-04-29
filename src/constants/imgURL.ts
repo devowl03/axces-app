@@ -84,3 +84,10 @@ export const leftBlueIcon =
   'https://res.cloudinary.com/krishanucloud/image/upload/v1713820344/Vector_jdncq6.png';
 export const tapIcon =
   'https://res.cloudinary.com/krishanucloud/image/upload/v1713821612/Vector_h79all.png';
+export const cloudMoney =
+  'https://res.cloudinary.com/krishanucloud/image/upload/v1714410401/cloudMoney_scbssc.png';
+export const deleteIc =
+  'https://res.cloudinary.com/krishanucloud/image/upload/v1714420459/Vector_oj1v1l.png';
+export const ratingstar =
+  'https://res.cloudinary.com/krishanucloud/image/upload/v1714421577/Vector_jqwg1e.png';
+export const greyRightArrow = "https://res.cloudinary.com/krishanucloud/image/upload/v1714427190/Vector_vc3aht.png";

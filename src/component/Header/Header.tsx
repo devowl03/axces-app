@@ -52,7 +52,7 @@ const Header: React.FC<Props> = ({
               />
               <TextInput
                 className=" w-full text-base text-white"
-                placeholder="Search hh"
+                placeholder="Search"
                 placeholderTextColor="white"
                 autoFocus={true}
               />
@@ -65,26 +65,11 @@ const Header: React.FC<Props> = ({
                 className=" w-4 h-4 mr-2"
               />
               <TouchableOpacity
-                className=" border border-red-500 px-4 flex-1"
+                className="flex-1"
                 onPress={() => navigation.navigate('SearchPropertyScreen')}
-                // onPress={() => console.log("header check")}
               >
-                <TextInput
-                  className=" w-full text-base border border-white"
-                  placeholder="Search"
-                  placeholderTextColor="white"
-                  // editable={false}
-                />
+                <Text className=' text-base text-white'>Search</Text>
               </TouchableOpacity>
-              {/* <TouchableOpacity
-                onPress={() => navigation.navigate('SearchPropertyScreen')}>
-                <TextInput
-                  className=" w-full text-base "
-                  placeholder="Search"
-                  placeholderTextColor="white"
-                  editable={false}
-                />
-              </TouchableOpacity> */}
             </View>
           )}
           <TouchableOpacity
