@@ -6,7 +6,7 @@ import {useNavigation, useRoute} from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { RootStackParamList } from '../../routes/MainStack';
 
-type OnboardingNavigationProp = StackNavigationProp<RootStackParamList>;
+export type OnboardingNavigationProp = StackNavigationProp<RootStackParamList>;
 
 const Onboarding = () => {
   const navigation = useNavigation<OnboardingNavigationProp>();
@@ -27,7 +27,7 @@ const Onboarding = () => {
         </TouchableOpacity>
 
         <TouchableOpacity
-          onPress={() => navigation.navigate('Dashboard')}
+          onPress={() => navigation.navigate('PhoneNumberScreen')}
           className=" w-12 h-12 rounded-full bg-[#BDEA09] flex items-center justify-center">
           <Image
             source={{uri: rightArrow}}

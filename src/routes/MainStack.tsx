@@ -9,6 +9,10 @@ import ProfileEditScreen from '../screens/Profile/ProfileEditScreen';
 import ListPropertyScreen from '../screens/Listing/ListPropertyScreen';
 import ListPropertyDetailScreen from '../screens/Listing/ListPropertyDetailScreen';
 import UserPropertyListedScreen from '../screens/Listing/UserPropertyListedScreen';
+import PhoneNumberScreen from '../screens/onboard/PhoneNumberScreen';
+import OtpVerifyScreen from '../screens/onboard/OtpVerifyScreen';
+import CreateAccScreen from '../screens/onboard/CreateAccScreen';
+import ProfileSelectScreen from '../screens/onboard/ProfileSelectScreen';
 
 export type RootStackParamList = {
   Onboard: undefined;
@@ -23,6 +27,10 @@ export type RootStackParamList = {
   ListPropertyScreen: undefined;
   ListPropertyDetailScreen: undefined;
   UserPropertyListedScren: undefined;
+  PhoneNumberScreen: undefined;
+  OtpVerifyScreen: undefined;
+  CreateAccScreen:undefined;
+  ProfileSelectScreen:undefined;
   // Make sure 'Dashboard' is spelled correctly
   // add other screens here
 };
@@ -45,6 +53,10 @@ const MainStack = () => {
       <Stack.Screen name="ListPropertyScreen" component={ListPropertyScreen} />
       <Stack.Screen name="ListPropertyDetailScreen" component={ListPropertyDetailScreen} />
       <Stack.Screen name="UserPropertyListedScren" component={UserPropertyListedScreen} />
+      <Stack.Screen name="PhoneNumberScreen" component={PhoneNumberScreen} />
+      <Stack.Screen name="OtpVerifyScreen" component={OtpVerifyScreen} />
+       <Stack.Screen name="CreateAccScreen" component={CreateAccScreen} />
+       <Stack.Screen name="ProfileSelectScreen" component={ProfileSelectScreen} />
       
     </Stack.Navigator>
   );

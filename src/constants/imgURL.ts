@@ -90,4 +90,14 @@ export const deleteIc =
   'https://res.cloudinary.com/krishanucloud/image/upload/v1714420459/Vector_oj1v1l.png';
 export const ratingstar =
   'https://res.cloudinary.com/krishanucloud/image/upload/v1714421577/Vector_jqwg1e.png';
-export const greyRightArrow = "https://res.cloudinary.com/krishanucloud/image/upload/v1714427190/Vector_vc3aht.png";
+export const greyRightArrow =
+  'https://res.cloudinary.com/krishanucloud/image/upload/v1714427190/Vector_vc3aht.png';
+export const whitePhoneIc =
+  'https://res.cloudinary.com/krishanucloud/image/upload/v1714429254/Vector_rdaz1x.png';
+export const whiteEmail =
+  'https://res.cloudinary.com/krishanucloud/image/upload/v1714430324/Vector_1_rnf3yp.png';
+export const whiteUser =
+  'https://res.cloudinary.com/krishanucloud/image/upload/v1714430332/Group_1_evhpbt.png';
+export const buyrentBanner = "https://res.cloudinary.com/krishanucloud/image/upload/v1714430994/buyrentbanner_vlcppk.jpg";
+export const serviceBanner = "https://res.cloudinary.com/krishanucloud/image/upload/v1714430993/servicebanner_dordka.jpg";
+export const eventBanner = "https://res.cloudinary.com/krishanucloud/image/upload/v1714430994/eventbanner_mzjz23.jpg"
