@@ -22,9 +22,10 @@ import {
   BottomSheetView,
 } from '@gorhom/bottom-sheet';
 import {cloudMoney, coinStack, pinIcon} from '../../constants/imgURL';
-import { useNavigation } from '@react-navigation/native';
-import { StackNavigationProp } from '@react-navigation/stack';
-import { RootStackParamList } from '../../routes/MainStack';
+import {useNavigation} from '@react-navigation/native';
+import {StackNavigationProp} from '@react-navigation/stack';
+import {RootStackParamList} from '../../routes/MainStack';
+import {scale, verticalScale} from 'react-native-size-matters';
 
 const ListPropertyDetailScreen = () => {
   const bottomSheetRef = useRef<BottomSheetModal>(null);
@@ -59,7 +60,11 @@ const ListPropertyDetailScreen = () => {
           />
           <PropertyInput title="Facing" placeholderText="North, East, ..." />
           <PropertyInput
-            title="Total flooor number"
+            title="Your floor"
+            placeholderText="Enter your floor number"
+          />
+          <PropertyInput
+            title="Total floor number"
             placeholderText="Enter your floor number"
           />
           <SearchFilter
@@ -78,7 +83,86 @@ const ListPropertyDetailScreen = () => {
             </TouchableOpacity>
           </View>
 
+          <PropertyInput
+            subtitle="(including all extra charges)"
+            title="Monthly Rent"
+            placeholderText="Amount"
+          />
+
           <PropertyInput title="Security Deposit" placeholderText="Amount" />
+
+          <SearchFilter
+            filterName="Preferred Tenant"
+            options={['Any', 'Family', 'Preferred Tenant']}
+            value={'Any'}
+          />
+          <PropertyInput title="Landmark" placeholderText="Optional" />
+          <PropertyInput title="About property" placeholderText="Optional" />
+
+          <SearchFilter
+            filterName="Property Facilities"
+            options={[
+              'Swimming pool',
+              'Parking',
+              'Lift',
+              'Gym',
+              'Play area',
+              'Clud house',
+            ]}
+            value={'Gym'}
+            wrap={true}
+          />
+          <View className=" mt-4 flex items-start mx-6">
+            <View className=" flex flex-row items-center">
+              <Text className=" text-[#0E0E0C] text-base font-bold my-3 mr-1">
+                Upload Images
+              </Text>
+              <Text className=" text-[#0E0E0C]/50 text-sm font-bold my-3">
+                (Maximum size 5MB)
+              </Text>
+            </View>
+            <TouchableOpacity
+              className={` py-3 px-8 rounded-full  bg-[#F2F8F6]
+               mr-4 my-2 flex flex-row items-center justify-center`}>
+              <Image
+                className=" mr-2"
+                source={{
+                  uri: 'https://res.cloudinary.com/krishanucloud/image/upload/v1715767072/Vector_rfssto.png',
+                }}
+                resizeMode="contain"
+                style={{
+                  width: scale(10),
+                  height: verticalScale(10),
+                }}
+              />
+              <Text className=" text-[#181A53] text-base font-medium">
+                Attach images
+              </Text>
+            </TouchableOpacity>
+          </View>
+
+          <View className="pb-3 mt-4 mx-6 flex flex-row justify-between items-center">
+            <View className=' flex flex-row items-center'>
+            <Image
+                className=" mr-2"
+                source={{
+                  uri: 'https://res.cloudinary.com/krishanucloud/image/upload/v1715767454/Wallet_qx36qn.png',
+                }}
+                resizeMode="contain"
+                style={{
+                  width: scale(16),
+                  height: verticalScale(16),
+                }}
+              />
+ <Text className=" text-sm text-[#181A53] font-medium">
+              Charges
+            </Text>
+            </View>
+           
+            <Text className=" text-[#181A53] text-base font-bold">
+              50 Coins
+            </Text>
+          </View>
 
           <View className=" w-full h-[15vh]" />
         </ScrollView>
@@ -131,15 +215,15 @@ const ListPropertyDetailScreen = () => {
                     </Text>
                   </View>
                   <TouchableOpacity
-                      onPress={() =>{
-                        setShowModal(false);
-                        navigation.navigate('Dashboard')
-                      }}
-                      className="w-full p-2 bg-[#BDEA09] rounded-full mt-6">
-                      <Text className="text-[#181A53] text-base text-center font-medium">
-                        Go home
-                      </Text>
-                    </TouchableOpacity>
+                    onPress={() => {
+                      setShowModal(false);
+                      navigation.navigate('Dashboard');
+                    }}
+                    className="w-full p-2 bg-[#BDEA09] rounded-full mt-6">
+                    <Text className="text-[#181A53] text-base text-center font-medium">
+                      Go home
+                    </Text>
+                  </TouchableOpacity>
                   <Image
                     source={{
                       uri: 'https://res.cloudinary.com/krishanucloud/image/upload/v1714417323/ZomatoSmile_ojmpkp.png',

@@ -82,7 +82,7 @@ const PropertyCard: React.FC<Props> = ({editFlag}) => {
         </View>
       </View>
       {editFlag ? (
-        <View className=" px-3 flex flex-row ">
+        <View className=" px-3 pb-3 flex flex-row ">
           <TouchableOpacity
             onPress={() => {}}
             className=" flex-1 p-3 mr-2 border border-[#BDEA09] rounded-full  flex flex-row items-center justify-center">

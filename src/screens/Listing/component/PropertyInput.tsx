@@ -6,14 +6,21 @@ interface Props {
     sideTitle?:string;
     placeholderText?: string;
     type?: string;
+    subtitle?:string;
 }
 
-const PropertyInput:React.FC<Props> = ({title, sideTitle,placeholderText}) => {
+const PropertyInput:React.FC<Props> = ({title, sideTitle,placeholderText, subtitle}) => {
   return (
     <View className=' px-6'>
-      <Text className=" text-[#0E0E0C] text-base font-bold my-3">
+      <View className=' flex flex-row items-center'>
+       <Text className=" text-[#0E0E0C] text-base font-bold my-3 mr-1">
         {title}
-      </Text>
+      </Text> 
+      <Text className=" text-[#0E0E0C]/50 text-sm font-bold my-3">
+        {subtitle}
+      </Text> 
+      </View>
+      
       <View className="py-2 px-4 flex flex-1 flex-row items-center rounded-full bg-[#F2F8F6]">
         <TextInput
           placeholder={placeholderText || "Optional"}

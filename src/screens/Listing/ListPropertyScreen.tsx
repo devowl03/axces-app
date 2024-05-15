@@ -38,14 +38,10 @@ const ListPropertyScreen = () => {
         <SearchFilter
           filterName="Property Type"
           options={[
-            'Apartment',
-            'Independent House',
-            'Builder floor',
-            'Villa',
-            'Studio',
-            'Pent house',
+            'Residential',
+            'Commercial',
           ]}
-          value={'Studio'}
+          value={'Residential'}
         />
 
         {/* <View className=" px-6 my-3">

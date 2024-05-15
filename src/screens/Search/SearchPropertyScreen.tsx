@@ -29,6 +29,7 @@ export type filterNameType =
   | 'Furnish Type'
   | 'Preferred Tenant'
   | 'Looking to'
+  | 'Property Facilities'
   | "I'm";
 
 interface filterInterface {
