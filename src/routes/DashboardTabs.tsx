@@ -21,6 +21,7 @@ const DashboardTabs = () => {
         },
       }}>
       <Tab.Screen
+    
         options={({route}) => ({
           tabBarButton: props => {
             return <TabTile tabProps={props} title={route.name} />;

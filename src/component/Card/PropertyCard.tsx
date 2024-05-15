@@ -19,7 +19,7 @@ interface Props {
 const PropertyCard: React.FC<Props> = ({editFlag}) => {
   const navigation = useNavigation<StackNavigationProp<RootStackParamList>>();
   return (
-    <View className=" w-full h-full bg-white rounded-b-xl">
+    <View className=" w-full bg-white rounded-xl ">
       <TouchableOpacity
         onPress={() =>
           !editFlag && navigation.navigate('PropertyScreen', {name: 'Hello'})

@@ -8,6 +8,8 @@ import {
   profileTabIc,
   wishlist,
 } from '../../constants/imgURL';
+import { scale, verticalScale } from 'react-native-size-matters';
+import { RFValue } from 'react-native-responsive-fontsize';
 
 interface Props {
   tabProps: BottomTabBarButtonProps;
@@ -42,7 +44,7 @@ const TabTile: React.FC<Props> = ({tabProps, title}) => {
     <View className="flex-1 flex items-center ">
       <TouchableOpacity
         onPress={tabProps.onPress}
-        className={` rounded-3xl flex flex-row py-2 px-6  ${
+        className={` rounded-3xl flex flex-row items-center py-2 px-4 ${
           tabProps.accessibilityState?.selected ? 'bg-[#F2F8F6]' : 'bg-white'
         }`}>
         <Image
@@ -51,14 +53,15 @@ const TabTile: React.FC<Props> = ({tabProps, title}) => {
               ? tabIconsData[title as tabs].iconSelected
               : tabIconsData[title as tabs].icon,
           }}
+          style={{width: scale(16), height: verticalScale(16)}}
           resizeMode="contain"
-          className=" w-5 h-5"
         />
         {tabProps.accessibilityState?.selected && (
           <Text
+          style={{fontSize: RFValue(12)}}
             className={`${
               tabProps.accessibilityState?.selected && 'text-[#BDEA09]'
-            } font-semibold ml-2`}>
+            } font-semiboldS ml-2`}>
             {title}
           </Text>
         )}

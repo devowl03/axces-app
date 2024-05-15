@@ -40,6 +40,7 @@ const Stack = createStackNavigator<RootStackParamList>();
 const MainStack = () => {
   return (
     <Stack.Navigator screenOptions={{headerShown: false}}>
+      {/* <Stack.Screen name="Dashboard" component={DashboardTabs} /> */}
       <Stack.Screen name="Onboard" component={OnboardScreen} />
       <Stack.Screen name="Dashboard" component={DashboardTabs} />
       <Stack.Screen name="PropertyListing" component={PropertyListingScreen} />

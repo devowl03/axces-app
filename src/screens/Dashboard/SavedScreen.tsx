@@ -39,13 +39,13 @@ const SavedScreen = () => {
             Tap on heart button to remove property
           </Text>
         </View>
-        <View className=" w-full h-[370px] mb-4">
+        <View className=" w-full  mb-4">
           <PropertyCard />
         </View>
-        <View className=" w-full h-[370px] mb-4">
+        <View className=" w-full mb-4">
           <PropertyCard />
         </View>
-        <View className=" w-full h-[370px] mb-4">
+        <View className=" w-full mb-4">
           <PropertyCard />
         </View>
         <View className=' w-full h-[5vh]' />

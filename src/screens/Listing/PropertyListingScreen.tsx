@@ -10,13 +10,13 @@ const PropertyListingScreen = () => {
       <StatusBar barStyle={'light-content'} backgroundColor={'#181A53'} />
       <Header showSearch={true} />
       <ScrollView className=" flex-1 px-6 pt-6">
-        <View className=" w-full h-[370px] mb-4">
+        <View className=" w-full mb-4">
           <PropertyCard />
         </View>
-        <View className=" w-full h-[370px] mb-4">
+        <View className=" w-full mb-4">
           <PropertyCard />
         </View>
-        <View className=" w-full h-[370px] mb-4">
+        <View className=" w-full mb-4">
           <PropertyCard />
         </View>
 

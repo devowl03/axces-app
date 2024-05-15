@@ -8,6 +8,8 @@ import {
 } from '../../constants/imgURL';
 import {StackNavigationProp} from '@react-navigation/stack';
 import {RootStackParamList} from '../../routes/MainStack';
+import { RFPercentage, RFValue } from 'react-native-responsive-fontsize';
+import { scale, verticalScale } from 'react-native-size-matters';
 interface Props {
   showSearch?: boolean;
   title?: string;
@@ -33,9 +35,11 @@ const Header: React.FC<Props> = ({
         lightHeader ? 'bg-[#F2F8F6]' : 'bg-[#181A53]'
       }  px-6 pb-1 pt-3`}>
       <TouchableOpacity
+       style={{width: scale(12), height: verticalScale(14)}}
         onPress={() => navigation.goBack()}
-        className=" w-6 h-6 flex items-start justify-center">
+        className="flex items-start justify-center">
         <Image
+         style={{width: scale(12), height: verticalScale(14)}}
           source={{uri: lightHeader ? leftBlueIcon : leftIcon}}
           resizeMode="contain"
           className=" w-4 h-5"
@@ -85,9 +89,10 @@ const Header: React.FC<Props> = ({
       )}
       {centerTile && (
         <Text
+        style={{fontSize: RFValue(18)}}
           className={`${
             lightHeader ? 'text-[#0E0E0C]' : 'text-white'
-          } text-2xl font-medium absolute left-[46%]`}>
+          }  font-medium absolute left-[46%] font-sans`}>
           {title}
         </Text>
       )}
