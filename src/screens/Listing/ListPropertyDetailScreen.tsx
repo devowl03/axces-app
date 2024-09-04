@@ -46,6 +46,11 @@ import { Linking } from 'react-native';
 
 
 const ListPropertyDetailScreen = () => {
+
+  const getBalance = useAppSelector((state) => state.getBalance);
+  const recharge = useAppSelector((state) => state.recharge)
+  const viewProfile = useAppSelector((state) => state.viewProfile)
+
   const bottomSheetRef = useRef<BottomSheetModal>(null);
   const nocoinbottomSheetRef = useRef<BottomSheetModal>(null);
   const [selected, setSelected] = useState<boolean>(false);
@@ -58,6 +63,9 @@ const ListPropertyDetailScreen = () => {
 
   const { selectedRole, lookingFor, propertyType, addPincode, } = route?.params;
   const location = route.params?.location;
+  const [balance, setBalance] = useState(0)
+  const [amount, setAmount] = useState('')
+  const [demo, setdemo] = useState('')
 
   const navigation = useNavigation<StackNavigationProp<RootStackParamList>>();
   const [propertyName, setPropertyName] = useState<string>('');
@@ -95,6 +103,21 @@ const ListPropertyDetailScreen = () => {
     const newLocalities = selectedLocalities.filter((_, i) => i !== index);
     setSelectedLocalities(newLocalities);
   };
+
+  useEffect(() => {
+    const displaybalance = () => {
+      if (getBalance.called) {
+        const { data } = getBalance;
+        setdemo(getBalance);
+        const coins = data.coins;
+        setBalance(coins);
+        setLoading(false);
+      }
+    }
+
+
+    displaybalance();
+  }, [getBalance, recharge, demo, balance, setBalance, viewProfile]);
 
   useEffect(() => {
     const fetchUserId = async () => {
@@ -1057,8 +1080,7 @@ const ListPropertyDetailScreen = () => {
                     borderRadius: 50,
                   }}>
                   <Text style={{ color: '#181A53', fontSize: 18 }}>
-                    Available coins:{' '}
-                    <Text style={{ fontWeight: 'bold' }}>50</Text>
+                    Available coins:{balance}
                   </Text>
                   <TouchableOpacity
                     style={{
