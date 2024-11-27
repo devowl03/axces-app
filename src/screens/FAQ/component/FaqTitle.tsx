@@ -2,42 +2,35 @@ import {Image, Text, TouchableOpacity, View} from 'react-native';
 import {minus, plus} from '../../../constants/imgURL';
 
 interface Props {
-  checker: number | 'ALL' | 'NONE';
+  checker: boolean; // Updated to use boolean
   id: number;
   title: string;
   description: string;
-  faqClickHandler: (titleId: number) => void;
+  faqClickHandler: () => void; // Simplified
 }
 
 const FaqTile: React.FC<Props> = ({
   checker,
-  id,
   title,
   description,
   faqClickHandler,
 }) => {
   return (
-    <View className=" w-full border-b border-b-[#292929]/10 py-3">
-      <TouchableOpacity onPress={() => faqClickHandler(id)} className=" flex flex-row items-center justify-between">
-        <Text className=" text-[#292929] text-base font-medium">{title}</Text>
-        {/* <TouchableOpacity onPress={() => faqClickHandler(id)}> */}
-          {(checker === 'ALL' || checker === id) ? (
-            <Image
-              source={{uri: minus}}
-              resizeMode="contain"
-              className=" w-4 h-1"
-            />
-          ) : (
-            <Image
-              source={{uri: plus}}
-              resizeMode="contain"
-              className=" w-4 h-4"
-            />
-          )}
-        {/* </TouchableOpacity> */}
+    <View className="w-full border-b border-b-[#292929]/10 py-3">
+      <TouchableOpacity
+        onPress={faqClickHandler}
+        className="flex flex-row items-center justify-between">
+        <View style={{width: '85%'}}>
+          <Text className="text-[#292929] text-base font-medium">{title}</Text>
+        </View>
+        <Image
+          source={{uri: checker ? minus : plus}}
+          resizeMode="contain"
+          className={`w-4 ${checker ? 'h-1' : 'h-4'}`}
+        />
       </TouchableOpacity>
-      {(checker === id || checker === 'ALL') && (
-        <Text className=" text-[#292929]/60 text-sm mt-4">{description}</Text>
+      {checker && (
+        <Text className="text-[#292929]/60 text-sm mt-4">{description}</Text>
       )}
     </View>
   );

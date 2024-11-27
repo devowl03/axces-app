@@ -21,6 +21,7 @@ import { useCallback, useEffect, useState } from 'react';
 import { useAppSelector } from '../../constants';
 import firebase from '../../../firebaseConfig';
 import Loader from '../../component/Loader/Loader';
+import { getMessaging } from '@react-native-firebase/messaging';
 
 const CreateAccScreen = ({ route }: any) => {
   const navigation = useNavigation<OnboardingNavigationProp>();
@@ -32,17 +33,29 @@ const CreateAccScreen = ({ route }: any) => {
 
   const { phoneNumber } = route?.params
 
+     
+
+
   const registerUser = async () => {
+
+     const token = await getMessaging().getToken();
+     console.log('FCM Token:', token);
+
     const userData = {
       number: phoneNumber,
       name: name,
       email: email,
+      device_token: token,
     };
 
     if (!name || !email) {
       errorMessage('Please enter name and email');
       return;
     }
+
+    console.log('====================================');
+    console.log('userData', userData);
+    console.log('====================================');
 
     setLoading(true);
 

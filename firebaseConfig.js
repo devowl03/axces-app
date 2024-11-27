@@ -4,11 +4,11 @@ import '@react-native-firebase/auth';
 import '@react-native-firebase/firestore'
 
 const firebaseConfig = {
-    apiKey: 'AIzaSyDA4seYd9zx2gRjfTT5hYjGbk3xKNRyZ_4',
-    appId: '1:367804998297:android:5937a2d29789ad8cdf0e08',
-    messagingSenderId: 'Your Sender Id',
-    projectId: 'aaxcess-app-new',
-}
+  apiKey: 'AIzaSyA-Gg9VOv1u9ARCz3ps4Er5g2jNtc1HYgU',
+  appId: '1:529247134619:android:4f8510b2db675747adf73e',
+  messagingSenderId: 'Your Sender Id',
+  projectId: 'axces-52c93',
+};
 
 // Initialize Firebase
 if (!firebase.apps.length) {

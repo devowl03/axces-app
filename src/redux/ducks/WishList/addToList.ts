@@ -24,9 +24,12 @@ export function addToListAction(res: any): any {
 }
 
 
-export const addToWishList = (propertyId: string) => (dispatch: any) => {
+export const addToWishList = (propertyId: string,action:string) => (dispatch: any) => {
     const url = addToListUrl
-    const body = { propertyId }
+    const body = {propertyId, action: action};
+    console.log('====================================');
+    console.log('propertyId', body);
+    console.log('====================================');
     postApi(url, body)
         .then((res: any) => {
             dispatch(addToListAction({ ...res.data }));

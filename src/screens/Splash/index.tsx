@@ -17,7 +17,7 @@ const Splash = () => {
 
     setTimeout(() => {
         getData()
-    }, 500)
+    }, 1000)
 
     return (
         <View style={styles.container}>

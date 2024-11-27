@@ -24,37 +24,65 @@ export function getPropertiesAction(res: any): any {
 }
 
 
-export const getPropertiesList = (latitude: number, longitude: number, propertyType: string, pincode: string, size: string,listingType: string) => (dispatch: any) => {
-    const url = propertiesList
+export const getPropertiesList =
+  (
+    token: string,
+    latitude: number,
+    longitude: number,
+    pincode: string,
+    // addlocality: string,
+    listing_type: string,
+    property_type: string,
+    propertyType: string,
+    listedFor: string,
+    bedrooms: string,
+    price: string,
+    area: string,
+    furnish_type: string,
+    preferred_tenant: string,
+  ) =>
+  (dispatch: any) => {
+    console.log('token', token);
+    // console.log('lookingFor', listing_type);
+
+    const url = propertiesList;
     const body = {
-        "userLatitude": latitude,
-        "userLongitude": longitude,
-        "filters": {
-            "facilities": [
-            "Gym",
-            "Pool"
-        ],
-        "pincode": pincode,
-        "bedrooms": +size,
-        "bathrooms": +size,
-        "listing_type": listingType,
-        "propertyType": propertyType,
-        },
-    }
+      userLatitude: latitude,
+      userLongitude: longitude,
+      filters: {
+        pincode: pincode,
+        // addlocality: addlocality,
+        listing_type: listing_type,
+        property_type: property_type,
+        propertyType: propertyType,
+        listedFor: listedFor,
+        bedrooms: bedrooms,
+        price: price,
+        area: area,
+        furnish_type: furnish_type,
+        preferred_tenant: preferred_tenant,
+      },
+    };
     console.log('Request Body:', body);
-    postApi(url, body, {})
-        .then((res: any) => {
-            dispatch(getPropertiesAction({ ...res.data }));
-        })
-        .catch(err => {
-            if (err) {
-                dispatch(
-                    getPropertiesAction({
-                        ...err
-                    }),
-                );
-            }
-        });
-} 
+    const headers = {
+      Authorization: `Bearer ${token}`, // Pass token in Authorization header
+    };
+
+    postApi(url, body, headers)
+      .then((res: any) => {
+        console.log('res++++++++=', res.data);
+
+        dispatch(getPropertiesAction({...res.data}));
+      })
+      .catch(err => {
+        if (err) {
+          dispatch(
+            getPropertiesAction({
+              ...err,
+            }),
+          );
+        }
+      });
+  }; 
 
 

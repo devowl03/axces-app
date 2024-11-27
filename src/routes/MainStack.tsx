@@ -19,6 +19,8 @@ import ContactOwner from '../screens/Listing/component/ContactOwner';
 import Splash from '../screens/Splash';
 import RentPropertyListing from '../screens/Listing/RentPropertyListing';
 import RentPropertyfilter from '../screens/Search/RentPropertyfilter';
+import Notifications from '../screens/Notifications/Notifications';
+import TransactionHistory from '../screens/Profile/TransactionHistory';
 
 export type RootStackParamList = {
   Onboard: undefined;
@@ -56,6 +58,7 @@ const MainStack = () => {
   const [user, setUser] = useState<any>();
 
   function onAuthStateChanged(user: any) {
+    console.log('user', user);
     setUser(user);
     if (initializing) setInitializing(false);
   }
@@ -68,7 +71,9 @@ const MainStack = () => {
   if (initializing) return null;
 
   return (
-    <Stack.Navigator screenOptions={{ headerShown: false }} initialRouteName='Splash'>
+    <Stack.Navigator
+      screenOptions={{headerShown: false}}
+      initialRouteName="Splash">
       {/* <Stack.Screen name="Dashboard" component={DashboardTabs} /> */}
       <Stack.Screen name="Splash" component={Splash} />
       <Stack.Screen name="Onboard" component={OnboardScreen} />
@@ -76,22 +81,36 @@ const MainStack = () => {
       <Stack.Screen name="PropertyListing" component={PropertyListingScreen} />
       <Stack.Screen name="FaqScreen" component={FaqScreen} />
       <Stack.Screen name="PropertyScreen" component={PropertyScreen} />
+      <Stack.Screen name="TransactionHistory" component={TransactionHistory} />
+
       <Stack.Screen
         name="SearchPropertyScreen"
         component={SearchPropertyScreen}
       />
       <Stack.Screen name="ProfileEditScreen" component={ProfileEditScreen} />
       <Stack.Screen name="ListPropertyScreen" component={ListPropertyScreen} />
-      <Stack.Screen name="RentPropertyListing" component={RentPropertyListing} />
-      <Stack.Screen name="ListPropertyDetailScreen" component={ListPropertyDetailScreen} />
-      <Stack.Screen name="UserPropertyListedScren" component={UserPropertyListedScreen} />
+      <Stack.Screen name="Notifications" component={Notifications} />
+      <Stack.Screen
+        name="RentPropertyListing"
+        component={RentPropertyListing}
+      />
+      <Stack.Screen
+        name="ListPropertyDetailScreen"
+        component={ListPropertyDetailScreen}
+      />
+      <Stack.Screen
+        name="UserPropertyListedScren"
+        component={UserPropertyListedScreen}
+      />
       <Stack.Screen name="PhoneNumberScreen" component={PhoneNumberScreen} />
       <Stack.Screen name="OtpVerifyScreen" component={OtpVerifyScreen} />
       <Stack.Screen name="CreateAccScreen" component={CreateAccScreen} />
-      <Stack.Screen name="ProfileSelectScreen" component={ProfileSelectScreen} />
-      <Stack.Screen name="ContactOwner" component={ContactOwner}/>
-      <Stack.Screen name="RentPropertyfilter" component={RentPropertyfilter}/>
-
+      <Stack.Screen
+        name="ProfileSelectScreen"
+        component={ProfileSelectScreen}
+      />
+      <Stack.Screen name="ContactOwner" component={ContactOwner} />
+      <Stack.Screen name="RentPropertyfilter" component={RentPropertyfilter} />
     </Stack.Navigator>
   );
 };

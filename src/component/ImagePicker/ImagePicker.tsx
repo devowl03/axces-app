@@ -1,6 +1,6 @@
 
 import React, { useRef, useState } from 'react';
-import { View, Text, StyleSheet, Image, ActivityIndicator } from 'react-native';
+import { View, Text, StyleSheet, Image, ActivityIndicator, Platform } from 'react-native';
 import { launchCamera, launchImageLibrary } from 'react-native-image-picker';
 import { PERMISSIONS, requestMultiple } from 'react-native-permissions';
 import Modal from 'react-native-modalbox';
@@ -14,11 +14,26 @@ const ImagePicker = (props: any) => {
 
   const openPicker = async (camera = false, multiple = false) => {
     setLoading(true); // Start the loader
-    await requestMultiple([
-      PERMISSIONS.ANDROID.READ_EXTERNAL_STORAGE,
-      PERMISSIONS.ANDROID.WRITE_EXTERNAL_STORAGE,
-      PERMISSIONS.ANDROID.CAMERA,
-    ]);
+
+
+    if (Platform.OS === 'android') {
+      await requestMultiple([
+        PERMISSIONS.ANDROID.READ_EXTERNAL_STORAGE,
+        PERMISSIONS.ANDROID.WRITE_EXTERNAL_STORAGE,
+        PERMISSIONS.ANDROID.CAMERA,
+      ]);
+    } else if (Platform.OS === 'ios') {
+      await requestMultiple([
+        PERMISSIONS.IOS.CAMERA,
+        PERMISSIONS.IOS.PHOTO_LIBRARY,
+      ]);
+    }
+
+    // await requestMultiple([
+    //   PERMISSIONS.ANDROID.READ_EXTERNAL_STORAGE,
+    //   PERMISSIONS.ANDROID.WRITE_EXTERNAL_STORAGE,
+    //   PERMISSIONS.ANDROID.CAMERA,
+    // ]);
 
     const config = {
       mediaType: 'photo',

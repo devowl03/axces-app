@@ -1,4 +1,17 @@
-import {Image,ScrollView,StatusBar,Text,TouchableOpacity,} from 'react-native';
+import {
+  Image,
+  ScrollView,
+  StatusBar,
+  Text,
+  Modal,
+  TouchableOpacity,
+  TouchableWithoutFeedback,
+  StyleSheet,
+  ActivityIndicator,
+  Alert,
+  Linking,
+  Dimensions,
+} from 'react-native';
 import {View} from 'react-native';
 import Header from '../../component/Header/Header';
 import {useNavigation, useRoute} from '@react-navigation/native';
@@ -8,26 +21,43 @@ import {SafeAreaView} from 'react-native-safe-area-context';
 import PropertyCarousel from '../../component/Carousel/Property/PropertyCarousel';
 import PropertyDscr from './component/PropertyDscr';
 import PropertyDetail from './component/PropertyDetails';
-import {demoUser} from '../../constants/imgURL';
+import {demoUser,coinStack,phoneIc,greyRightArrow} from '../../constants/imgURL';
 import Facilities from './component/Facilities';
 import {useEffect, useRef, useState} from 'react';
 import BottomSheet from '@gorhom/bottom-sheet/lib/typescript/components/bottomSheet/BottomSheet';
 import ContactOwner from './component/ContactOwner';
 import {BottomSheetModalProvider} from '@gorhom/bottom-sheet';
 import { useAppSelector } from '../../constants';
-import { errorMessage } from '../../utils';
+import { errorMessage, getAccessToken } from '../../utils';
+import { onGetOwnerDetails } from '../../redux/ducks/User/contactOwner';
+import { useDispatch } from 'react-redux';
+import { onRecharge } from '../../redux/ducks/Coins/recharge';
+import { TextInput } from 'react-native-gesture-handler';
+import { onGetBalance } from '../../redux/ducks/Coins/getBalance';
+import RazorpayCheckout from 'react-native-razorpay';
+
 
 const PropertyScreen = ({route}:any) => {
+  const dispatch = useDispatch();
+
   const getSelectedProperty = useAppSelector((state) => state.getSelectedProperty)
 
   const [user, setUser] = useState<any>();
   // const route = useRoute();
   const {data}: any = route?.params
+  
+
+  const contactOwner = useAppSelector(state => state.contactOwner);
+  const getBalance = useAppSelector(state => state.getBalance);
 
   
 
   const [activeSection, setActiveSection] = useState('All');
-  
+  const [loaderVisible, setLoaderVisible] = useState(false);
+  const [amount, setAmount] = useState('');
+
+
+
 
   useEffect(() => {
     if (getSelectedProperty.called) {
@@ -36,152 +66,836 @@ const PropertyScreen = ({route}:any) => {
     }
   },[getSelectedProperty])
 
-  const renderActiveSection = () => {
-    switch (activeSection) {
-      case 'All':
-        return (
-          <>
-            <View style={{ paddingHorizontal: 24, marginBottom: 12 }}>
-              <PropertyDscr item={data} />
-            </View>
-            <View style={{ paddingHorizontal: 24, marginBottom: 12 }}>
-              <PropertyDetail item={data} />
-            </View>
-            <View style={{ paddingHorizontal: 24, marginBottom: 12 }}>
-              <Facilities item={data} />
-            </View>
-          </>
-        );
-      case 'Description':
-        return (
-          <View style={{ paddingHorizontal: 24, marginBottom: 12 }}>
-            <PropertyDscr item={data} />
-          </View>
-        );
-      case 'Details':
-        return (
-          <View style={{ paddingHorizontal: 24, marginBottom: 12 }}>
-            <PropertyDetail item={data} />
-          </View>
-        );
-      case 'Facilities':
-        return (
-          <View style={{ paddingHorizontal: 24, marginBottom: 12 }}>
-            <Facilities item={data} />
-          </View>
-        );
-      case 'Owner':
-        return (
-          <View style={{ paddingHorizontal: 24, marginBottom: 12,height:200, width:327,marginTop:5 ,backgroundColor:'#fff',alignItems:'center',alignSelf:"center",justifyContent:'center',borderRadius:25}}>
-            <View style={{flexDirection:'row',justifyContent:'flex-start',gap:50}}>
-              <View>
-                <Image
-                source={{uri: demoUser}}
-                style={{ width: 62, height: 62, borderRadius: 60 }}
-                />
-                <Text style={{color:'#181A53',fontWeight:'500',fontSize:16,paddingTop:5}}>Charges</Text>
-              </View>
-              <View>
-              <Text style={{fontSize:17,color:'#000000',fontWeight:'500',}}>+91-9999955555</Text>
 
-              <View style={{ width:149, backgroundColor: '#BDEA09',height:50,justifyContent:'center',alignItems:'center',borderRadius:30,marginTop:8}}>
+    const handleAgree = () => {
+      console.log('getBalance', getBalance);
+
+      if (getBalance.data.coins === 0) {
+        Alert.alert('please recharge');
+      } else {
+        setLoaderVisible(true);
+        setTimeout(() => {
+          setLoaderVisible(false); // Hide loader after 3 seconds
+          checkdata();
+          setModalVisiblecontact(false);
+          // setShowModal(true);
+        }, 3000);
+      }
+    };
+
+
+   const checkdata = () => {
+    //  console.log('checkdata', checkshowModal);
+     setShowModal(true);
+     dispatch(onGetOwnerDetails(data._id));
+
+     //  dispatch(onGetOwnerDetails(item._id));
+
+     //  if (getBalance.data.coins !== 0) {
+     //    setShowModal(true);
+     //     dispatch(onGetOwnerDetails(item._id));
+     //  } else {
+     //    setShowModal(false);
+     //  }
+   };
+
+
+      const handleCallPress = () => {
+        const phoneNumber = contactOwner?.data?.owner_details?.contact_phone;
+        if (phoneNumber) {
+          Linking.openURL(`tel:${phoneNumber}`);
+        }
+      };
+
+
+  const [modalVisiblecontact, setModalVisiblecontact] = useState(false);
+
+
+  handleopencontactddetails = () => {
+    dispatch(onGetBalance());
+    setModalVisiblecontact(true);
+  };
+  
+
+  const contactusermodal = () => {
+    return (
+      <Modal
+        transparent={true}
+        visible={modalVisiblecontact}
+        animationType="slide"
+        onRequestClose={() => setModalVisiblecontact(false)}>
+        <TouchableWithoutFeedback onPress={() => setModalVisiblecontact(false)}>
+          <View style={styles.modalOverlay} />
+        </TouchableWithoutFeedback>
+
+        <View style={styles.bottomSheetContainer}>
+          <View style={styles.handleBar} />
+
+          {/* Bottom Sheet Content */}
+          <View
+            style={{
+              flex: 1,
+              // backgroundColor: 'red',
+            }}
+            className="px-7">
+            <View className="w-full flex flex-row items-start border-b border-b-black/10 pb-4">
+              <View className="mr-4">
+                <Image
+                  source={{uri: coinStack}}
+                  resizeMode="contain"
+                  className="w-10 h-10"
+                />
+              </View>
+              <View className="flex-1 pr-6">
+                <Text className="text-[#0E0E0C] text-lg font-bold">
+                  Do you want to contact the owner?
+                </Text>
+                <Text className="text-[#0E0E0C99] text-base">
+                  You will require 50 coins to view contact details .
+                </Text>
+              </View>
+            </View>
+            <View className="border-b border-b-black/10 py-4">
+              <View className=" flex bg-[#F2F8F6] rounded-full flex-row justify-between items-center px-3 py-2">
+                <View style={{width: '60%'}}>
+                  <Text className="text-[#181A53] text-lg">
+                    Available coins:{' '}
+                    <Text className="font-bold">{getBalance?.data?.coins}</Text>
+                  </Text>
+                </View>
                 <TouchableOpacity
-                  style={{flex:1,justifyContent:'center'}}
-                >
-                  <Text style={{ color: '#000000', fontWeight: '600' }}>
-                    Contact Owner
+                  className=" bg-[#BDEA09] rounded-full px-3 py-1"
+                  onPress={() => handlerechargeModalOpen()}>
+                  <Text className="text-[#181A53] text-base">+ Add coins</Text>
+                </TouchableOpacity>
+              </View>
+            </View>
+            <View className=" py-4 flex flex-row items-center">
+              <TouchableOpacity
+                onPress={() => setModalVisiblecontact(false)}
+                // onPress={() => bottomSheetRef.current?.close()}
+                className="flex-1 bg-[#F2F8F6] rounded-full p-3 mr-5">
+                <Text className="text-[#181A53] text-base text-center font-medium">
+                  No take me back
+                </Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                onPress={() => handleAgree()}
+                className="flex-1 bg-[#BDEA09] rounded-full p-3 ">
+                <Text className="text-[#181A53] text-base text-center font-medium">
+                  Yes, I agree
+                </Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </View>
+      </Modal>
+    );
+  };
+
+  const [rechargemodal, setrechargemodal] = useState(false);
+
+  const handlerechargeModalOpen = () => {
+    setAmount('')
+    setModalVisiblecontact(false);
+    setrechargemodal(true);
+  };
+
+  const addrechargemodal = () => {
+    return (
+      <Modal
+        transparent={true}
+        visible={rechargemodal}
+        animationType="slide"
+        onRequestClose={() => setrechargemodal(false)}>
+        <TouchableWithoutFeedback onPress={() => setrechargemodal(false)}>
+          <View style={styles.modalOverlay} />
+        </TouchableWithoutFeedback>
+
+        <View style={styles.bottomSheetContainer}>
+          <View style={styles.handleBar} />
+
+          {/* Bottom Sheet Content */}
+          <View
+            style={{
+              flex: 1,
+            }}
+            className="px-7">
+            <View className=" flex bg-[#F2F8F6] rounded-lg flex-row justify-between items-center px-3 py-2">
+              <Text className="text-[#181A53] text-lg">Your coins</Text>
+              <Text className="text-[#181A53] text-lg">
+                {getBalance?.data?.coins}
+              </Text>
+            </View>
+            <Text className="text-[#0E0E0C] text-2xl font-bold my-3">
+              Recharge Now!!
+            </Text>
+            <Text className="text-[#0E0E0C] text-xl font-bold my-3">
+              Amount
+            </Text>
+            <TextInput
+              placeholder="Enter Amount"
+              maxLength={5}
+              keyboardType="numeric"
+              value={amount}
+              style={{
+                width: '100%',
+                height: 50,
+                borderRadius: 5,
+                backgroundColor: '#F2F8F6',
+                paddingHorizontal: 10,
+                fontSize: 14,
+                color: '#181A53',
+              }}
+              onChangeText={text => setAmount(text)}
+            />
+            <View style={{height: 30}} />
+            <Text className=" text-[#0E0E0CCC] text-base font-medium border-b border-b-black/10">
+              Two simple steps
+            </Text>
+            <View className=" flex flex-row w-full items-center justify-start mt-3">
+              <View className="mr-4">
+                <Image
+                  source={{uri: coinStack}}
+                  resizeMode="contain"
+                  className="w-5 h-5"
+                />
+              </View>
+              <Text className=" text-[#0E0E0C99] text-base">
+                Add AXCES coins to your wallet
+              </Text>
+            </View>
+            <View className=" flex flex-row w-full items-center justify-start mt-3">
+              <View className="mr-4">
+                <Image
+                  source={{uri: coinStack}}
+                  resizeMode="contain"
+                  className="w-5 h-5"
+                />
+              </View>
+              <Text className=" text-[#0E0E0C99] text-base">
+                Seamlessly access to our services
+              </Text>
+            </View>
+            <TouchableOpacity
+              onPress={() => {
+                setrechargemodal(false);
+                setTimeout(() => {
+                  managerecharge();
+                }, 1000);
+              }}
+              className="w-full p-3 bg-[#BDEA09] rounded-full mt-4">
+              <Text className="text-[#181A53] text-base text-center font-medium">
+                Recharge Now
+              </Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </Modal>
+    );
+  };
+
+  const [showModal, setShowModal] = useState<boolean>(false);
+
+  const contectdetailsmodal = () => {
+    return (
+      <Modal
+        visible={showModal}
+        transparent={true}
+        statusBarTranslucent={true}
+        animationType="fade">
+        <TouchableWithoutFeedback onPress={() => setShowModal(false)}>
+          <View className="flex-1 items-center justify-center bg-black/80">
+            <TouchableWithoutFeedback>
+              <View className="rounded-lg p-4 bg-white w-[80%]">
+                <Text className="text-black text-base font-bold">
+                  Congratulations!!!
+                </Text>
+                <Text className="text-[#34AF48]">Contact the owner now</Text>
+                <View className="border border-black/10 rounded-lg p-3 my-3">
+                  <View className="flex flex-row">
+                    <Image
+                      source={{uri: demoUser}}
+                      resizeMode="contain"
+                      className="w-10 h-10 rounded-full"
+                    />
+                    <View className="ml-3">
+                      <Text className="text-[#7D7F88] text-sm font-medium">
+                        Property Owner
+                      </Text>
+                      <Text className="text-[#1A1E25] text-base font-bold">
+                        {contactOwner?.data?.owner_details?.owner_name}
+                      </Text>
+                    </View>
+                  </View>
+                  <Text className="text-[#0E0E0C] text-sm my-2">
+                    Tap to call
+                  </Text>
+                  <TouchableOpacity
+                    onPress={handleCallPress}
+                    className="py-3 px-4 flex flex-row items-center rounded-full bg-[#F2F8F6]">
+                    <View className="flex-1 flex flex-row items-center">
+                      <Image
+                        source={{uri: phoneIc}}
+                        resizeMode="contain"
+                        className="w-4 h-4 mr-2"
+                      />
+                      <Text className="text-[#181A53] font-medium text-lg">
+                        {contactOwner?.data?.owner_details?.contact_phone}
+                      </Text>
+                    </View>
+                    <Image
+                      source={{uri: greyRightArrow}}
+                      resizeMode="contain"
+                      className="w-2 h-5 mr-2"
+                    />
+                  </TouchableOpacity>
+                </View>
+                <TouchableOpacity
+                  onPress={() => setShowModal(false)}
+                  className="w-full p-2 bg-[#BDEA09] rounded-full mt-2">
+                  <Text className="text-[#181A53] text-base text-center font-medium">
+                    Okay
                   </Text>
                 </TouchableOpacity>
-              </View>              
               </View>
-            </View>
-            
+            </TouchableWithoutFeedback>
           </View>
+        </TouchableWithoutFeedback>
+      </Modal>
+    );
+  };
+
+
+  const [Invicedata,SetInvoicedata] = useState('')
+
+    const checkPaymentStatus = async orderId => {
+      console.log('orderId', orderId);
+
+      const token = await getAccessToken();
+
+      const raw = JSON.stringify({
+        orderId: orderId,
+      });
+
+      try {
+        const response = await fetch(
+          'https://backend.axces.in/api/payment/status',
+          {
+            method: 'POST',
+            headers: {
+              Authorization: `Bearer ${token}`,
+              'Content-Type': 'application/json', // Keep this if the server expects JSON
+            },
+            body: raw, // Send raw data in string format
+          },
         );
-      default:
-        return null;
+
+        const data = await response.json();
+        console.log('data++++++++++', data);
+        
+        if (response.ok) {
+          SetInvoicedata(data?.invoice_download_url);
+          // Alert.alert('Payment Status', `Status: ${data.message}`);
+          // }
+        } else {
+          Alert.alert('Error', `Error: ${data.message}`);
+        }
+      } catch (error) {
+        Alert.alert('Network Error', 'Failed to connect to the server');
+        console.error(error);
+      }
+    };
+
+    const managepayment = orderdata => {
+      const ordernumber = orderdata?.data?.order?.id;
+      console.log('ordernumber', ordernumber);
+
+      const amountInPaise = parseInt(amount) * 100;
+      const options = {
+        description: 'Purchase Product',
+        image: 'https://your-logo-url.com/logo.png',
+        currency: 'INR',
+        key: 'rzp_test_AoSsXKYIm5qUCv', // Replace with your Razorpay key ID
+        amount: amountInPaise.toString(), // Amount in paise (5000 paise = 50 INR)
+        name: 'AXCES',
+        order_id: ordernumber,
+        theme: {color: '#BDEA09'},
+      };
+      console.log('options', options);
+
+      RazorpayCheckout.open(options)
+        .then(data => {
+          // Payment successful
+          // Alert.alert('Payment Success', `Payment ID: ${data}`);
+          checkPaymentStatus(ordernumber); //
+          setpostsucessShowModal(true);
+        })
+        .catch(error => {
+          // Payment failed
+          Alert.alert(
+            'Payment Failure',
+            `Error: ${error.code} | ${error.description}`,
+          );
+        });
+    };
+
+  const managerecharge = () => {
+    if (amount.length > 0) {
+      //  setpostsucessShowModal(true); // Show success modal
+      dispatch(onRecharge(amount))
+        .then(response => {
+          // Handle success
+          console.log('Recharge successful:', response.data);
+          //  const orderdata = response?.data?.data?.order?.id;
+          managepayment(response.data); // Continue with payment management
+        })
+        .catch(error => {
+          // Handle error
+          console.error('Recharge failed:', error);
+          errorMessage('Recharge failed. Please try again.');
+        })
+        .finally(() => {
+          // Close bottom sheet regardless of success or failure
+          // nocoinbottomSheetRef.current?.close();
+        });
+    } else {
+      errorMessage('Please enter amount'); // Prompt user to enter amount
     }
   };
 
+
+       const [postsucessshowModal, setpostsucessShowModal] =
+         useState<boolean>(false);
+
+       const sucesspostdetailsmodal = () => {
+         setpostsucessShowModal(true);
+       };
+
+        const openInvoice = async () => {
+          try {
+            const supported = await Linking.canOpenURL(Invicedata);
+            if (supported) {
+              await Linking.openURL(Invicedata);
+              dispatch(onGetBalance());
+              setpostsucessShowModal(false);
+            } else {
+              Alert.alert('Error', 'Unable to open this URL.');
+            }
+          } catch (error) {
+            console.error('Error opening URL:', error);
+            Alert.alert(
+              'Error',
+              'An error occurred while trying to open the invoice.',
+            );
+          }
+        };
+
+
+       const rechargesucessmodal = () => {
+         return (
+           <Modal
+             visible={postsucessshowModal}
+             transparent={true}
+             statusBarTranslucent={true}
+             animationType="fade">
+             <TouchableWithoutFeedback
+               onPress={() => setpostsucessShowModal(false)}>
+               <View
+                 style={{
+                   ...styles.modalOverlay,
+                   justifyContent: 'center',
+                   alignItems: 'center',
+                 }}>
+                 <TouchableWithoutFeedback>
+                   <View className="rounded-lg p-4 bg-white w-[90%]">
+                     <View
+                       style={{
+                         top: -15,
+                         position: 'absolute',
+                         left: 14,
+                         // right: 0,
+                         zIndex: 999,
+                       }}>
+                       <Image
+                         source={require('../../../assets/coin.png')}
+                         style={{height: 34, width: 34, resizeMode: 'contain'}}
+                       />
+                     </View>
+                     <Text className="text-black text-base font-bold">
+                       Congratulations!!!
+                     </Text>
+                     <View
+                       style={{
+                         flexDirection: 'row',
+                         alignItems: 'center',
+                         width: '90%',
+                         paddingVertical: 5,
+                       }}>
+                       <Text className="text-black text-base font-bold">
+                         {amount} +coins
+                       </Text>
+                       <Text className="text-[#0E0E0C99] text-base ml-2">
+                         have been added to your wallet successfully
+                       </Text>
+                     </View>
+                     <TouchableOpacity
+                       onPress={() => setpostsucessShowModal(false)}
+                       className="w-full p-3 bg-[#BDEA09] rounded-full mt-2">
+                       <Text className="text-[#181A53] text-base text-center font-medium">
+                         Go Home
+                       </Text>
+                     </TouchableOpacity>
+                     <TouchableOpacity
+                       onPress={() => openInvoice()}
+                       className="w-full p-3 bg-[#BDEA09] rounded-full mt-2">
+                       <Text className="text-[#181A53] text-base text-center font-medium">
+                         Download Invoice
+                       </Text>
+                     </TouchableOpacity>
+                   </View>
+                 </TouchableWithoutFeedback>
+               </View>
+             </TouchableWithoutFeedback>
+           </Modal>
+         );
+       };
+
+
+  
+const {width} = Dimensions.get('window');
+
+
+const renderActiveSection = () => {
   return (
-   
-      <SafeAreaView className="flex-1 bg-[#F2F8F6]">
-        <ScrollView>
-        <StatusBar barStyle={'light-content'} backgroundColor={'#181A53'} />
-        <View >
-        <Header />
+    <ScrollView
+      contentContainerStyle={{paddingHorizontal: 16, paddingBottom: 12}}>
+      {(activeSection === 'All' || activeSection === 'Description') && (
+        <View style={{marginBottom: 12}}>
+          <PropertyDscr item={data} />
         </View>
-        <ScrollView className="flex-1">
-          <View className="w-full h-[35vh] pt-4 relative">
-            <PropertyCarousel id={data} images={data?.images}/>
-            <View className="bg-[#181A53] w-full h-[70%] z-10 absolute top-0" />
-          </View>
-          <View className="px-6 pt-2">
-            <View className=" flex flex-row justify-between">
-              <Text className=" text-base font-bold text-[#0E0E0C]">
-                  {data?.building_name}
+      )}
+
+      {(activeSection === 'All' || activeSection === 'Details') && (
+        <View style={{marginBottom: 12}}>
+          <PropertyDetail item={data} />
+        </View>
+      )}
+
+      {(activeSection === 'All' || activeSection === 'Facilities') && (
+        <View style={{marginBottom: 12}}>
+          <Facilities item={data} />
+        </View>
+      )}
+
+      {(activeSection === 'All' || activeSection === 'Owner') && (
+        <View
+          style={{
+            width: width * 0.9, // Responsive width
+            marginBottom: 12,
+            backgroundColor: '#fff',
+            alignItems: 'center',
+            alignSelf: 'center',
+            justifyContent: 'center',
+            borderRadius: 25,
+            paddingVertical: 20,
+          }}>
+          <View
+            style={{
+              flexDirection: 'row',
+              justifyContent: 'space-between',
+              width: '80%',
+            }}>
+            <View style={{alignItems: 'center'}}>
+              <Image
+                source={{uri: demoUser}}
+                style={{width: 62, height: 62, borderRadius: 31}}
+                resizeMode="cover"
+              />
+              <Text
+                style={{
+                  color: '#181A53',
+                  fontWeight: '500',
+                  fontSize: 16,
+                  paddingTop: 5,
+                }}>
+                Charges
               </Text>
-              <View className=" flex flex-row">
-                <Text className=" text-base font-bold text-[#BDEA09]">
-                  {data?.monthly_rent}
-                </Text>
-                <Text className=" text-base font-bold ml-1 text-[#180E0E99]">
-                  / Monthly
-                </Text>
-              </View>
             </View>
-            <Text className=" text-[#0E0E0C99] text-sm">
-              {data?.address}, {data?.landmark}
-            </Text>
-            
+            <View style={{alignItems: 'center'}}>
+              <Text style={{fontSize: 17, color: '#000000', fontWeight: '500'}}>
+                +91-9999955555
+              </Text>
+              <TouchableOpacity
+                onPress={() => handleopencontactddetails()}
+                style={{
+                  width: width * 0.45, // Responsive button width
+                  backgroundColor: '#BDEA09',
+                  height: 50,
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                  borderRadius: 30,
+                  marginTop: 8,
+                }}>
+                <Text style={{color: '#000000', fontWeight: '600'}}>
+                  Contact Owner
+                </Text>
+              </TouchableOpacity>
+            </View>
           </View>
-          <ScrollView
-            horizontal={true}
-            showsHorizontalScrollIndicator={false}
-            style={{ width: '100%', marginTop: 16, marginBottom: 16 }}
-          >
-            <View style={{ width: 24 }} />
-            <TouchableOpacity
-              style={{ backgroundColor: 'white', paddingVertical: 12, paddingHorizontal: 24, borderBottomWidth: 2, borderBottomColor: activeSection === 'All' ? '#BDEA09' : 'transparent' }}
-              onPress={() => setActiveSection('All')}
-            >
-              <Text style={{ fontSize: 16, color: 'black' }}>All</Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              style={{ backgroundColor: 'white', paddingVertical: 12, paddingHorizontal: 24, borderBottomWidth: 2, borderBottomColor: activeSection === 'Description' ? '#BDEA09' : 'transparent' }}
-              onPress={() => setActiveSection('Description')}
-            >
-              <Text style={{ fontSize: 16, color: 'black' }}>Description</Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              style={{ backgroundColor: 'white', paddingVertical: 12, paddingHorizontal: 24, borderBottomWidth: 2, borderBottomColor: activeSection === 'Details' ? '#BDEA09' : 'transparent' }}
-              onPress={() => setActiveSection('Details')}
-            >
-              <Text style={{ fontSize: 16, color: 'black' }}>Details</Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              style={{ backgroundColor: 'white', paddingVertical: 12, paddingHorizontal: 24, borderBottomWidth: 2, borderBottomColor: activeSection === 'Facilities' ? '#BDEA09' : 'transparent' }}
-              onPress={() => setActiveSection('Facilities')}
-            >
-              <Text style={{ fontSize: 16, color: 'black' }}>Facilities</Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              style={{ backgroundColor: 'white', paddingVertical: 12, paddingHorizontal: 24, borderBottomWidth: 2, borderBottomColor: activeSection === 'Owner' ? '#BDEA09' : 'transparent' }}
-              onPress={() => setActiveSection('Owner')}
-            >
-              <Text style={{ fontSize: 16, color: 'black' }}>Owner</Text>
-            </TouchableOpacity>
-          </ScrollView>
+        </View>
+      )}
+    </ScrollView>
+  );
+};
+
+
+  return (
+    <View style={{backgroundColor: '#181A53'}}>
+      <StatusBar barStyle={'light-content'} backgroundColor={'#181A53'} />
+      <View style={{backgroundColor: '#181A53', marginTop: 60}}>
+        <Header />
+      </View>
+      <ScrollView className="bg-[#ffffff]">
+        <View className="w-full h-[35vh] pt-4 relative">
+          <PropertyCarousel
+            id={data}
+            images={data?.images}
+            // wishlistdata={wishlist}
+          />
+          <View className="bg-[#181A53] w-full h-[70%] z-10 absolute top-0" />
+        </View>
+        <View className="px-6 pt-2">
+          <View className=" flex flex-row justify-between">
+            <Text className=" text-base font-bold text-[#0E0E0C]">
+              {data?.building_name}
+            </Text>
+            <View className=" flex flex-row">
+              <Text className=" text-base font-bold text-[#BDEA09]">
+                {data?.monthly_rent}
+              </Text>
+              <Text className=" text-base font-bold ml-1 text-[#180E0E99]">
+                / Monthly
+              </Text>
+            </View>
+          </View>
+          <Text className=" text-[#0E0E0C99] text-sm">
+            {data?.address}, {data?.landmark}
+          </Text>
+        </View>
+        <ScrollView
+          horizontal={true}
+          showsHorizontalScrollIndicator={false}
+          style={{width: '100%', marginTop: 16, marginBottom: 16}}>
+          <View style={{width: 24}} />
+          <TouchableOpacity
+            style={{
+              backgroundColor: 'white',
+              paddingVertical: 12,
+              paddingHorizontal: 24,
+              borderBottomWidth: 2,
+              borderBottomColor:
+                activeSection === 'All' ? '#BDEA09' : 'transparent',
+            }}
+            onPress={() => setActiveSection('All')}>
+            <Text style={{fontSize: 16, color: 'black'}}>All</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={{
+              backgroundColor: 'white',
+              paddingVertical: 12,
+              paddingHorizontal: 24,
+              borderBottomWidth: 2,
+              borderBottomColor:
+                activeSection === 'Description' ? '#BDEA09' : 'transparent',
+            }}
+            onPress={() => setActiveSection('Description')}>
+            <Text style={{fontSize: 16, color: 'black'}}>Description</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={{
+              backgroundColor: 'white',
+              paddingVertical: 12,
+              paddingHorizontal: 24,
+              borderBottomWidth: 2,
+              borderBottomColor:
+                activeSection === 'Details' ? '#BDEA09' : 'transparent',
+            }}
+            onPress={() => setActiveSection('Details')}>
+            <Text style={{fontSize: 16, color: 'black'}}>Details</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={{
+              backgroundColor: 'white',
+              paddingVertical: 12,
+              paddingHorizontal: 24,
+              borderBottomWidth: 2,
+              borderBottomColor:
+                activeSection === 'Facilities' ? '#BDEA09' : 'transparent',
+            }}
+            onPress={() => setActiveSection('Facilities')}>
+            <Text style={{fontSize: 16, color: 'black'}}>Facilities</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={{
+              backgroundColor: 'white',
+              paddingVertical: 12,
+              paddingHorizontal: 24,
+              borderBottomWidth: 2,
+              borderBottomColor:
+                activeSection === 'Owner' ? '#BDEA09' : 'transparent',
+            }}
+            onPress={() => setActiveSection('Owner')}>
+            <Text style={{fontSize: 16, color: 'black'}}>Owner</Text>
+          </TouchableOpacity>
+        </ScrollView>
+        <View style={{backgroundColor: '#ffff', height: 350}}>
           {renderActiveSection()}
-          
-          
-        </ScrollView>
-        </ScrollView>
-      </SafeAreaView>
-   
+        </View>
+        {showModal && contectdetailsmodal()}
+        {modalVisiblecontact && contactusermodal()}
+        {rechargemodal && addrechargemodal()}
+        {postsucessshowModal && rechargesucessmodal()}
+        <Modal transparent={true} visible={loaderVisible}>
+          <View style={styles.loaderContainer}>
+            <ActivityIndicator size="large" color="#BDEA09" />
+            <Text style={styles.loaderText}>Processing...</Text>
+          </View>
+        </Modal>
+      </ScrollView>
+    </View>
   );
 };
 
 export default PropertyScreen
 
 
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  openButton: {
+    backgroundColor: '#181A53',
+    padding: 10,
+    borderRadius: 5,
+  },
+  openButtonText: {
+    color: '#FFF',
+    fontWeight: 'bold',
+  },
+  modalOverlay: {
+    flex: 1,
+    backgroundColor: 'rgba(0, 0, 0, 0.4)', // Semi-transparent background
+  },
+  bottomSheetContainer: {
+    backgroundColor: 'white',
+    position: 'absolute',
+    bottom: 0,
+    width: '100%',
+    borderTopLeftRadius: 24,
+    borderTopRightRadius: 24,
+    padding: 20,
+  },
+  handleBar: {
+    width: 60,
+    height: 4,
+    backgroundColor: '#ccc',
+    borderRadius: 2,
+    alignSelf: 'center',
+    marginBottom: 10,
+  },
+  sheetContent: {
+    flex: 1,
+  },
+  row: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 20,
+  },
+  coinImage: {
+    width: 40,
+    height: 40,
+    marginRight: 16,
+  },
+  textContainer: {
+    flex: 1,
+  },
+  sheetTitle: {
+    color: '#0E0E0C',
+    fontSize: 18,
+    fontWeight: 'bold',
+  },
+  sheetSubtitle: {
+    color: '#0E0E0C99',
+    fontSize: 14,
+  },
+  coinInfo: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    backgroundColor: '#F2F8F6',
+    borderRadius: 50,
+    paddingVertical: 8,
+    paddingHorizontal: 16,
+    marginBottom: 20,
+  },
+  coinText: {
+    color: '#181A53',
+    fontSize: 16,
+  },
+  coinAmount: {
+    fontWeight: 'bold',
+  },
+  addCoinButton: {
+    backgroundColor: '#BDEA09',
+    borderRadius: 50,
+    paddingVertical: 4,
+    paddingHorizontal: 12,
+  },
+  addCoinText: {
+    color: '#181A53',
+    fontSize: 14,
+  },
+  actionButtons: {
+    flexDirection: 'row',
+  },
+  cancelButton: {
+    flex: 1,
+    backgroundColor: '#F2F8F6',
+    borderRadius: 50,
+    padding: 12,
+    marginRight: 10,
+  },
+  cancelButtonText: {
+    color: '#181A53',
+    fontSize: 14,
+    textAlign: 'center',
+    fontWeight: '500',
+  },
+  confirmButton: {
+    flex: 1,
+    backgroundColor: '#BDEA09',
+    borderRadius: 50,
+    padding: 12,
+  },
+  confirmButtonText: {
+    color: '#181A53',
+    fontSize: 14,
+    textAlign: 'center',
+    fontWeight: '500',
+  },
+  loaderContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+  },
+  loaderText: {
+    marginTop: 10,
+    color: 'white',
+    fontSize: 16,
+    fontWeight: 'bold',
+  },
+});

@@ -24,23 +24,42 @@ export function rechargeAction(res: any): any {
   }
   
 
-  export const onRecharge = (amount: number) => async(dispatch: any) => {
-      const url = recharge
+  // export const onRecharge = (amount: number) => async(dispatch: any) => {
+  //     const url = recharge
   
-    const body = { amount };
+  //   const body = { amount };
   
-    postApi(url,body, {})
-    .then((res: any) => {
-        console.log("RES>>>>>",res.data)
-      dispatch(rechargeAction({ ...res.data }));
-    })
-    .catch(err => {
-      if (err) {
-        dispatch(
-          rechargeAction({
-            ...err
-          }),
-        );
-      } 
-    });
+  //   postApi(url,body, {})
+  //   .then((res: any) => {
+  //       console.log("RES>>>>>",res.data)
+  //     dispatch(rechargeAction({ ...res.data }));
+  //   })
+  //   .catch(err => {
+  //     if (err) {
+  //       dispatch(
+  //         rechargeAction({
+  //           ...err
+  //         }),
+  //       );
+  //     } 
+  //   });
+  // };
+
+
+  export const onRecharge = (amount: number) => async (dispatch: any) => {
+    const url = recharge;
+    const body = {amount};
+
+    return postApi(url, body, {})
+      .then((res: any) => {
+        console.log('Full Response from API:', res); // Log the full response
+        console.log('RES>>>>>', res.data); // Log the `data` field
+        dispatch(rechargeAction({...res.data})); // Dispatch success action
+        return res; // Return the response for the calling function
+      })
+      .catch(err => {
+        console.error('Recharge error:', err);
+        dispatch(rechargeAction({...err}));
+        throw err;
+      });
   };

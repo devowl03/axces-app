@@ -28,9 +28,12 @@ export function getBalanceAction(res: any): any {
 
 export const onGetBalance = () => async (dispatch: AppDispatch) => {
   const url = balance
+  console.log('url++++++',url);
+  
 
   getApi(url)
     .then((res: any) => {
+      console.log('rescoin', res)
       dispatch(getBalanceAction({ ...res.data }));
     })
     .catch(err => {

@@ -90,9 +90,15 @@ export function getLocationApi(
   data?: any,
   headers = {},
 ) {
-  return apiReq(endPoint, data, 'get', {
-    'Content-Type': 'application/json'
-  });
+  return apiReq(
+    endPoint,
+    data,
+    'get',
+    (headers = {
+      'User-Agent': 'axces/1.0 (axces.customercare@gmail.com)',
+      'Content-Type': 'application/json',
+    }),
+  );
 }
 
 export function putApi(endPoint: string, data: any, headers = {}) {

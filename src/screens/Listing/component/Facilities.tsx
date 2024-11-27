@@ -6,6 +6,7 @@ const Facilities = ({item}: any) => {
     <Text className="text-[#0E0E0C] text-base font-bold mb-3">Facilities</Text>
     <View className=" w-full flex flex-row flex-wrap">
       {item?.facilities?.map((facility: any) => (
+        console.log("facility",facility),
         <View className=" mr-2 mb-2 px-3 py-2 rounded-lg bg-white flex flex-row items-center">
         <Image
           source={{uri: bedIcon}}

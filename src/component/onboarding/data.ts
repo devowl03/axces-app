@@ -1,4 +1,4 @@
-import {demoBuilding, Swiper2, Swiper3} from '../../constants/imgURL';
+import {demoBuilding, Swiper2, Swiper3, Swiper4} from '../../constants/imgURL';
 
 export interface swipeItemInterface {
   id: string;
@@ -9,21 +9,27 @@ export interface swipeItemInterface {
 
 export const swiperData: swipeItemInterface[] = [
   {
-    id: '45',
+    id: '1',
     imgURL: demoBuilding,
     title: 'Explore to turn your dreams into reality',
     description: 'Your all-in-one destination for housing solutions',
   },
   {
-    id: '18',
+    id: '2',
     imgURL: Swiper2,
     title: 'Find, view and own your new home- in one step',
-    description: 'Your all-in-one destination for housing solutions',
+    description: 'Step into tomorrow by find your new home now',
   },
   {
-    id: '07',
+    id: '3',
     imgURL: Swiper3,
     title: 'Home in sight, just a click away',
-    description: 'Your perfect matchis closer than you think explore now',
+    description: 'Your perfect match is closer than you think; explore now',
+  },
+  {
+    id: '4',
+    imgURL: Swiper3,
+    title: 'Choosing your path to the ideal home',
+    description: 'Elevate your experience - Search less, live more',
   },
 ];

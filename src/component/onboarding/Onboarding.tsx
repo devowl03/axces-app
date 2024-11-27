@@ -14,7 +14,10 @@ const Onboarding = () => {
   const navigation = useNavigation<OnboardingNavigationProp>();
 
   return (
-    <SafeAreaView edges={['bottom', 'left', 'right']} className="flex-1">
+    <SafeAreaView
+      edges={['bottom', 'left', 'right']}
+      className="flex-1"
+      style={{backgroundColor: '#181A53'}}>
       <StatusBar
         barStyle={'light-content'}
         backgroundColor={'transparent'}
@@ -25,14 +28,18 @@ const Onboarding = () => {
       </View>
 
       <View className="w-full  bg-[#181A53] flex items-center flex-row justify-between px-6 py-9">
-        <TouchableOpacity 
-        onPress={() =>{navigation.navigate('PhoneNumberScreen')}}
-        >
-          <Text className="text-[#BDEA09] text-base font-bold">Skip</Text>
+        <TouchableOpacity
+          // onPress={() => {
+          //   navigation.navigate('PhoneNumberScreen');
+          // }}
+          >
+          {/* <Text className="text-[#BDEA09] text-base font-bold">Skip</Text> */}
         </TouchableOpacity>
 
         <TouchableOpacity
-          onPress={() => {navigation.navigate('PhoneNumberScreen')}}
+          onPress={() => {
+            navigation.navigate('PhoneNumberScreen');
+          }}
           className=" w-12 h-12 rounded-full bg-[#BDEA09] flex items-center justify-center">
           <Image
             source={{uri: rightArrow}}

@@ -1,0 +1,419 @@
+import React, { useCallback, useEffect, useRef, useState } from 'react';
+import {
+  Alert,
+  Animated,
+  BackHandler,
+  FlatList,
+  Image,
+  Modal,
+  PermissionsAndroid,
+  RefreshControl,
+  ScrollView,
+  StatusBar,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
+} from 'react-native';
+import {
+  bell,
+  buyHouse,
+  faqChatBot,
+  greenDown,
+  homeBanner,
+  key,
+  location,
+  offerBanner,
+  searchIcon,
+  showcaseHome,
+} from '../../constants/imgURL';
+import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
+import { useFocusEffect, useNavigation } from '@react-navigation/native';
+import { RootStackParamList } from '../../routes/MainStack';
+import { StackNavigationProp } from '@react-navigation/stack';
+import Geolocation from '@react-native-community/geolocation';
+import { useDispatch } from 'react-redux';
+import { onGetLocation } from '../../redux/ducks/User/getLocation';
+import { useAppSelector } from '../../constants';
+import { onGetUserProfile } from '../../redux/ducks/User/viewProfile';
+import Loader from '../../component/Loader/Loader';
+
+const MAX_LENGTH = 28;
+
+const HomeScreen = () => {
+  const insets = useSafeAreaInsets();
+  const navigation = useNavigation<StackNavigationProp<RootStackParamList>>();
+  const [currentLocation, setCurrentLocation] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [userData, setUserData] = useState<any>(null);
+  const [input, setInput] = useState('');
+  const [suggestions, setSuggestions] = useState([]);
+  const [modalVisible, setModalVisible] = useState(false);
+  const [latitude, setLatitude] = useState(45);
+  const [longitude, setLongitude] = useState(30);
+  const [refreshing, setRefreshing] = useState(false);
+  const [locationModalVisible, setLocationModalVisible] = useState(false); // State for location modal
+
+  const dropdownHeight = useRef(new Animated.Value(0)).current;
+  const dropdownOpacity = useRef(new Animated.Value(0)).current;
+
+  useEffect(() => {
+    if (modalVisible) {
+      Animated.parallel([
+        Animated.timing(dropdownHeight, {
+          toValue: 200, // Adjust as needed
+          duration: 300,
+          useNativeDriver: false,
+        }),
+        Animated.timing(dropdownOpacity, {
+          toValue: 1,
+          duration: 300,
+          useNativeDriver: false,
+        }),
+      ]).start();
+    } else {
+      Animated.parallel([
+        Animated.timing(dropdownHeight, {
+          toValue: 0,
+          duration: 300,
+          useNativeDriver: false,
+        }),
+        Animated.timing(dropdownOpacity, {
+          toValue: 0,
+          duration: 300,
+          useNativeDriver: false,
+        }),
+      ]).start();
+    }
+  }, [modalVisible]);
+
+  const dispatch = useDispatch();
+  const getLocation = useAppSelector(state => state.getLocation);
+  const viewProfile = useAppSelector(state => state.viewProfile);
+
+  useFocusEffect(
+    useCallback(() => {
+      BackHandler.addEventListener('hardwareBackPress', () => {
+        Alert.alert(
+          'Exit App',
+          'Are you sure you want to exit the onboarding process?',
+          [
+            {
+              text: 'Cancel',
+              onPress: () => null,
+              style: 'cancel',
+            },
+            {
+              text: 'Yes',
+              onPress: () => BackHandler.exitApp(),
+            },
+          ],
+        );
+        return true;
+      });
+      setLoading(false);
+    }, []),
+  );
+
+  const requestLocationPermission = async () => {
+    try {
+      const granted = await PermissionsAndroid.request(
+        PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
+        {
+          title: 'Geolocation Permission',
+          message: 'Can we access your location?',
+          buttonNegative: 'Cancel',
+          buttonPositive: 'OK',
+        },
+      );
+      if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+        Geolocation.getCurrentPosition(
+          position => {
+            dispatch(
+              onGetLocation(
+                position.coords.latitude,
+                position.coords.longitude,
+              ),
+            );
+            setLatitude(position?.coords?.latitude);
+            setLongitude(position?.coords?.longitude);
+          },
+          error => {
+            console.log('Error:', error);
+          },
+          { enableHighAccuracy: false, timeout: 15000, maximumAge: 10000 },
+        );
+      } else {
+        console.log('You cannot use Geolocation');
+      }
+    } catch (err) {
+      return false;
+    }
+  };
+
+  const fetchData = async () => {
+    setRefreshing(true);
+    try {
+      await Promise.all([
+        dispatch(onGetLocation(latitude, longitude)), // Refresh location
+        dispatch(onGetUserProfile()), // Refresh user profile
+      ]);
+      setRefreshing(false);
+    } catch (error) {
+      console.error('Error refreshing data:', error);
+      setRefreshing(false);
+    }
+  };
+
+  useEffect(() => {
+    requestLocationPermission();
+    fetchData();
+  }, []);
+
+  const fetchSuggestions = async (query: string) => {
+    setInput(query);
+    if (query.trim().length === 0) {
+      setSuggestions([]);
+      setModalVisible(false);
+      return;
+    }
+
+    try {
+      const response = await fetch(
+        `https://backend.axces.in/api/auto?query=${query}`,
+        {
+          method: 'GET',
+        },
+      );
+      const responseData = await response.json();
+      const { data } = responseData;
+      setSuggestions(data);
+      setModalVisible(true);
+    } catch (error) {
+      console.error('Error fetching suggestions:', error);
+      setSuggestions([]);
+      setModalVisible(false);
+    }
+  };
+
+  const handleSelectSuggestion = (item: any) => {
+    setInput(item?.place_name);
+    const { latitude, longitude } = item?.coordinates;
+    setLatitude(latitude);
+    setLongitude(longitude);
+  };
+
+  const handleSaveLocation = () => {
+    // Update the location based on the input
+    if (latitude && longitude) {
+      dispatch(onGetLocation(latitude, longitude));
+      setCurrentLocation(input);
+      setLocationModalVisible(false); // Hide the modal
+    } else {
+      Alert.alert('Error', 'Please select a valid location.');
+    }
+  };
+
+  useEffect(() => {
+    if (getLocation.called) {
+      const { data } = getLocation;
+      setCurrentLocation(data?.display_name);
+    }
+    if (viewProfile.called) {
+      const { data } = viewProfile?.data;
+      setLoading(false);
+      setUserData(data);
+    }
+  }, [viewProfile, getLocation]);
+
+  const getGreeting = () => {
+    const hours = new Date().getHours();
+    if (hours < 12) {
+      return 'Good Morning';
+    } else if (hours < 18) {
+      return 'Good Afternoon';
+    } else {
+      return 'Good Evening';
+    }
+  };
+
+  const trimText = (text, maxLength) => {
+    if (text.length > maxLength) {
+      return text.substring(0, maxLength) + '...';
+    }
+    return text;
+  };
+
+  const handleLocationChange = () => {
+    setLocationModalVisible(true); // Show modal to change location
+  };
+
+  return (
+    <SafeAreaView edges={['left', 'right']} className="flex-1">
+      <StatusBar
+        barStyle={'light-content'}
+        backgroundColor={'transparent'}
+        translucent
+      />
+      <Loader loading={loading} />
+      <ScrollView
+        className="z-10 flex-1 bg-[#F2F8F6]"
+        refreshControl={
+          <RefreshControl refreshing={refreshing} onRefresh={fetchData} />
+        }>
+        {/* Top Section */}
+        <View
+          style={{ paddingTop: insets.top }}
+          className="overflow-visible w-full relative h-[60vh] rounded-b-2xl pb-8">
+          <View className="z-20 px-6 pt-6 flex flex-row justify-between items-center">
+            <View>
+              <Text className="text-white/60 font-medium text-lg ml-7 mb-2">
+                Current Location
+              </Text>
+              <TouchableOpacity
+                onPress={handleLocationChange}
+                className="flex flex-row justify-start items-center">
+                <Image
+                  source={{ uri: location }}
+                  resizeMode="contain"
+                  className="w-5 h-5"
+                />
+                <View style={{ width: 255 }} className="flex flex-row ml-2">
+                  <Text className="text-base font-medium text-white">
+                    {currentLocation
+                      ? trimText(currentLocation, MAX_LENGTH)
+                      : 'Fetching...'}
+                  </Text>
+                </View>
+              </TouchableOpacity>
+            </View>
+            <TouchableOpacity className="bg-white/10 rounded-full flex items-center justify-center w-10 h-10">
+              <Image
+                source={{ uri: bell }}
+                resizeMode="contain"
+                className="w-6 h-6"
+              />
+            </TouchableOpacity>
+          </View>
+          <View className="z-20 px-6 mt-4">
+            <Image
+              source={{ uri: showcaseHome }}
+              resizeMode="contain"
+              className="w-full h-52"
+            />
+          </View>
+          <View className="z-20 px-6 mt-4">
+            <View
+              style={{
+                backgroundColor: '#007BFF',
+                height: 44,
+                borderRadius: 8,
+                flexDirection: 'row',
+                alignItems: 'center',
+                paddingHorizontal: 16,
+              }}>
+              <Image
+                source={{ uri: searchIcon }}
+                resizeMode="contain"
+                className="w-5 h-5"
+              />
+              <TextInput
+                placeholder="Search"
+                placeholderTextColor="#fff"
+                style={{
+                  flex: 1,
+                  marginLeft: 10,
+                  color: '#fff',
+                }}
+                value={input}
+                onChangeText={fetchSuggestions}
+              />
+            </View>
+            <Animated.View
+              style={{
+                height: dropdownHeight,
+                opacity: dropdownOpacity,
+                overflow: 'hidden',
+                backgroundColor: '#fff',
+                borderRadius: 8,
+                marginTop: 10,
+              }}>
+              <FlatList
+                data={suggestions}
+                keyExtractor={(item) => item.place_id}
+                renderItem={({ item }) => (
+                  <TouchableOpacity
+                    onPress={() => handleSelectSuggestion(item)}
+                    style={{
+                      padding: 10,
+                      borderBottomWidth: 1,
+                      borderBottomColor: '#ddd',
+                    }}>
+                    <Text>{item.place_name}</Text>
+                  </TouchableOpacity>
+                )}
+              />
+            </Animated.View>
+          </View>
+        </View>
+        <View className="w-full h-[50%] flex flex-col items-center justify-center px-8">
+          <Image
+            source={{ uri: homeBanner }}
+            resizeMode="contain"
+            className="w-full h-full"
+          />
+        </View>
+      </ScrollView>
+
+      {/* Modal for Changing Location */}
+      <Modal
+        visible={locationModalVisible}
+        animationType="slide"
+        transparent
+        onRequestClose={() => setLocationModalVisible(false)}
+      >
+        <View className="flex-1 justify-center items-center bg-[#00000080]">
+          <View className="bg-white w-80 p-4 rounded-lg">
+            <Text className="text-lg font-semibold mb-4">Change Location</Text>
+            <TextInput
+              placeholder="Enter a new location"
+              placeholderTextColor="#666"
+              style={{
+                borderBottomWidth: 1,
+                borderBottomColor: '#ddd',
+                marginBottom: 10,
+                paddingHorizontal: 8,
+                paddingVertical: 4,
+              }}
+              value={input}
+              onChangeText={(text) => fetchSuggestions(text)}
+            />
+            <TouchableOpacity
+              onPress={handleSaveLocation}
+              style={{
+                backgroundColor: '#007BFF',
+                paddingVertical: 12,
+                borderRadius: 8,
+                alignItems: 'center',
+                marginBottom: 10,
+              }}>
+              <Text className="text-white font-semibold">Save</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              onPress={() => setLocationModalVisible(false)}
+              style={{
+                backgroundColor: '#ccc',
+                paddingVertical: 12,
+                borderRadius: 8,
+                alignItems: 'center',
+              }}>
+              <Text className="text-black font-semibold">Close</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </Modal>
+    </SafeAreaView>
+  );
+};
+
+export default HomeScreen;

@@ -67,7 +67,7 @@ const PropertyDscr: React.FC<PropertyDscrProps> = ({ item }) => {
           </Text>
         </TouchableOpacity>
       </View>
-      <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', padding: 12, borderRadius: 8, backgroundColor: 'white' }}>
+      <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginVertical: 12, borderRadius: 8, backgroundColor: 'white' }}>
         <Text style={{ fontSize: 16, fontWeight: 'bold', color: '#181A53' }}>Security Deposit:</Text>
         <Text style={{ fontSize: 16, fontWeight: 'bold', color: '#181A53' }}>₹ {item?.security_deposit}/-</Text>
       </View>

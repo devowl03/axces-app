@@ -1,23 +1,11 @@
-// import { View, Text } from 'react-native'
-// import React from 'react'
-
-// const Facilities = () => {
-//   return (
-//     <View>
-//       <Text>Facilities</Text>
-//     </View>
-//   )
-// }
-
-// export default Facilities
-import React, { useState } from 'react';
-import { ScrollView, Text, TouchableOpacity, View } from 'react-native';
-import { filterNameType } from './SearchPropertyScreen';
+import React, {useEffect, useState} from 'react';
+import {ScrollView, Text, TouchableOpacity, View} from 'react-native';
+import {filterNameType} from './SearchPropertyScreen';
 
 interface Props {
   filterName: filterNameType;
   options: string[];
-  value?: string[]; // Changed to array to support multiple selections
+  value?: string[]; // Assuming value is still expected as an array
   onSelectHandler?: (value: string[]) => void; // Updated handler to accept an array of values
   wrap?: boolean;
 }
@@ -29,13 +17,23 @@ const Facilities: React.FC<Props> = ({
   onSelectHandler,
   wrap,
 }) => {
-  const [selectedValues, setSelectedValues] = useState<string[]>(value);
+  const [selectedValues, setSelectedValues] = useState<string[]>([]);
+
+  // Update selectedValues when value prop changes
+  useEffect(() => {
+    // Convert comma-separated string into an array and trim whitespace
+    if (Array.isArray(value) && value.length > 0) {
+      setSelectedValues(value[0].split(',').map(item => item.trim()));
+    } else {
+      setSelectedValues([]);
+    }
+  }, [value]);
 
   const handleSelect = (item: string) => {
     let newSelectedValues: string[];
 
     if (selectedValues.includes(item)) {
-      newSelectedValues = selectedValues.filter((val) => val !== item);
+      newSelectedValues = selectedValues.filter(val => val !== item);
     } else {
       newSelectedValues = [...selectedValues, item];
     }
@@ -43,7 +41,8 @@ const Facilities: React.FC<Props> = ({
     setSelectedValues(newSelectedValues);
 
     if (onSelectHandler) {
-      onSelectHandler(newSelectedValues);
+      // Pass the selected values as a comma-separated string
+      onSelectHandler([newSelectedValues.join(',')]);
     }
   };
 
@@ -60,8 +59,7 @@ const Facilities: React.FC<Props> = ({
               key={idx}
               className={`py-3 px-8 rounded-full ${
                 selectedValues.includes(item) ? 'bg-[#BDEA09]' : 'bg-[#F2F8F6]'
-              } mr-4 my-2`}
-            >
+              } mr-4 my-2`}>
               <Text className="text-[#181A53] text-base font-medium">
                 {item}
               </Text>
@@ -72,16 +70,14 @@ const Facilities: React.FC<Props> = ({
         <ScrollView
           horizontal={true}
           showsHorizontalScrollIndicator={false}
-          className="w-full pl-6"
-        >
+          className="w-full pl-6">
           {options.map((item, idx) => (
             <TouchableOpacity
               onPress={() => handleSelect(item)}
               key={idx}
               className={`py-3 px-8 rounded-full ${
                 selectedValues.includes(item) ? 'bg-[#BDEA09]' : 'bg-[#F2F8F6]'
-              } mr-4`}
-            >
+              } mr-4`}>
               <Text className="text-[#181A53] text-base font-medium">
                 {item}
               </Text>

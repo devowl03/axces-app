@@ -30,7 +30,10 @@ export function editProfileAction(res: any): any {
       const url = editProfle
       const userId = await getUserId()
   
-    const body = { userId, updatedProfileDetails: { name, email}};
+    const body = { name, email};
+    console.log('====================================');
+    console.log('Editbody', body);
+    console.log('====================================');
   
     postApi(url,body, {})
     .then((res: any) => {

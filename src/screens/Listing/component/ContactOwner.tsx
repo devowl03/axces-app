@@ -23,6 +23,9 @@ const ContactOwner = () => {
   const bottomSheetRef = useRef<BottomSheetModal>(null);
   const [showModal, setShowModal] = useState<boolean>(true);
 
+  const contactOwner = useAppSelector(state => state.contactOwner);
+  console.log('contactOwner', contactOwner?.data?.owner_details);
+  
   return (
     <BottomSheetModalProvider>
       <View className=" w-full p-3  rounded-lg bg-white">
@@ -63,7 +66,7 @@ const ContactOwner = () => {
                   <View className=" border border-black/10 rounded-lg p-3 my-3">
                     <View className=" flex flex-row">
                       <Image
-                        source={{ uri: demoUser }}
+                        source={{uri: demoUser}}
                         resizeMode="contain"
                         className=" w-10 h-10 rounded-full"
                       />
@@ -72,7 +75,7 @@ const ContactOwner = () => {
                           Property Owner
                         </Text>
                         <Text className=" text-[#1A1E25] text-base font-bold">
-                          Louise Vuitton
+                          {contactOwner?.data?.owner_details?.owner_name}
                         </Text>
                       </View>
                     </View>
@@ -80,17 +83,19 @@ const ContactOwner = () => {
                       Tap to call
                     </Text>
                     <View className="py-3 px-4 flex flex-row items-center rounded-full bg-[#F2F8F6]">
-                      <View className=' flex-1 flex flex-row items-center'>
+                      <View className=" flex-1 flex flex-row items-center">
                         <Image
-                          source={{ uri: phoneIc }}
+                          source={{uri: phoneIc}}
                           resizeMode="contain"
                           className="w-4 h-4 mr-2"
                         />
-                        <Text className=' text-[#181A53] font-medium text-lg'>+91 234347383</Text>
+                        <Text className=" text-[#181A53] font-medium text-lg">
+                          {contactOwner?.data?.owner_details?.owner_name}
+                        </Text>
                       </View>
 
                       <Image
-                        source={{ uri: greyRightArrow }}
+                        source={{uri: greyRightArrow}}
                         resizeMode="contain"
                         className="w-2 h-5 mr-2"
                       />
@@ -126,24 +131,24 @@ const ContactOwner = () => {
           keyboardBehavior="interactive"
           ref={bottomSheetRef}
           snapPoints={['40%']}
-          handleIndicatorStyle={{ height: 0 }}
+          handleIndicatorStyle={{height: 0}}
           handleStyle={{
             backgroundColor: 'white',
             borderTopRightRadius: 24,
             borderTopLeftRadius: 24,
             height: 28,
           }}>
-          <BottomSheetView style={{ flex: 1 }}>
+          <BottomSheetView style={{flex: 1}}>
             <View
               style={{
                 flex: 1,
-                backgroundColor: 'red'
+                backgroundColor: 'red',
               }}
               className="px-7">
               <View className="w-full flex flex-row items-start border-b border-b-black/10 pb-4">
                 <View className="mr-4">
                   <Image
-                    source={{ uri: coinStack }}
+                    source={{uri: coinStack}}
                     resizeMode="contain"
                     className="w-10 h-10"
                   />
@@ -163,7 +168,9 @@ const ContactOwner = () => {
                     Available coins: <Text className="font-bold">50</Text>
                   </Text>
                   <TouchableOpacity className=" bg-[#BDEA09] rounded-full px-3 py-1">
-                    <Text className="text-[#181A53] text-base">+ Add coins</Text>
+                    <Text className="text-[#181A53] text-base">
+                      + Add coins
+                    </Text>
                   </TouchableOpacity>
                 </View>
               </View>
@@ -204,14 +211,14 @@ const ContactOwner = () => {
           keyboardBehavior="interactive"
           ref={nocoinbottomSheetRef}
           snapPoints={['40%']}
-          handleIndicatorStyle={{ height: 0 }}
+          handleIndicatorStyle={{height: 0}}
           handleStyle={{
             backgroundColor: 'white',
             borderTopRightRadius: 24,
             borderTopLeftRadius: 24,
             height: 28,
           }}>
-          <BottomSheetView style={{ flex: 1 }}>
+          <BottomSheetView style={{flex: 1}}>
             <View
               style={{
                 flex: 1,
@@ -233,7 +240,7 @@ const ContactOwner = () => {
               <View className=" flex flex-row w-full items-center justify-start mt-3">
                 <View className="mr-4">
                   <Image
-                    source={{ uri: coinStack }}
+                    source={{uri: coinStack}}
                     resizeMode="contain"
                     className="w-5 h-5"
                   />
@@ -245,7 +252,7 @@ const ContactOwner = () => {
               <View className=" flex flex-row w-full items-center justify-start mt-3">
                 <View className="mr-4">
                   <Image
-                    source={{ uri: coinStack }}
+                    source={{uri: coinStack}}
                     resizeMode="contain"
                     className="w-5 h-5"
                   />

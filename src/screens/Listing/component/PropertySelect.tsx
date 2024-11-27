@@ -70,11 +70,11 @@ const PropertySelect: React.FC<Props> = ({
   onChangeHandler,
   defaultText = 'Please select an option',
 }) => {
+  console.log('defaultValue',defaultValue);
+  
   return (
-    <View 
-    style={{borderRadius:20}}
-    className="px-6 mt-3">
-      <Text className="text-[#0E0E0C] text-base font-bold my-3">{title}</Text>
+    <View style={{borderRadius: 20}} className="px-6 mt-3">
+      <Text className="text-[#0E0E0C] text-base font-bold my-3">{title} *</Text>
       <SelectDropdown
         defaultValue={defaultValue}
         onSelect={(selectedItem, index) => {
@@ -87,31 +87,32 @@ const PropertySelect: React.FC<Props> = ({
         renderButton={selectedItem => (
           <View className="px-10">
             <View
-            style={{borderRadius:20}}
+              style={{borderRadius: 20}}
               className={`py-3 px-8 rounded-full mr-4 bg-[#F2F8F6] w-full flex flex-row`}>
-              <View 
-              style={{flexDirection:'row',justifyContent:'space-between'}}
-              className="flex-1">
+              <View
+                style={{flexDirection: 'row', justifyContent: 'space-between'}}
+                className="flex-1">
                 <Text className="text-base text-[#181A53] font-medium">
-                  {selectedItem || defaultText}
+                  {defaultValue || defaultText}
                 </Text>
                 <Image
                   source={{
                     uri: 'https://cdn-icons-png.flaticon.com/512/60/60995.png',
                   }}
-                  style={{height: 12, width: 12,margin:8}}
+                  style={{height: 12, width: 12, margin: 8}}
                 />
               </View>
             </View>
           </View>
         )}
         renderItem={(selectedItem, index, isSelected) => (
-          <View style={{margin: 20, justifyContent: 'center',}}>
-            <Text style={{color: '#000000', fontWeight: '600',fontSize:15}}>
+          <View style={{padding: 14, justifyContent: 'center'}}>
+            <Text style={{color: '#000000', fontWeight: '600', fontSize: 15}}>
               {selectedItem}
             </Text>
           </View>
         )}
+        dropdownStyle={{backgroundColor: '#E9ECEF', borderRadius: 20}}
       />
     </View>
   );
