@@ -1,54 +1,54 @@
 import {
   Image,
+  KeyboardAvoidingView,
   ScrollView,
   StatusBar,
   Text,
   TextInput,
   TouchableOpacity,
   View,
+  Platform,
 } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import {SafeAreaView} from 'react-native-safe-area-context';
 import CenterHeader from '../../component/Header/CenterHeader';
 import Tracker from '../../component/ListProperty/Tracker';
-import { useNavigation, useRoute } from '@react-navigation/native';
-import { StackNavigationProp } from '@react-navigation/stack';
-import { RootStackParamList } from '../../routes/MainStack';
+import {useNavigation, useRoute} from '@react-navigation/native';
+import {StackNavigationProp} from '@react-navigation/stack';
+import {RootStackParamList} from '../../routes/MainStack';
 import SearchFilter from '../Search/SearchFilter';
-import { pinIcon } from '../../constants/imgURL';
-import SelectDropdown from 'react-native-select-dropdown';
-import { useEffect, useState } from 'react';
+import {pinIcon} from '../../constants/imgURL';
+import {useEffect, useState} from 'react';
 import Loader from '../../component/Loader/Loader';
-import { errorMessage } from '../../utils';
+import {errorMessage} from '../../utils';
 
 const ListPropertyScreen = () => {
   const navigation = useNavigation<StackNavigationProp<RootStackParamList>>();
-  console.log('location', location);
-  
   const route = useRoute();
   const {latitude, longitude, item, isediting} = route.params || {};
 
-  console.log('item+++=', item?.property_type);
-  
-   const [selectedRole, setSelectedRole] = useState<string>(
-     item?.property_posted_by || '',
-   );
-   const [lookingFor, setLookingFor] = useState<string>(item?.listing_type || '');
-   const [propertyType, setPropertyType] = useState<string>(item?.property_type || '');
-   const [addPincode, setAddPincode] = useState<string>(item?.pincode);
-   const [location, setlocation] = useState('');
+  const [selectedRole, setSelectedRole] = useState<string>(
+    item?.property_posted_by || '',
+  );
+  const [lookingFor, setLookingFor] = useState<string>(
+    item?.listing_type || '',
+  );
+  const [propertyType, setPropertyType] = useState<string>(
+    item?.property_type || '',
+  );
+  const [addPincode, setAddPincode] = useState<string>(item?.pincode);
+  const [location, setLocation] = useState('');
 
   useEffect(() => {
-    // Console log the values when the component mounts
-    console.log("Latitude:", latitude);
-    console.log("Longitude:", longitude);
-  }, [latitude, longitude]);
+    if (route?.params?.currentLocation) {
+      setLocation(route.params.currentLocation);
+    }
+  }, [route.params?.currentLocation]);
 
   const handleSubmit = () => {
     if (!addPincode) {
       errorMessage('Please add pincode');
       return;
-    } 
-    else if (addPincode.length !== 6) {
+    } else if (addPincode.length !== 6) {
       errorMessage('Pincode should be 6 digits');
       return;
     } else if (!selectedRole) {
@@ -58,7 +58,7 @@ const ListPropertyScreen = () => {
       errorMessage('Please select looking to');
       return;
     } else if (!propertyType) {
-      errorMessage('Please select proprty type');
+      errorMessage('Please select property type');
       return;
     } else {
       navigation.navigate('ListPropertyDetailScreen', {
@@ -75,79 +75,105 @@ const ListPropertyScreen = () => {
     }
   };
 
-  console.log('Current Location>>>', propertyType);
-
-  useEffect(() => {
-    if (route?.params?.currentLocation) {
-      setlocation(route.params.currentLocation);
-    }
-  }, [route.params?.currentLocation]);
-
   return (
-    <SafeAreaView className="bg-[#181A53] flex-1 relative">
+    <SafeAreaView style={{flex: 1, backgroundColor: '#181A53'}}>
       <StatusBar backgroundColor={'#181A53'} />
       <CenterHeader title="List Property" />
-      <ScrollView className=" flex-1 bg-white">
-        <Tracker stage={1} />
-        <SearchFilter
-          onSelectHandler={setSelectedRole}
-          filterName="I'm *"
-          options={['Owner', 'Agent']}
-          value={
-            (selectedRole === 'owner' ? 'Owner' : selectedRole) ||
-            (selectedRole === 'agent' ? 'Agent' : selectedRole)
-          }
-        />
-        <SearchFilter
-          onSelectHandler={setLookingFor}
-          filterName="Looking to *"
-          options={['Sell', 'Rent']}
-          value={
-            (lookingFor === 'buy' ? 'Sell' : lookingFor) ||
-            (lookingFor === 'rent' ? 'Rent' : lookingFor)
-          }
-        />
-        <SearchFilter
-          onSelectHandler={setPropertyType}
-          filterName="Property Type *"
-          options={['Residential', 'Commercial']}
-          value={
-            (propertyType.toLowerCase() === 'residential' && 'Residential') ||
-            (propertyType.toLowerCase() === 'commercial' && 'Commercial')
-          }
-        />
-        <Text className=" text-[#0E0E0C] text-base mx-6 font-bold my-3">
-          Add Pincode
-        </Text>
-        <View className="py-3 px-4 mx-6 flex flex-row items-center rounded-full bg-[#F2F8F6]">
-          <Image
-            source={{uri: pinIcon}}
-            resizeMode="contain"
-            className="w-2 h-5 mr-2"
+      <KeyboardAvoidingView
+        style={{flex: 1}}
+        behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
+        <ScrollView
+          keyboardShouldPersistTaps="handled"
+          contentContainerStyle={{flexGrow: 1, backgroundColor: 'white'}}>
+          <Tracker stage={1} />
+          <SearchFilter
+            onSelectHandler={setSelectedRole}
+            filterName="I'm *"
+            options={['Owner', 'Agent']}
+            value={
+              selectedRole === 'owner'
+                ? 'Owner'
+                : selectedRole === 'agent'
+                ? 'Agent'
+                : selectedRole || ''
+            }
           />
-          <TextInput
-            placeholder="Enter your pincode"
-            placeholderTextColor="#181A53"
-            className="text-[#181A53] text-base font-medium flex-1"
-            value={addPincode}
-            onChangeText={(value: string) => setAddPincode(value)}
-            keyboardType="numeric"
-            maxLength={6}
+          <SearchFilter
+            onSelectHandler={setLookingFor}
+            filterName="Looking to *"
+            options={['Sell', 'Rent']}
+            value={
+              lookingFor === 'buy'
+                ? 'Sell'
+                : lookingFor === 'rent'
+                ? 'Rent'
+                : lookingFor || ''
+            }
           />
-        </View>
-        <View className=" w-full h-[10vh]" />
-      </ScrollView>
-      <View className=" absolute bottom-20 left-0 right-0 px-6 py-3">
-        <TouchableOpacity
-          onPress={() => {
-            handleSubmit();
-          }}
-          className="w-full p-3 bg-[#BDEA09] rounded-full mt-4">
-          <Text className="text-[#181A53] text-base text-center font-medium">
-            Next
+          <SearchFilter
+            onSelectHandler={setPropertyType}
+            filterName="Property Type *"
+            options={['Residential', 'Commercial']}
+            value={
+              (propertyType.toLowerCase() === 'residential' && 'Residential') ||
+              (propertyType.toLowerCase() === 'commercial' && 'Commercial')
+            }
+          />
+          <Text
+            style={{marginHorizontal: 16, fontWeight: 'bold', marginTop: 12}}>
+            Add Pincode
           </Text>
-        </TouchableOpacity>
-      </View>
+          <View
+            style={{
+              paddingVertical: 12,
+              paddingHorizontal: 16,
+              marginHorizontal: 16,
+              flexDirection: 'row',
+              alignItems: 'center',
+              borderRadius: 25,
+              backgroundColor: '#F2F8F6',
+            }}>
+            <Image
+              source={{uri: pinIcon}}
+              resizeMode="contain"
+              style={{width: 10, height: 20, marginRight: 8}}
+            />
+            <TextInput
+              placeholder="Enter your pincode"
+              placeholderTextColor="#181A53"
+              style={{color: '#181A53', fontSize: 16, flex: 1}}
+              value={addPincode}
+              onChangeText={setAddPincode}
+              keyboardType="numeric"
+              maxLength={6}
+            />
+          </View>
+        </ScrollView>
+        <View
+          style={{
+            paddingHorizontal: 16,
+            paddingVertical: 12,
+            backgroundColor: 'white',
+          }}>
+          <TouchableOpacity
+            onPress={handleSubmit}
+            style={{
+              width: '100%',
+              paddingVertical: 12,
+              backgroundColor: '#BDEA09',
+              borderRadius: 25,
+            }}>
+            <Text
+              style={{
+                textAlign: 'center',
+                fontWeight: 'bold',
+                color: '#181A53',
+              }}>
+              Next
+            </Text>
+          </TouchableOpacity>
+        </View>
+      </KeyboardAvoidingView>
     </SafeAreaView>
   );
 };

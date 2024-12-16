@@ -632,6 +632,7 @@ import { onGetBalance } from '../../redux/ducks/Coins/getBalance';
 import { onRecharge } from '../../redux/ducks/Coins/recharge';
 import { viewWishList } from '../../redux/ducks/WishList/viewList';
 import RazorpayCheckout from 'react-native-razorpay';
+import { onGetUserProfile } from '../../redux/ducks/User/viewProfile';
 interface Props {
   editFlag?: boolean;
   item?: any;
@@ -714,7 +715,7 @@ const [loaderVisible, setLoaderVisible] = useState(false);
 
       console.log('getBalance', getBalance);
 
-      if(getBalance.data.coins === 0){
+      if(getBalance.data.coins < viewProfile?.propertyContactCost){
         Alert.alert('please recharge')
       }
       else{
@@ -744,9 +745,18 @@ const [loaderVisible, setLoaderVisible] = useState(false);
     //  }
    }
 
+      const viewProfile = useAppSelector(
+        state => state.viewProfile.data.platformCharges,
+      );
+      console.log('====================================');
+      console.log('viewProfile', viewProfile);
+      console.log('====================================');
+
    useEffect(()=>{
      dispatch(onGetBalance());
    },[])
+
+
   
 
   useEffect(() => {
@@ -806,6 +816,7 @@ const [modalVisiblecontact, setModalVisiblecontact] = useState(false);
 
 
 handleopencontactddetails = () =>{
+      dispatch(onGetUserProfile());
    dispatch(onGetBalance());
   setModalVisiblecontact(true)
 }
@@ -847,7 +858,8 @@ handleopencontactddetails = () =>{
                     Do you want to contact the owner?
                   </Text>
                   <Text className="text-[#0E0E0C99] text-base">
-                    You will require 50 coins to view contact details .
+                    You will require {viewProfile?.propertyContactCost} coins to
+                    view contact details .
                   </Text>
                 </View>
               </View>
@@ -1331,7 +1343,7 @@ const addrechargemodal = () =>{
         flex: 1,
         justifyContent: 'center',
         alignSelf: 'center',
-        width: '90%',
+        width: '85%',
         backgroundColor: '#FFFFFF',
         // borderWidth:1,
       }}
@@ -1481,7 +1493,7 @@ const addrechargemodal = () =>{
                   Charges
                 </Text>
                 <Text className="text-[#181A53] text-base font-bold">
-                  50 Coins
+                  {viewProfile?.propertyContactCost} Coins
                 </Text>
               </View>
             </View>

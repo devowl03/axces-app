@@ -25,11 +25,5 @@ export const swiperData: swipeItemInterface[] = [
     imgURL: Swiper3,
     title: 'Home in sight, just a click away',
     description: 'Your perfect match is closer than you think; explore now',
-  },
-  {
-    id: '4',
-    imgURL: Swiper3,
-    title: 'Choosing your path to the ideal home',
-    description: 'Elevate your experience - Search less, live more',
-  },
+  }
 ];

@@ -356,6 +356,7 @@ import {
   TouchableOpacity,
   View,
   StyleSheet,
+  Platform,
 } from 'react-native';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import CenterHeader from '../../component/Header/CenterHeader';
@@ -568,7 +569,7 @@ const styles = StyleSheet.create({
   },
   footer: {
     position: 'absolute',
-    bottom: 340,
+    bottom: Platform.OS === 'ios' ? 340 :0,
     left: 0,
     right: 0,
     paddingHorizontal: 24,

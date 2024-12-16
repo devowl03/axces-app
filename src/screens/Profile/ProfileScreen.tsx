@@ -598,7 +598,7 @@ const ProfileScreen = () => {
                   <Text
                     style={{fontSize: RFValue(14)}}
                     className="text-white font-sans">
-                    Wallet Balence
+                    Wallet Balance
                   </Text>
                 </View>
                 <Text
@@ -617,13 +617,13 @@ const ProfileScreen = () => {
                     Add coins
                   </Text>
                 </TouchableOpacity>
-                <TouchableOpacity className="  py-2 rounded-full border border-[#BDEA09] mt-2 ">
+                {/* <TouchableOpacity className="  py-2 rounded-full border border-[#BDEA09] mt-2 ">
                   <Text
                     style={{fontSize: RFValue(14)}}
                     className=" font-sans text-[#BDEA09] text-base font-normal text-center">
                     Withdraw coins
                   </Text>
-                </TouchableOpacity>
+                </TouchableOpacity> */}
               </View>
             </View>
           </View>
@@ -653,7 +653,7 @@ const ProfileScreen = () => {
             </View>
             <View className="z-10 absolute top-0 left-0 right-0 h-6 bg-[#181A53]" />
           </View>
-          <View className=" px-6 mt-5" style={{height: 500}}>
+          <View className=" px-6 mt-5" style={{height: 580}}>
             <Text
               style={{fontSize: RFValue(14)}}
               className=" text-[#0E0E0C99] mb-4">

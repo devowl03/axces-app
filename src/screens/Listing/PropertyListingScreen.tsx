@@ -309,7 +309,9 @@ const PropertyListingScreen = () => {
         console.error('Fetch Properties Error:', error);
         errorMessage(error.message);
       } finally {
+          setTimeout(() => {
         setLoading(false);
+          }, 200);
       }
     };
 

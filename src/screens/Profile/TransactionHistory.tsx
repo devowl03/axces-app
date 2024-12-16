@@ -1,8 +1,9 @@
-import { FlatList, Image, SafeAreaView, ScrollView, StatusBar, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
+import { Alert, FlatList, Image, Linking, SafeAreaView, ScrollView, StatusBar, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import CenterHeader from '../../component/Header/CenterHeader';
 import { demoUser } from '../../constants/imgURL';
 import { useAppSelector } from '../../constants';
+import { getAccessToken } from '../../utils';
 const TransactionHistory = () => {
 
 
@@ -14,29 +15,81 @@ const TransactionHistory = () => {
       console.log('viewProfile', viewProfile?.data?._id);
       
 
-     const fetchTransactions = async () => {
+   const fetchTransactions = async () => {
 
-        const userId = viewProfile?.data?._id
-       try {
-         const response = await fetch(`/api/transactions/${userId}`);
-         if (!response.ok) {
-           throw new Error('Failed to fetch transactions');
-         }
-         const data = await response.json();
-         setTransactions(data);
-       } catch (err) {
-         setError(err.message);
-       } finally {
-         setLoading(false);
+       const token = await getAccessToken();
+
+     try {
+       const response = await fetch(
+         `https://backend.axces.in/api/transactions`,
+         {
+           method: 'GET', // Explicitly specify the GET method
+           headers: {
+             'Content-Type': 'application/json', // Optional: Include headers as needed
+            //  Accept: 'application/json', // Optional: Accept JSON responses
+             Authorization: `Bearer ${token}`,
+           },
+         },
+       );
+
+       if (!response.ok) {
+         throw new Error('Failed to fetch transactions');
        }
-     };
+
+       const data = await response.json();
+       console.log('data+++++++transaction', data.userCoins.transactions);
+       setTransactions(data.userCoins.transactions);
+     } catch (err) {
+       setError(err.message);
+     } finally {
+       setLoading(false);
+     }
+   };
+
 
      useEffect(() => {
        fetchTransactions();
      }, []);
 
+      const openInvoice = async download_invoice_url => {
+        console.log('download_invoice_url', download_invoice_url);
+        
+        try {
+          const supported = await Linking.canOpenURL(download_invoice_url);
+          if (supported) {
+            await Linking.openURL(download_invoice_url);
+            // dispatch(onGetBalance());
+            // setcoinmodal(false);
+          } else {
+            Alert.alert('Error', 'Unable to open this URL.');
+          }
+        } catch (error) {
+          console.error('Error opening URL:', error);
+          Alert.alert(
+            'Error',
+            'An error occurred while trying to open the invoice.',
+          );
+        }
+      };
 
-    const renderItem = () =>{
+
+    const renderItem = (item) =>{
+      console.log('item', item);
+
+      const date = new Date(item?.item?.timestamp);
+
+      const formattedDate = date.toLocaleDateString('en-US', {
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric',
+      });
+      const formattedTime = date.toLocaleTimeString('en-US', {
+        hour: '2-digit',
+        minute: '2-digit',
+        second: '2-digit',
+        hour12: true, // Use 12-hour format
+      });
+      
          return (
            <ScrollView
              contentContainerStyle={{
@@ -45,95 +98,120 @@ const TransactionHistory = () => {
                alignSelf: 'center',
                width: '90%',
                backgroundColor: '#FFFFFF',
+               borderTopLeftRadius: 10,
+               borderTopRightRadius: 10,
+
                // borderWidth:1,
              }}
              style={{marginBottom: 20}}>
              <TouchableOpacity
-            //    onPress={handlePropertyPress}
+               //    onPress={handlePropertyPress}
                style={{width: '100%'}}>
                <View className="w-full bg-white rounded-xl">
-                 <View className="w-full h-[129px] rounded-t-xl overflow-hidden relative">
-                   {/* <CardSwiper images={item?.images} /> */}
-                   <View className="p-2 rounded-full bg-black/25 absolute w-8 h-8 right-2 top-1/3">
-                     {/* <Image
-                       source={{uri: rightArrowWhite}}
-                       resizeMode="contain"
-                       className="w-4 h-4"
-                     /> */}
-                   </View>
-                 </View>
-                 <View className="p-3">
-                   <View className="flex flex-row items-start">
-                     <View className="flex-1">
-                       <Text className="text-lg font-bold text-[#1A1E25]">
-                         {/* {item?.building_name} */}
-                       </Text>
-                       <Text className="text-base text-[#2F4858]">
-                         {/* {item?.address} */}
-                       </Text>
-                     </View>
-                     <TouchableOpacity
-                    //    onPress={() => handleWishlist()}
-                       style={{
-                         // borderWidth: 1,
-                         height: 28,
-                         width: 28, // Set width to be consistent
-                         justifyContent: 'center', // Center the image vertically
-                         alignItems: 'center', // Center the image horizontally
-                       }}>
-                       {/* <Image
-                         source={{uri: isWishlisted ? setwishlist : wishlist}}
-                         resizeMode="contain"
-                         style={{
-                           width: isWishlisted ? 34 : 22,
-                           height: isWishlisted ? 34 : 22,
-                         }}
-                         // className="w-8 h-8"
-                       /> */}
-                     </TouchableOpacity>
-                   </View>
-                   <View className="flex flex-row items-center justify-start p-1 rounded-md bg-[#F2F8F6] mt-1 mb-3">
-                     <Text className="text-sm text-[#738D9C]">
-                       {/* {item?.bedrooms} BHK */}
-                     </Text>
-                     <View className="w-[6px] h-[6px] rounded-full bg-[#738D9C] mx-2" />
-                     <Text className="text-sm text-[#738D9C]">
-                       {/* {item?.area_sqft} Sq.ft */}
-                     </Text>
-                     <View className="w-[6px] h-[6px] rounded-full bg-[#738D9C] mx-2" />
-                     <Text className="text-sm text-[#738D9C]">
-                       {/* {item?.furnish_type} */}
-                     </Text>
-                     <View className="w-[6px] h-[6px] rounded-full bg-[#738D9C] mx-2" />
-                     <Text className="text-sm text-[#738D9C]">
-                       {/* {item?.owner_name} */}
-                     </Text>
-                   </View>
-                   <View className="flex flex-row justify-between">
-                     <View className="flex flex-row ">
-                       <Text className="text-base font-bold text-[#BDEA09]">
-                         {' '}
-                         {/* ₹ {item?.monthly_rent}/- */}
-                       </Text>
-                       <Text
-                         style={{color: '#000000'}}
-                         className="text-base font-bold ml-1">
-                         {' '}
-                         Monthly
-                       </Text>
-                     </View>
+                 <View
+                   //  className="p-3"
+                   style={{
+                     // borderWidth: 1,
+                     flexDirection: 'row',
+                     justifyContent: 'space-between',
+                     width: '100%',
+                   }}>
+                   <View style={{width: '50%'}}>
                      <View>
-                       <Text
-                         style={{color: '#000000'}}
-                         className="text-base font-bold ml-1">
-                         {' '}
-                         {/* {item?.listing_type} */}
-                       </Text>
+                       <View style={styles.row}>
+                         {item.item.transaction_id && (
+                           <View style={styles.item}>
+                             <Text style={styles.label}>Transaction ID:</Text>
+                             <Text style={styles.value}>
+                               {item.item.transaction_id}
+                             </Text>
+                           </View>
+                         )}
+                         {/* {item?.item?.amount && ( */}
+                         <View style={styles.item}>
+                           <Text style={styles.label}>Amount:</Text>
+                           <Text style={styles.value}>
+                             {item?.item?.amount}
+                           </Text>
+                         </View>
+                         {/* )} */}
+                         {/* {item.item.type && (
+                           <View style={styles.item}>
+                             <Text style={styles.label}>Type:</Text>
+                             {item.item.type === 'credit' ? (
+                               <Text
+                                 style={{
+                                   ...styles.value,
+                                   color: 'green',
+                                   fontWeight: 'bold',
+                                 }}>
+                                 {item.item.type}
+                               </Text>
+                             ) : (
+                               <Text
+                                 style={{
+                                   ...styles.value,
+                                   color: 'red',
+                                   fontWeight: 'bold',
+                                 }}>
+                                 {item.item.type}
+                               </Text>
+                             )}
+                           </View>
+                         )} */}
+                         {/* {item.item.balanceAfterDeduction && (
+                           <View style={styles.item}>
+                             <Text style={styles.label}>
+                               balanceAfterDeduction
+                             </Text>
+                             <Text style={styles.value}>
+                               {item.item.balanceAfterDeduction}
+                             </Text>
+                           </View>
+                         )} */}
+                         {/* <View style={styles.item}>
+                           <Text style={styles.label}>
+                             balanceAfterDeduction
+                           </Text>
+                           <Text style={styles.value}>
+                             {item.item.transaction_id}
+                           </Text>
+                         </View> */}
+                       </View>
+                     </View>
+                   </View>
+                   <View style={{width: '50%'}}>
+                     <View style={styles.row}>
+                       {item.item.description && (
+                         <View style={styles.item}>
+                           <Text style={styles.label}>Description</Text>
+                           <Text style={styles.value}>
+                             {item.item.description}
+                           </Text>
+                         </View>
+                       )}
+                       {item.item.recharge_method && (
+                         <View style={styles.item}>
+                           <Text style={styles.label}>recharge_method:</Text>
+                           <Text style={styles.value}>
+                             {item.item.recharge_method}
+                           </Text>
+                         </View>
+                       )}
+                       {/* <View style={styles.item}>
+                         <Text style={styles.label}>Date:</Text>
+                         <Text style={styles.value}>{`${formattedDate}`}</Text>
+                       </View> */}
+                       {/* <View style={styles.item}>
+                         <Text style={styles.label}>Time:</Text>
+                         <Text style={styles.value}>{`${formattedTime}`}</Text>
+                       </View> */}
                      </View>
                    </View>
                  </View>
+                 {item?.item?.download_invoice_url && (
                    <View>
-                     <View className="flex flex-row items-center px-3 pt-3 border-t border-t-gray-400">
+                     <View className="flex flex-row items-center px-3 pb-3 px-3 pt-3 border-t border-t-gray-400">
                        <View>
                          <Image
                            source={{uri: demoUser}}
@@ -142,34 +220,19 @@ const TransactionHistory = () => {
                          />
                        </View>
                        <TouchableOpacity
-                         onPress={() => handleopencontactddetails()}
-                         className="flex-1 rounded-full ml-3 bg-[#BDEA09] p-3">
+                         onPress={() =>
+                           openInvoice(item?.item?.download_invoice_url)
+                         }
+                         className="flex-1 rounded-full ml-3 bg-[#BDEA09] p-3 ">
                          <Text className="text-center text-base font-bold text-[#181A53]">
-                           Contact Owner
+                           Download Invoice
                          </Text>
                        </TouchableOpacity>
                      </View>
-                     <View className="px-3 pb-3 mt-2 flex flex-row justify-between items-center">
-                       <Text className="text-sm text-[#181A5399] font-medium">
-                         Charges
-                       </Text>
-                       <Text className="text-[#181A53] text-base font-bold">
-                         50 Coins
-                       </Text>
-                     </View>
                    </View>
+                 )}
                </View>
              </TouchableOpacity>
-             {/* {showModal && contectdetailsmodal()}
-             {modalVisiblecontact && contactusermodal()}
-             {rechargemodal && addrechargemodal()}
-             {postsucessshowModal && rechargesucessmodal()}
-             <Modal transparent={true} visible={loaderVisible}>
-               <View style={styles.loaderContainer}>
-                 <ActivityIndicator size="large" color="#BDEA09" />
-                 <Text style={styles.loaderText}>Processing...</Text>
-               </View>
-             </Modal> */}
            </ScrollView>
          );
     }
@@ -186,11 +249,13 @@ const TransactionHistory = () => {
             justifyContent: 'center',
           }}>
           <CenterHeader title="Transactions" />
-          <View>
-            <FlatList data={transactions} 
+        </View>
+        <View style={{marginBottom:120}}>
+          <FlatList
+            data={transactions}
             renderItem={renderItem}
-            />
-          </View>
+            keyExtractor={item => item._id}
+          />
         </View>
       </SafeAreaView>
     </>
@@ -200,5 +265,26 @@ const TransactionHistory = () => {
 export default TransactionHistory
 
 const styles = StyleSheet.create({
-
-})
+  row: {
+    flexDirection: 'column',
+    justifyContent: 'space-between',
+    marginBottom: 16,
+  },
+  item: {
+    flex: 1,
+    marginHorizontal: 8,
+    justifyContent:'center',
+    marginVertical:10
+  },
+  label: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    color: '#1A1E25',
+  },
+  value: {
+    fontSize: 14,
+    color: '#1A1E25',
+    backgroundColor: '#F2F8F6',
+    marginTop:5
+  },
+});

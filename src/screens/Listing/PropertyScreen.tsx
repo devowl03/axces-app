@@ -35,6 +35,7 @@ import { onRecharge } from '../../redux/ducks/Coins/recharge';
 import { TextInput } from 'react-native-gesture-handler';
 import { onGetBalance } from '../../redux/ducks/Coins/getBalance';
 import RazorpayCheckout from 'react-native-razorpay';
+import { onGetUserProfile } from '../../redux/ducks/User/viewProfile';
 
 
 const PropertyScreen = ({route}:any) => {
@@ -70,7 +71,7 @@ const PropertyScreen = ({route}:any) => {
     const handleAgree = () => {
       console.log('getBalance', getBalance);
 
-      if (getBalance.data.coins === 0) {
+      if (getBalance.data.coins < viewProfile?.propertyContactCost) {
         Alert.alert('please recharge');
       } else {
         setLoaderVisible(true);
@@ -110,9 +111,13 @@ const PropertyScreen = ({route}:any) => {
 
   const [modalVisiblecontact, setModalVisiblecontact] = useState(false);
 
+   const viewProfile = useAppSelector(
+     state => state.viewProfile.data.platformCharges,
+   );
 
   handleopencontactddetails = () => {
     dispatch(onGetBalance());
+    dispatch(onGetUserProfile());
     setModalVisiblecontact(true);
   };
   
@@ -151,7 +156,8 @@ const PropertyScreen = ({route}:any) => {
                   Do you want to contact the owner?
                 </Text>
                 <Text className="text-[#0E0E0C99] text-base">
-                  You will require 50 coins to view contact details .
+                  You will require {viewProfile?.propertyContactCost} coins to
+                  view contact details .
                 </Text>
               </View>
             </View>
@@ -565,6 +571,8 @@ const PropertyScreen = ({route}:any) => {
   
 const {width} = Dimensions.get('window');
 
+const {height: windowHeight} = Dimensions.get('window');
+
 
 const renderActiveSection = () => {
   return (
@@ -612,7 +620,7 @@ const renderActiveSection = () => {
                 style={{width: 62, height: 62, borderRadius: 31}}
                 resizeMode="cover"
               />
-              <Text
+              {/* <Text
                 style={{
                   color: '#181A53',
                   fontWeight: '500',
@@ -620,12 +628,12 @@ const renderActiveSection = () => {
                   paddingTop: 5,
                 }}>
                 Charges
-              </Text>
+              </Text> */}
             </View>
             <View style={{alignItems: 'center'}}>
-              <Text style={{fontSize: 17, color: '#000000', fontWeight: '500'}}>
+              {/* <Text style={{fontSize: 17, color: '#000000', fontWeight: '500'}}>
                 +91-9999955555
-              </Text>
+              </Text> */}
               <TouchableOpacity
                 onPress={() => handleopencontactddetails()}
                 style={{
@@ -672,7 +680,7 @@ const renderActiveSection = () => {
             </Text>
             <View className=" flex flex-row">
               <Text className=" text-base font-bold text-[#BDEA09]">
-                {data?.monthly_rent}
+                ₹ {data?.monthly_rent}
               </Text>
               <Text className=" text-base font-bold ml-1 text-[#180E0E99]">
                 / Monthly
@@ -686,7 +694,7 @@ const renderActiveSection = () => {
         <ScrollView
           horizontal={true}
           showsHorizontalScrollIndicator={false}
-          style={{width: '100%', marginTop: 16, marginBottom: 16}}>
+          style={{width: '100%', marginTop: 4, marginBottom: 14}}>
           <View style={{width: 24}} />
           <TouchableOpacity
             style={{
@@ -749,7 +757,7 @@ const renderActiveSection = () => {
             <Text style={{fontSize: 16, color: 'black'}}>Owner</Text>
           </TouchableOpacity>
         </ScrollView>
-        <View style={{backgroundColor: '#ffff', height: 350}}>
+        <View style={{backgroundColor: '#ffff', minHeight: windowHeight * 0.8}}>
           {renderActiveSection()}
         </View>
         {showModal && contectdetailsmodal()}

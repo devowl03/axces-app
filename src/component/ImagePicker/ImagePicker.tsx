@@ -1,10 +1,9 @@
-
-import React, { useRef, useState } from 'react';
-import { View, Text, StyleSheet, Image, ActivityIndicator, Platform } from 'react-native';
-import { launchCamera, launchImageLibrary } from 'react-native-image-picker';
-import { PERMISSIONS, requestMultiple } from 'react-native-permissions';
+import React, {useRef, useState} from 'react';
+import {View, Text, StyleSheet, Image, Platform} from 'react-native';
+import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
+import {PERMISSIONS, requestMultiple} from 'react-native-permissions';
 import Modal from 'react-native-modalbox';
-import { RectButton } from 'react-native-gesture-handler';
+import {RectButton} from 'react-native-gesture-handler';
 import Loader from '../Loader/Loader';
 
 const ImagePicker = (props: any) => {
@@ -12,10 +11,7 @@ const ImagePicker = (props: any) => {
   const [loading, setLoading] = useState(false);
   const modalRef = useRef<Modal>(null);
 
-  const openPicker = async (camera = false, multiple = false) => {
-    setLoading(true); // Start the loader
-
-
+  const requestPermissions = async () => {
     if (Platform.OS === 'android') {
       await requestMultiple([
         PERMISSIONS.ANDROID.READ_EXTERNAL_STORAGE,
@@ -28,44 +24,57 @@ const ImagePicker = (props: any) => {
         PERMISSIONS.IOS.PHOTO_LIBRARY,
       ]);
     }
-
-    // await requestMultiple([
-    //   PERMISSIONS.ANDROID.READ_EXTERNAL_STORAGE,
-    //   PERMISSIONS.ANDROID.WRITE_EXTERNAL_STORAGE,
-    //   PERMISSIONS.ANDROID.CAMERA,
-    // ]);
-
-    const config = {
-      mediaType: 'photo',
-      multiple,
-    };
-
-    let result = null;
-    try {
-      if (camera) {
-        result = await launchCamera(config);
-      } else {
-        result = await launchImageLibrary(config);
-      }
-
-      if (result?.assets) {
-        const newImages = result.assets.map(asset => ({
-          name: asset.fileName,
-          size: asset.fileSize,
-          type: asset.type,
-          uri: asset.uri,
-        }));
-        const updatedImages = [...images, ...newImages];
-        setImages(updatedImages);
-        props.onSaveImage(updatedImages);
-        modalRef.current?.close(); // Close the modal after image selection
-      }
-    } catch (error) {
-      console.error(error);
-    } finally {
-      setLoading(false); // Stop the loader
-    }
   };
+
+const openPicker = async (camera = false) => {
+  setLoading(true); // Start the loader
+
+  // Request permissions
+  const permissions =
+    Platform.OS === 'ios'
+      ? [PERMISSIONS.IOS.CAMERA, PERMISSIONS.IOS.PHOTO_LIBRARY]
+      : [PERMISSIONS.ANDROID.CAMERA, PERMISSIONS.ANDROID.READ_EXTERNAL_STORAGE];
+
+  await requestMultiple(permissions);
+
+  const config = {
+    mediaType: 'photo', // Only photos
+    cameraType: 'back', // Back camera
+    quality: 0.8, // Adjust quality
+    saveToPhotos: true, // Save to Photos library
+  };
+
+  let result = null;
+  try {
+    if (camera) {
+      console.log('Opening camera...');
+      result = await launchCamera(config);
+      console.log('Camera opened successfully.');
+    } else {
+      console.log('Opening gallery...');
+      result = await launchImageLibrary(config);
+      console.log('Gallery opened successfully.');
+    }
+
+    if (result?.assets) {
+      const newImages = result.assets.map(asset => ({
+        name: asset.fileName,
+        size: asset.fileSize,
+        type: asset.type,
+        uri: asset.uri,
+      }));
+      const updatedImages = [...images, ...newImages];
+      setImages(updatedImages);
+      props.onSaveImage(updatedImages);
+      modalRef.current?.close();
+    }
+  } catch (error) {
+    console.error('Error opening picker:', error);
+  } finally {
+    setLoading(false);
+  }
+};
+
 
   const removeImage = (uri: string) => {
     const filteredImages = images.filter(image => image.uri !== uri);
@@ -73,23 +82,18 @@ const ImagePicker = (props: any) => {
     props.onSaveImage(filteredImages);
   };
 
-  const {
-    isOpen,
-    onClose,
-    title,
-    multiple,
-  } = props;
+  const {isOpen, onClose, title} = props;
 
   const options = [
     {
       title: 'Gallery',
-      icon: require("../../../assets/image-gallery.png"),
-      onPress: () => openPicker(false, multiple),
+      icon: require('../../../assets/image-gallery.png'),
+      onPress: () => openPicker(false), // Open Gallery
     },
     {
       title: 'Camera',
-      icon: require("../../../assets/photo-camera.png"),
-      onPress: () => openPicker(true, multiple),
+      icon: require('../../../assets/photo-camera.png'),
+      onPress: () => openPicker(true), // Open Camera
     },
   ];
 
@@ -107,10 +111,9 @@ const ImagePicker = (props: any) => {
         <Text style={styles.title}>{title}</Text>
         <View style={styles.options}>
           {options.map((el, i) => (
-            <RectButton
-              onPress={el.onPress}
-              key={i}
-              style={styles.option}>
+            console.log("el",el)
+            ,
+            <RectButton onPress={el.onPress} key={i} style={styles.option}>
               <View style={styles.icon}>
                 <Image source={el.icon} style={styles.optionIcon} />
               </View>
@@ -121,7 +124,6 @@ const ImagePicker = (props: any) => {
       </View>
       {loading && (
         <View style={styles.loaderContainer}>
-          {/* <ActivityIndicator size="large" color="#0000ff" /> */}
           <Loader loading={loading} />
         </View>
       )}
@@ -168,6 +170,7 @@ const styles = StyleSheet.create({
     marginTop: 5,
     fontFamily: 'Poppins-SemiBold',
     fontSize: 14,
+    color:'black'
   },
   loaderContainer: {
     position: 'absolute',
@@ -182,5 +185,3 @@ const styles = StyleSheet.create({
 });
 
 export default ImagePicker;
-
-

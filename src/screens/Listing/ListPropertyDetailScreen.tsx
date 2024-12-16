@@ -54,13 +54,16 @@ import {onGetLocation} from '../../redux/ducks/User/getLocation';
 import {showMessage} from 'react-native-flash-message';
 import { onRecharge } from '../../redux/ducks/Coins/recharge';
 import RazorpayCheckout from 'react-native-razorpay';
+import { onGetUserProfile } from '../../redux/ducks/User/viewProfile';
 
 const ListPropertyDetailScreen = () => {
   const getBalance = useAppSelector(state => state.getBalance);
   console.log('getBalance', getBalance);
 
   const recharge = useAppSelector(state => state.recharge);
-  const viewProfile = useAppSelector(state => state.viewProfile);
+ const viewProfile = useAppSelector(
+   state => state.viewProfile.data.platformCharges,
+ );
 
   const bottomSheetRef = useRef<BottomSheetModal>(null);
   const nocoinbottomSheetRef = useRef<BottomSheetModal>(null);
@@ -200,6 +203,7 @@ const ListPropertyDetailScreen = () => {
 
   useEffect(() => {
     dispatch(onGetBalance());
+     dispatch(onGetUserProfile());
   }, []);
 
   useEffect(() => {
@@ -758,49 +762,46 @@ const checkfacility =
         }
       } else {
         // Prepare FormData for new property submission
-         const formData = new FormData();
+        const formData = new FormData();
 
-         // Check if the property type is not commercial
-         if (propertyType?.toLowerCase() !== 'commercial') {
-           formData.append('bedrooms', bedroomsNumber || 0); // Use default if undefined
-           formData.append('bathrooms', bathroomsNumber || 0); // Use default if undefined
-           formData.append('furnish_type', furnishingType || ''); // Use default if undefined
-           formData.append('preferred_tenant', tenant.toLowerCase() || ''); // Use default if undefined
-           formData.append('facilities', checkfacility || ''); // Use default if undefined
-         }
+        // Check if the property type is not commercial
+        if (propertyType?.toLowerCase() !== 'commercial') {
+          formData.append('bedrooms', bedroomsNumber || 0); // Use default if undefined
+          formData.append('bathrooms', bathroomsNumber || 0); // Use default if undefined
+          formData.append('furnish_type', furnishingType || ''); // Use default if undefined
+          formData.append('preferred_tenant', tenant.toLowerCase() || ''); // Use default if undefined
+          formData.append('facilities', checkfacility || ''); // Use default if undefined
+        }
 
-         // Append fields common to all property types
-         formData.append('property_posted_by', selectedRole.toLowerCase());
-         formData.append('property_type', propertyType.toLowerCase());
-         formData.append('property_subtype', propertysubtype.toLowerCase());
-         formData.append('owner_id', userId);
-         formData.append('title', propertyName);
-         formData.append('description', aboutProp);
-         formData.append('address', landMark);
-         formData.append('pincode', addPincode);
-         formData.append('location', JSON.stringify(location));
-         formData.append('building_name', propertyName);
+        // Append fields common to all property types
+        formData.append('property_posted_by', selectedRole.toLowerCase());
+        formData.append('property_type', propertyType.toLowerCase());
+        formData.append('property_subtype', propertysubtype.toLowerCase());
+        formData.append('owner_id', userId);
+        formData.append('title', propertyName);
+        formData.append('description', aboutProp);
+        formData.append('address', landMark);
+        formData.append('pincode', addPincode);
+        formData.append('location', JSON.stringify(location));
+        formData.append('building_name', propertyName);
 
-         formData.append('area_sqft', area || 0); // Use default if undefined
-         formData.append('property_age', '5 years');
-         formData.append('facing', facing || ''); // Use default if undefined
-         formData.append('floor_number', floor || 0); // Use default if undefined
-         formData.append('total_floors', totalFloor || 0); // Use default if undefined
-         formData.append(
-           'available_from',
-           availableFrom
-             ? availableFrom.toISOString()
-             : new Date().toISOString(),
-         ); // Default to now if undefined
-         formData.append('monthly_rent', rent || 0); // Use default if undefined
-         formData.append('security_deposit', deposit || 0); // Use default if undefined
-         formData.append('localities', input || ''); // Use default if undefined
-         formData.append('landmark', landMark || ''); // Use default if undefined
-         formData.append('listing_type', checklistingtype || ''); // Use default if undefined
+        formData.append('area_sqft', area || 0); // Use default if undefined
+        formData.append('property_age', '5 years');
+        formData.append('facing', facing || ''); // Use default if undefined
+        formData.append('floor_number', floor || 0); // Use default if undefined
+        formData.append('total_floors', totalFloor || 0); // Use default if undefined
+        formData.append(
+          'available_from',
+          availableFrom
+            ? availableFrom.toISOString()
+            : new Date().toISOString(),
+        ); // Default to now if undefined
+        formData.append('monthly_rent', rent || 0); // Use default if undefined
+        formData.append('security_deposit', deposit || 0); // Use default if undefined
+        formData.append('localities', input || ''); // Use default if undefined
+        formData.append('landmark', landMark || ''); // Use default if undefined
+        formData.append('listing_type', checklistingtype || ''); // Use default if undefined
 
-         console.log('formData', formData);
-
-        
         console.log('formData', formData);
 
         // Append images if available
@@ -812,6 +813,22 @@ const checkfacility =
               type: 'image/jpeg',
             });
           });
+        }
+        console.log('formDataimages', formData._parts);
+
+        // Iterate through the formData and access the image key
+        for (let [key, value] of formData._parts) {
+          console.log(`Key: ${key}, Value:`, value);
+
+          // if (key === 'images') {
+          //   // Assuming images is an array of image objects
+          //   value.forEach((image, index) => {
+          //     console.log(`Image ${index + 1}:`);
+          //     console.log('Name:', image.name);
+          //     console.log('Type:', image.type);
+          //     console.log('URI:', image.uri);
+          //   });
+          // }
         }
 
         const token = await getAccessToken();
@@ -830,14 +847,17 @@ const checkfacility =
         );
 
         const result = await response.json();
+        console.log('====================================');
+        console.log('result++++++++',result);
+        console.log('====================================');
 
         // Handle the response
         if (response.ok) {
           successMessage('Property listed successfully!');
-          sucesspostdetailsmodal()
+          sucesspostdetailsmodal();
           navigation.navigate('Home');
         } else {
-          failedpostdetailsmodal()
+          failedpostdetailsmodal();
           errorMessage(result.message);
         }
       }
@@ -1110,7 +1130,7 @@ const checkfacility =
                     </Text>
                   </View>
                   <Text className="text-base text-[#0E0E0C99] pt-2 pb-2">
-                    Unable to list your property Any deductions made will be
+                    Unable to list your property any deductions made will be
                     refunded
                   </Text>
                   {/* <TouchableOpacity
@@ -1177,7 +1197,7 @@ const checkfacility =
 
           const data = await response.json();
           console.log('data++++++++++', data);
-
+          dispatch(onRecharge(amount));
           if (response.ok) {
             SetInvoicedata(data?.invoice_download_url);
             // Alert.alert('Payment Status', `Status: ${data.message}`);
@@ -1602,7 +1622,7 @@ const checkfacility =
                 }
               }}
             />
-              <PropertyInput
+            <PropertyInput
               title="Your Floor *"
               placeholderText="Enter your floor number"
               value={floor}
@@ -1705,10 +1725,21 @@ const checkfacility =
               <SearchFilter
                 filterName="Preferred Tenant *"
                 type="number-pad"
-                options={['Any', 'Family', 'Bachelor'].map(option =>
-                  option.toLowerCase(),
-                )} // Convert options to lowercase
-                value={tenant?.toLowerCase()} // Convert selected value to lowercase for comparison
+                options={
+                  ['Any', 'Family', 'Bachelor']
+                  // .map(option =>
+                  //   option.toUpperCase(),
+                  // )
+                } // Convert options to lowercase
+                value={
+                  tenant == 'any'
+                    ? 'Any'
+                    : tenant == 'family'
+                    ? 'Family'
+                    : tenant == 'bachelor'
+                    ? 'Bachelor'
+                    : tenant || ''
+                } // Convert selected value to lowercase for comparison
                 onSelectHandler={selectedTenant => setTenant(selectedTenant)} // You can still store the original casing
               />
             )}
@@ -2146,6 +2177,7 @@ const checkfacility =
               onPress={() => {
                 // sucesspostdetailsmodal();
                 // failedpostdetailsmodal()
+                dispatch(onGetBalance())
                 bottomSheetRef.current?.present();
               }}
               style={{
@@ -2337,7 +2369,8 @@ const checkfacility =
                       Do you want to list your property?
                     </Text>
                     <Text style={{color: '#0E0E0C99', fontSize: 16}}>
-                      You will require 10 coins to list your property
+                      You will require {viewProfile?.propertyPostCost} coins to
+                      list your property
                     </Text>
                   </View>
                 </View>
