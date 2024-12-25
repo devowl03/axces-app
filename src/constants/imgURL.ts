@@ -31,8 +31,8 @@ export const offerBanner =
 export const wishlist =
   'https://res.cloudinary.com/krishanucloud/image/upload/v1712559589/Vector_lroxhu.png';
 
-export const setwishlist = 'https://cdn-icons-png.flaticon.com/512/14034/14034768.png';
-
+export const setwishlist =
+  'https://cdn-icons-png.flaticon.com/512/14034/14034768.png';
 
 export const profileTabIc =
   'https://res.cloudinary.com/krishanucloud/image/upload/v1712559723/profile_w4x2bc.png';
@@ -107,26 +107,20 @@ export const whiteEmail =
 export const whiteUser =
   'https://res.cloudinary.com/krishanucloud/image/upload/v1714430332/Group_1_evhpbt.png';
 
-
-  export const Swiper2 =
+export const Swiper2 =
   'https://res.cloudinary.com/dwfzu7dyq/image/upload/v1723805610/Swiper_02_oefynz.jpg';
 
-  export const Swiper3 =
+export const Swiper3 =
   'https://res.cloudinary.com/dwfzu7dyq/image/upload/v1723805609/Swiper_03_s6vjdh.jpg';
 
-
-
-
-
-
-
-
-
-
-
-export const buyrentBanner = "https://res.cloudinary.com/krishanucloud/image/upload/v1714430994/buyrentbanner_vlcppk.jpg";
-export const serviceBanner = "https://res.cloudinary.com/krishanucloud/image/upload/v1714430993/servicebanner_dordka.jpg";
-export const eventBanner = "https://res.cloudinary.com/krishanucloud/image/upload/v1714430994/eventbanner_mzjz23.jpg";
-export const Report = "https://cdn-icons-png.flaticon.com/512/4329/4329963.png"
-export const Help = "https://cdn-icons-png.flaticon.com/512/18/18436.png"
-export const Tools = "https://cdn-icons-png.flaticon.com/512/1077/1077198.png"
+export const buyrentBanner =
+  'https://res.cloudinary.com/krishanucloud/image/upload/v1714430994/buyrentbanner_vlcppk.jpg';
+export const serviceBanner =
+  'https://res.cloudinary.com/krishanucloud/image/upload/v1714430993/servicebanner_dordka.jpg';
+export const eventBanner =
+  'https://res.cloudinary.com/krishanucloud/image/upload/v1714430994/eventbanner_mzjz23.jpg';
+export const Report = 'https://cdn-icons-png.flaticon.com/512/4329/4329963.png';
+export const Help = 'https://cdn-icons-png.flaticon.com/512/18/18436.png';
+export const Tools = 'https://cdn-icons-png.flaticon.com/512/1077/1077198.png';
+export const DeleteFilled =
+  'https://cdn-icons-png.flaticon.com/512/3096/3096687.png';

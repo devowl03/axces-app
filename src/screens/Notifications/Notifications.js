@@ -1,7 +1,7 @@
 // import { StyleSheet, Text, View,SafeAreaView, StatusBar, Image, FlatList } from 'react-native'
 // import React from 'react'
 // import CenterHeader from '../../component/Header/CenterHeader';
-// import SelectDropdown from 'react-native-select-dropdown'; 
+// import SelectDropdown from 'react-native-select-dropdown';
 
 // const Notifications = () => {
 
@@ -72,7 +72,6 @@
 //           'We are introducing a new feature in.We are introducing a new feature in.',
 //       },
 //     ];
-
 
 //     const renderItem = () =>{
 //         return (
@@ -498,7 +497,7 @@ const Notifications = () => {
         <View
           style={{
             height: 80,
-            marginTop: 24,
+            // marginTop: 24,
             backgroundColor: '#181A53',
             alignItems: 'center',
             justifyContent: 'center',
@@ -627,5 +626,3 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
 });
-
-

@@ -1,7 +1,16 @@
 import React, {useRef, useState} from 'react';
-import {View, Text, StyleSheet, Image, Platform} from 'react-native';
+import {
+  View,
+  Text,
+  StyleSheet,
+  Image,
+  Platform,
+  Linking,
+  Alert,
+  PermissionsAndroid,
+} from 'react-native';
 import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
-import {PERMISSIONS, requestMultiple} from 'react-native-permissions';
+// import {PERMISSIONS, requestMultiple} from 'react-native-permissions';
 import Modal from 'react-native-modalbox';
 import {RectButton} from 'react-native-gesture-handler';
 import Loader from '../Loader/Loader';
@@ -13,68 +22,102 @@ const ImagePicker = (props: any) => {
 
   const requestPermissions = async () => {
     if (Platform.OS === 'android') {
-      await requestMultiple([
-        PERMISSIONS.ANDROID.READ_EXTERNAL_STORAGE,
-        PERMISSIONS.ANDROID.WRITE_EXTERNAL_STORAGE,
-        PERMISSIONS.ANDROID.CAMERA,
-      ]);
+      try {
+        const granted = await PermissionsAndroid.requestMultiple([
+          PermissionsAndroid.PERMISSIONS.CAMERA,
+          PermissionsAndroid.PERMISSIONS.READ_EXTERNAL_STORAGE,
+          PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE,
+        ]);
+
+        if (
+          granted[PermissionsAndroid.PERMISSIONS.CAMERA] ===
+            PermissionsAndroid.RESULTS.GRANTED &&
+          granted[PermissionsAndroid.PERMISSIONS.READ_EXTERNAL_STORAGE] ===
+            PermissionsAndroid.RESULTS.GRANTED
+        ) {
+          console.log('Android permissions granted');
+          return true;
+        } else {
+          console.warn('Required Android permissions not granted');
+          return false;
+        }
+      } catch (error) {
+        console.error('Permission request error:', error);
+        return false;
+      }
     } else if (Platform.OS === 'ios') {
-      await requestMultiple([
-        PERMISSIONS.IOS.CAMERA,
-        PERMISSIONS.IOS.PHOTO_LIBRARY,
-      ]);
+      console.log(
+        'iOS does not require manual permission management for ImagePicker',
+      );
+      return true; // ImagePicker on iOS handles permissions automatically
     }
+    return false;
   };
 
-const openPicker = async (camera = false) => {
-  setLoading(true); // Start the loader
-
-  // Request permissions
-  const permissions =
-    Platform.OS === 'ios'
-      ? [PERMISSIONS.IOS.CAMERA, PERMISSIONS.IOS.PHOTO_LIBRARY]
-      : [PERMISSIONS.ANDROID.CAMERA, PERMISSIONS.ANDROID.READ_EXTERNAL_STORAGE];
-
-  await requestMultiple(permissions);
-
-  const config = {
-    mediaType: 'photo', // Only photos
-    cameraType: 'back', // Back camera
-    quality: 0.8, // Adjust quality
-    saveToPhotos: true, // Save to Photos library
+  const handlePermissionDenied = () => {
+    Alert.alert(
+      'Permission Required',
+      'To use this feature, you need to enable permissions in the app settings.',
+      [
+        {text: 'Cancel', style: 'cancel'},
+        {
+          text: 'Open Settings',
+          onPress: () => Linking.openSettings(),
+        },
+      ],
+      {cancelable: false},
+    );
   };
 
-  let result = null;
-  try {
-    if (camera) {
-      console.log('Opening camera...');
-      result = await launchCamera(config);
-      console.log('Camera opened successfully.');
-    } else {
-      console.log('Opening gallery...');
-      result = await launchImageLibrary(config);
-      console.log('Gallery opened successfully.');
+  const openPicker = async (camera = false) => {
+    setLoading(true); // Start the loader
+
+    // Request permissions
+    const hasPermission = await requestPermissions();
+    if (!hasPermission) {
+      setLoading(false);
+      handlePermissionDenied();
+      console.warn('Permissions not granted. Cannot open picker.');
+      return;
     }
 
-    if (result?.assets) {
-      const newImages = result.assets.map(asset => ({
-        name: asset.fileName,
-        size: asset.fileSize,
-        type: asset.type,
-        uri: asset.uri,
-      }));
-      const updatedImages = [...images, ...newImages];
-      setImages(updatedImages);
-      props.onSaveImage(updatedImages);
-      modalRef.current?.close();
-    }
-  } catch (error) {
-    console.error('Error opening picker:', error);
-  } finally {
-    setLoading(false);
-  }
-};
+    const config = {
+      mediaType: 'photo', // Only photos
+      cameraType: 'back', // Back camera
+      quality: 0.8, // Adjust quality
+      saveToPhotos: true, // Save to Photos library
+    };
 
+    let result = null;
+    try {
+      if (camera) {
+        console.log('Opening camera...');
+        result = await launchCamera(config);
+        console.log('Camera opened successfully.');
+      } else {
+        console.log('Opening gallery...');
+        result = await launchImageLibrary(config);
+        console.log('Gallery opened successfully.');
+      }
+
+      if (result?.assets) {
+        const newImages = result.assets.map(asset => ({
+          name: asset.fileName,
+          size: asset.fileSize,
+          type: asset.type,
+          uri: asset.uri,
+        }));
+        const updatedImages = [...images, ...newImages];
+        setImages(updatedImages);
+        props.onSaveImage(updatedImages);
+        modalRef.current?.close();
+      }
+    } catch (error) {
+      console.error('Error opening picker:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const removeImage = (uri: string) => {
     const filteredImages = images.filter(image => image.uri !== uri);
@@ -110,16 +153,19 @@ const openPicker = async (camera = false) => {
       <View style={styles.dialog}>
         <Text style={styles.title}>{title}</Text>
         <View style={styles.options}>
-          {options.map((el, i) => (
-            console.log("el",el)
-            ,
-            <RectButton onPress={el.onPress} key={i} style={styles.option}>
-              <View style={styles.icon}>
-                <Image source={el.icon} style={styles.optionIcon} />
-              </View>
-              <Text style={styles.optionText}>{el.title}</Text>
-            </RectButton>
-          ))}
+          {options.map(
+            (el, i) => (
+              console.log('el', el),
+              (
+                <RectButton onPress={el.onPress} key={i} style={styles.option}>
+                  <View style={styles.icon}>
+                    <Image source={el.icon} style={styles.optionIcon} />
+                  </View>
+                  <Text style={styles.optionText}>{el.title}</Text>
+                </RectButton>
+              )
+            ),
+          )}
         </View>
       </View>
       {loading && (
@@ -170,7 +216,7 @@ const styles = StyleSheet.create({
     marginTop: 5,
     fontFamily: 'Poppins-SemiBold',
     fontSize: 14,
-    color:'black'
+    color: 'black',
   },
   loaderContainer: {
     position: 'absolute',

@@ -59,12 +59,12 @@
 
 // //   async function verifyOtp(phoneNumber: string, otp: string) {
 // //     const url = 'http://axces-backend.onrender.com/api/verify-otp';
-  
+
 // //     const data = {
 // //       phoneNumber: phoneNumber,
 // //       otp: otp,
 // //     };
-  
+
 // //     try {
 // //       const response = await fetch(url, {
 // //         method: 'POST',
@@ -73,19 +73,19 @@
 // //         },
 // //         body: JSON.stringify(data),
 // //       });
-  
+
 // //       // if (response.status === 400) {
 // //       //   const errorResponse = await response.json();
 // //       //   console.error('Error:', errorResponse.message);
 // //       //   throw new Error(errorResponse.message);
 // //       // }
-  
+
 // //       const result = await response.json();
-  
+
 // //       if (result.status === 'success') {
 // //         console.log('Success:', result.message);
 // //         successMessage(result.message);
-        
+
 // //         return result;
 // //       } else {
 // //         errorMessage(result.message);
@@ -95,7 +95,6 @@
 // //       throw error;
 // //     }
 // //   }
-
 
 // //   async function verifyUserExists(phoneNumber: string) {
 // //     const url = 'http://axces-backend.onrender.com/api/user/verify';
@@ -172,7 +171,7 @@
 // //             maxLength={maxLength}
 // //             ref={el => (inputsRef.current[index] = el as TextInput)}
 // //             keyboardType="number-pad"
-// //             className="bg-white/10 rounded-lg text-white/60"
+// //             className="rounded-lg bg-white/10 text-white/60"
 // //           />
 // //         ))}
 // //       </View>
@@ -261,7 +260,6 @@
 // //     };
 
 // //     console.log('data', data);
-    
 
 // //     try {
 // //       const response = await fetch(url, {
@@ -335,7 +333,7 @@
 // //   }
 
 // //   const handleVerifyPress = async () => {
-    
+
 // //     const otp = inputValues.join('');
 // //     if (phoneNumber) {
 // //       setLoading(true);
@@ -373,7 +371,7 @@
 // //             maxLength={maxLength}
 // //             ref={el => (inputsRef.current[index] = el as TextInput)}
 // //             keyboardType="number-pad"
-// //             className="bg-white/10 rounded-lg text-white/60"
+// //             className="rounded-lg bg-white/10 text-white/60"
 // //           />
 // //         ))}
 // //       </View>
@@ -629,7 +627,8 @@ import {
   saveUserId,
   successMessage,
 } from '../../utils';
-import OTPInputView from '@twotalltotems/react-native-otp-input';
+// import OTPInputView from '@twotalltotems/react-native-otp-input';
+import {OtpInput} from 'react-native-otp-entry';
 
 const {width} = Dimensions.get('window');
 
@@ -731,7 +730,7 @@ const OTPInput = ({confirm, phoneNumber, isLoading, sessiontoken}: any) => {
         behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
         <View style={styles.container}>
           <Loader loading={loading} />
-          <OTPInputView
+          {/* <OTPInputView
             style={styles.otpInput}
             pinCount={6}
             code={otpCode}
@@ -739,6 +738,28 @@ const OTPInput = ({confirm, phoneNumber, isLoading, sessiontoken}: any) => {
             autoFocusOnLoad
             codeInputFieldStyle={styles.otpInputField}
             codeInputHighlightStyle={styles.otpInputHighlight}
+          /> */}
+          <OtpInput
+            numberOfDigits={6}
+            // focusColor="green"
+            autoFocus={false}
+            hideStick={true}
+            // placeholder="******"
+            blurOnFilled={true}
+            disabled={false}
+            type="numeric"
+            secureTextEntry={false}
+            focusStickBlinkingDuration={500}
+            onTextChange={code => setOtpCode(code)}
+            // onFilled={text => console.log(`OTP is ${text}`)}
+            textInputProps={{
+              accessibilityLabel: 'One-Time Password',
+            }}
+            theme={{
+              containerStyle: styles.otpInput,
+              pinCodeContainerStyle: styles.otpInputField,
+              pinCodeTextStyle: styles.otpTextStyle,
+            }}
           />
         </View>
         <View style={styles.verifyButtonContainer}>
@@ -755,12 +776,12 @@ const OTPInput = ({confirm, phoneNumber, isLoading, sessiontoken}: any) => {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
-    justifyContent: 'center',
+    // flex: 1,
+    // justifyContent: 'center',
     paddingHorizontal: 16,
   },
   otpInput: {
-    width: width * 0.8,
+    width: '100%',
     height: 50,
     alignSelf: 'center',
   },
@@ -791,6 +812,11 @@ const styles = StyleSheet.create({
     color: '#181A53',
     fontSize: 16,
     fontWeight: 'bold',
+    textAlign: 'center',
+  },
+  otpTextStyle: {
+    color: '#FFF',
+    fontSize: 18,
     textAlign: 'center',
   },
 });

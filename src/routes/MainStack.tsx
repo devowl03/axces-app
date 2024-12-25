@@ -1,4 +1,4 @@
-import { createStackNavigator } from '@react-navigation/stack';
+import {createStackNavigator} from '@react-navigation/stack';
 import OnboardScreen from '../screens/onboard/OnboardScreen';
 import DashboardTabs from './DashboardTabs';
 import PropertyListingScreen from '../screens/Listing/PropertyListingScreen';
@@ -13,7 +13,7 @@ import PhoneNumberScreen from '../screens/onboard/PhoneNumberScreen';
 import OtpVerifyScreen from '../screens/onboard/OtpVerifyScreen';
 import CreateAccScreen from '../screens/onboard/CreateAccScreen';
 import ProfileSelectScreen from '../screens/onboard/ProfileSelectScreen';
-import { useEffect, useState } from 'react';
+import {useEffect, useState} from 'react';
 import auth from '@react-native-firebase/auth';
 import ContactOwner from '../screens/Listing/component/ContactOwner';
 import Splash from '../screens/Splash';
@@ -21,6 +21,7 @@ import RentPropertyListing from '../screens/Listing/RentPropertyListing';
 import RentPropertyfilter from '../screens/Search/RentPropertyfilter';
 import Notifications from '../screens/Notifications/Notifications';
 import TransactionHistory from '../screens/Profile/TransactionHistory';
+import DeleteAccount from '../screens/Profile/DeleteAccount';
 
 export type RootStackParamList = {
   Onboard: undefined;
@@ -35,10 +36,10 @@ export type RootStackParamList = {
   ProfileEditScreen: undefined;
   ListPropertyScreen: undefined;
   ListPropertyDetailScreen: {
-    selectedRole: string,
-    lookingFor: string,
-    propertyType: string,
-    addPincode: string
+    selectedRole: string;
+    lookingFor: string;
+    propertyType: string;
+    addPincode: string;
   };
   UserPropertyListedScren: undefined;
   PhoneNumberScreen: undefined;
@@ -52,7 +53,6 @@ export type RootStackParamList = {
 
 const Stack = createStackNavigator<RootStackParamList>();
 
-
 const MainStack = () => {
   const [initializing, setInitializing] = useState(true);
   const [user, setUser] = useState<any>();
@@ -60,7 +60,9 @@ const MainStack = () => {
   function onAuthStateChanged(user: any) {
     console.log('user', user);
     setUser(user);
-    if (initializing) setInitializing(false);
+    if (initializing) {
+      setInitializing(false);
+    }
   }
 
   useEffect(() => {
@@ -68,7 +70,9 @@ const MainStack = () => {
     return subscriber;
   }, []);
 
-  if (initializing) return null;
+  if (initializing) {
+    return null;
+  }
 
   return (
     <Stack.Navigator
@@ -111,6 +115,7 @@ const MainStack = () => {
       />
       <Stack.Screen name="ContactOwner" component={ContactOwner} />
       <Stack.Screen name="RentPropertyfilter" component={RentPropertyfilter} />
+      <Stack.Screen name="DeleteAccount" component={DeleteAccount} />
     </Stack.Navigator>
   );
 };

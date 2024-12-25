@@ -17,18 +17,15 @@ import {SafeAreaView} from 'react-native-safe-area-context';
 import Header from '../../component/Header/Header';
 import UserCoin from '../../component/Profile/UserCoin';
 import {
-  bell,
   blueHeart,
   coinStack,
   defaultUserIc,
-  downGrayArrow,
   Help,
+  DeleteFilled,
   houseRound,
   Notification,
-  plus,
   Privacy,
   Report,
-  Tools,
   whiteHome,
   whiteWallet,
 } from '../../constants/imgURL';
@@ -87,22 +84,44 @@ const ProfileScreen = () => {
 
   const handleReportEmail = (subject: string) => {
     const email = 'axces.customercare@gmail.com';
-    const url = `mailto:${email}?subject=${'Subject fraud with property  inside the app'}&body=${encodeURIComponent(
-      'Hello, I need support with...',
-    )}`;
-    Linking.openURL(url).catch(err =>
-      console.error('Failed to open email link: ', err),
+    const encodedSubject = encodeURIComponent(
+      subject || 'Subject fraud with property inside the app',
     );
+    const encodedBody = encodeURIComponent('Hello, I need support with...');
+    const url = `mailto:${email}?subject=${encodedSubject}&body=${encodedBody}`;
+
+    Linking.canOpenURL(url)
+      .then(supported => {
+        if (!supported) {
+          console.error('No email app available to handle this link');
+        } else {
+          return Linking.openURL(url);
+        }
+      })
+      .catch(err => {
+        console.error('Failed to open email link: ', err);
+      });
   };
 
   const handlehelpEmail = (subject: string) => {
     const email = 'axces.customercare@gmail.com';
-    const url = `mailto:${email}?subject=${'Subject #issue related to app'}&body=${encodeURIComponent(
-      'Hello, I need support with...',
-    )}`;
-    Linking.openURL(url).catch(err =>
-      console.error('Failed to open email link: ', err),
+    const encodedSubject = encodeURIComponent(
+      subject || 'Subject #issue related to app',
     );
+    const encodedBody = encodeURIComponent('Hello, I need support with...');
+    const url = `mailto:${email}?subject=${encodedSubject}&body=${encodedBody}`;
+
+    Linking.canOpenURL(url)
+      .then(supported => {
+        if (!supported) {
+          console.error('No email app available to handle this link');
+        } else {
+          return Linking.openURL(url);
+        }
+      })
+      .catch(err => {
+        console.error('Failed to open email link: ', err);
+      });
   };
 
   const fetchData = async () => {
@@ -174,9 +193,6 @@ const ProfileScreen = () => {
 
   const [Invicedata, SetInvoicedata] = useState('');
 
-
-
-
   const checkPaymentStatus = async orderId => {
     console.log('orderId', orderId);
 
@@ -217,7 +233,6 @@ const ProfileScreen = () => {
 
   const [postsucessshowModal, setpostsucessShowModal] =
     useState<boolean>(false);
-
 
   const managepayment = orderdata => {
     const ordernumber = orderdata?.data?.order?.id;
@@ -276,25 +291,24 @@ const ProfileScreen = () => {
     }
   };
 
-
-   const openInvoice = async () => {
-     try {
-       const supported = await Linking.canOpenURL(Invicedata);
-       if (supported) {
-         await Linking.openURL(Invicedata);
-         dispatch(onGetBalance());
-         setpostsucessShowModal(false);
-       } else {
-         Alert.alert('Error', 'Unable to open this URL.');
-       }
-     } catch (error) {
-       console.error('Error opening URL:', error);
-       Alert.alert(
-         'Error',
-         'An error occurred while trying to open the invoice.',
-       );
-     }
-   };
+  const openInvoice = async () => {
+    try {
+      const supported = await Linking.canOpenURL(Invicedata);
+      if (supported) {
+        await Linking.openURL(Invicedata);
+        dispatch(onGetBalance());
+        setpostsucessShowModal(false);
+      } else {
+        Alert.alert('Error', 'Unable to open this URL.');
+      }
+    } catch (error) {
+      console.error('Error opening URL:', error);
+      Alert.alert(
+        'Error',
+        'An error occurred while trying to open the invoice.',
+      );
+    }
+  };
 
   const rechargesucessmodal = () => {
     return (
@@ -325,7 +339,7 @@ const ProfileScreen = () => {
                     style={{height: 34, width: 34, resizeMode: 'contain'}}
                   />
                 </View>
-                <Text className="text-black text-base font-bold">
+                <Text className="text-base font-bold text-black">
                   Congratulations!!!
                 </Text>
                 <View
@@ -335,7 +349,7 @@ const ProfileScreen = () => {
                     width: '90%',
                     paddingVertical: 5,
                   }}>
-                  <Text className="text-black text-base font-bold">
+                  <Text className="text-base font-bold text-black">
                     {amount} +coins
                   </Text>
                   <Text className="text-[#0E0E0C99] text-base ml-2">
@@ -364,11 +378,10 @@ const ProfileScreen = () => {
     );
   };
 
-
   const [rechargemodal, setrechargemodal] = useState(false);
 
   const handlerechargeModalOpen = () => {
-    setAmount('')
+    setAmount('');
     //  setModalVisiblecontact(false);
     setrechargemodal(true);
   };
@@ -427,7 +440,7 @@ const ProfileScreen = () => {
             <Text className=" text-[#0E0E0CCC] text-base font-medium border-b border-b-black/10">
               Two simple steps
             </Text>
-            <View className=" flex flex-row w-full items-center justify-start mt-3">
+            <View className="flex flex-row items-center justify-start w-full mt-3 ">
               <View className="mr-4">
                 <Image
                   source={{uri: coinStack}}
@@ -439,7 +452,7 @@ const ProfileScreen = () => {
                 Add AXCES coins to your wallet
               </Text>
             </View>
-            <View className=" flex flex-row w-full items-center justify-start mt-3">
+            <View className="flex flex-row items-center justify-start w-full mt-3 ">
               <View className="mr-4">
                 <Image
                   source={{uri: coinStack}}
@@ -482,10 +495,10 @@ const ProfileScreen = () => {
             <RefreshControl refreshing={refreshing} onRefresh={fetchData} />
           }>
           <View className="bg-[#181A53] px-6 pb-6 ">
-            <View className=" w-full flex flex-row items-center justify-start">
+            <View className="flex flex-row items-center justify-start w-full ">
               <View
                 // style={{width: scale(80), height: verticalScale(80)}}
-                className=" w-24 h-24 rounded-full mr-4">
+                className="w-24 h-24 mr-4 rounded-full ">
                 <Image
                   source={{
                     uri: userData?.profilePicture
@@ -500,12 +513,12 @@ const ProfileScreen = () => {
               <View>
                 <Text
                   style={{fontSize: RFValue(20)}}
-                  className="text-white  font-boldB">
+                  className="text-white font-boldB">
                   {userData?.name}
                 </Text>
                 <Text
                   style={{fontSize: RFValue(16)}}
-                  className="text-white text-base font-sans">
+                  className="font-sans text-base text-white">
                   +91 {userData?.number}
                 </Text>
                 <TouchableOpacity
@@ -521,9 +534,9 @@ const ProfileScreen = () => {
                 </TouchableOpacity>
               </View>
             </View>
-            <View className=" flex flex-row mt-7">
+            <View className="flex flex-row mt-7">
               <View className=" flex-1 border-r border-r-[#F2F8F63D] pr-5 flex">
-                <View className=" flex flex-row items-start">
+                <View className="flex flex-row items-start ">
                   <Image
                     style={{
                       width: scale(16),
@@ -535,11 +548,11 @@ const ProfileScreen = () => {
                   />
                   <Text
                     style={{fontSize: RFValue(14)}}
-                    className="text-white font-sans">
+                    className="font-sans text-white">
                     Property Listed
                   </Text>
                 </View>
-                <Text className=" text-white text-xl font-boldB my-2">
+                <Text className="my-2 text-xl text-white font-boldB">
                   {viewProfile?.data?.owner_properties_count}
                 </Text>
 
@@ -584,8 +597,8 @@ const ProfileScreen = () => {
                   </Text>
                 </TouchableOpacity>
               </View>
-              <View className=" flex-1 pl-5">
-                <View className=" flex flex-row items-start">
+              <View className="flex-1 pl-5 ">
+                <View className="flex flex-row items-start ">
                   <Image
                     style={{
                       width: scale(16),
@@ -597,13 +610,13 @@ const ProfileScreen = () => {
                   />
                   <Text
                     style={{fontSize: RFValue(14)}}
-                    className="text-white font-sans">
+                    className="font-sans text-white">
                     Wallet Balance
                   </Text>
                 </View>
                 <Text
                   style={{fontSize: RFValue(14)}}
-                  className=" text-white  font-boldB my-2 text-xl">
+                  className="my-2 text-xl text-white font-boldB">
                   {balance}
                 </Text>
                 <TouchableOpacity
@@ -627,8 +640,8 @@ const ProfileScreen = () => {
               </View>
             </View>
           </View>
-          <View className="px-6 relative">
-            <View className="z-20 w-full rounded-2xl p-4 bg-white shadow-md">
+          <View className="relative px-6">
+            <View className="z-20 w-full p-4 bg-white shadow-md rounded-2xl">
               <Text
                 style={{fontSize: RFValue(14)}}
                 className=" text-[#0E0E0C] font-mediumM">
@@ -637,11 +650,11 @@ const ProfileScreen = () => {
               <View className=" flex flex-row justify-between items-center border border-[#0E0E0C14] rounded-lg p-2 mt-2">
                 <TouchableOpacity
                   onPress={() => navigation.navigate('Home')}
-                  className=" flex flex-row items-center">
+                  className="flex flex-row items-center ">
                   <Image
                     source={{uri: houseRound}}
                     resizeMode="contain"
-                    className=" w-5 h-5 mr-2"
+                    className="w-5 h-5 mr-2 "
                   />
                   <Text
                     style={{fontSize: RFValue(14)}}
@@ -653,7 +666,7 @@ const ProfileScreen = () => {
             </View>
             <View className="z-10 absolute top-0 left-0 right-0 h-6 bg-[#181A53]" />
           </View>
-          <View className=" px-6 mt-5" style={{height: 580}}>
+          <View className="px-6 mt-5 " style={{height: 580}}>
             <Text
               style={{fontSize: RFValue(14)}}
               className=" text-[#0E0E0C99] mb-4">
@@ -666,10 +679,10 @@ const ProfileScreen = () => {
                 navigation.navigate('Wishlist');
               }}
               className=" w-full flex flex-row items-center justify-between py-3 border-b border-b-[#0E0E0C0F]">
-              <View className=" flex flex-row items-center justify-start">
+              <View className="flex flex-row items-center justify-start ">
                 <View
                   style={{width: scale(32), height: verticalScale(32)}}
-                  className=" bg-white mr-3 rounded-lg flex items-center justify-center h-10 w-10">
+                  className="flex items-center justify-center w-10 h-10 mr-3 bg-white rounded-lg ">
                   <Image
                     style={{width: scale(16), height: verticalScale(16)}}
                     source={{uri: blueHeart}}
@@ -697,10 +710,10 @@ const ProfileScreen = () => {
             <TouchableOpacity
               onPress={handlePress}
               className=" w-full flex flex-row items-center justify-between py-3 border-b border-b-[#0E0E0C0F]">
-              <View className=" flex flex-row items-center justify-start">
+              <View className="flex flex-row items-center justify-start ">
                 <View
                   style={{width: scale(32), height: verticalScale(32)}}
-                  className=" bg-white mr-3 rounded-lg flex items-center justify-center h-10 w-10">
+                  className="flex items-center justify-center w-10 h-10 mr-3 bg-white rounded-lg ">
                   <Image
                     style={{width: scale(16), height: verticalScale(16)}}
                     source={{uri: Privacy}}
@@ -730,10 +743,10 @@ const ProfileScreen = () => {
               className=" w-full flex flex-row items-center justify-between py-3 border-b border-b-[#0E0E0C0F]">
               <View
                 // onPress={() => {navigation.navigate(data?.navigateTo)}}
-                className=" flex flex-row items-center justify-start">
+                className="flex flex-row items-center justify-start ">
                 <View
                   style={{width: scale(32), height: verticalScale(32)}}
-                  className=" bg-white mr-3 rounded-lg flex items-center justify-center h-10 w-10">
+                  className="flex items-center justify-center w-10 h-10 mr-3 bg-white rounded-lg ">
                   <Image
                     style={{width: scale(16), height: verticalScale(16)}}
                     source={{uri: Notification}}
@@ -757,14 +770,47 @@ const ProfileScreen = () => {
                 />
               </View>
             </TouchableOpacity>
+            {/* Delete an account */}
+            <TouchableOpacity
+              onPress={() => {
+                navigation.navigate('DeleteAccount');
+              }}
+              className=" w-full flex flex-row items-center justify-between py-3 border-b border-b-[#0E0E0C0F]">
+              <View className="flex flex-row items-center justify-start ">
+                <View
+                  style={{width: scale(32), height: verticalScale(32)}}
+                  className="flex items-center justify-center w-10 h-10 mr-3 bg-white rounded-lg ">
+                  <Image
+                    style={{width: scale(16), height: verticalScale(16)}}
+                    source={{uri: DeleteFilled}}
+                    resizeMode="contain"
+                  />
+                </View>
+                <Text
+                  style={{fontSize: RFValue(14)}}
+                  className="text-[#181A53] font-mediumM">
+                  Delete an account
+                </Text>
+              </View>
+              <View>
+                <Image
+                  style={{width: scale(12), height: verticalScale(12)}}
+                  source={{
+                    uri: 'https://res.cloudinary.com/krishanucloud/image/upload/v1713692204/Vector_yfj7en.png',
+                  }}
+                  resizeMode="contain"
+                  className="-rotate-90"
+                />
+              </View>
+            </TouchableOpacity>
             {/* Report and fraud */}
             <TouchableOpacity
               onPress={handleReportEmail}
               className=" w-full flex flex-row items-center justify-between py-3 border-b border-b-[#0E0E0C0F]">
-              <View className=" flex flex-row items-center justify-start">
+              <View className="flex flex-row items-center justify-start ">
                 <View
                   style={{width: scale(32), height: verticalScale(32)}}
-                  className=" bg-white mr-3 rounded-lg flex items-center justify-center h-10 w-10">
+                  className="flex items-center justify-center w-10 h-10 mr-3 bg-white rounded-lg ">
                   <Image
                     style={{width: scale(16), height: verticalScale(16)}}
                     source={{uri: Report}}
@@ -792,10 +838,10 @@ const ProfileScreen = () => {
             <TouchableOpacity
               onPress={handlehelpEmail}
               className=" w-full flex flex-row items-center justify-between py-3 border-b border-b-[#0E0E0C0F]">
-              <View className=" flex flex-row items-center justify-start">
+              <View className="flex flex-row items-center justify-start ">
                 <View
                   style={{width: scale(32), height: verticalScale(32)}}
-                  className=" bg-white mr-3 rounded-lg flex items-center justify-center h-10 w-10">
+                  className="flex items-center justify-center w-10 h-10 mr-3 bg-white rounded-lg ">
                   <Image
                     style={{width: scale(16), height: verticalScale(16)}}
                     source={{uri: Help}}
@@ -822,10 +868,10 @@ const ProfileScreen = () => {
             <TouchableOpacity
               onPress={() => navigation.navigate('TransactionHistory')}
               className=" w-full flex flex-row items-center justify-between py-3 border-b border-b-[#0E0E0C0F]">
-              <View className=" flex flex-row items-center justify-start">
+              <View className="flex flex-row items-center justify-start ">
                 <View
                   style={{width: scale(32), height: verticalScale(32)}}
-                  className=" bg-white mr-3 rounded-lg flex items-center justify-center h-10 w-10">
+                  className="flex items-center justify-center w-10 h-10 mr-3 bg-white rounded-lg ">
                   <Image
                     style={{width: scale(16), height: verticalScale(16)}}
                     source={{uri: Help}}
@@ -851,7 +897,7 @@ const ProfileScreen = () => {
             </TouchableOpacity>
             <TouchableOpacity
               onPress={handleLogout}
-              className=" w-full py-2 rounded-full bg-white shadow-lg my-4">
+              className="w-full py-2 my-4 bg-white rounded-full shadow-lg ">
               <Text className=" text-[#181A53] text-base font-medium text-center">
                 Logout
               </Text>
@@ -915,7 +961,7 @@ const ProfileScreen = () => {
               <Text className=" text-[#0E0E0CCC] text-base font-medium border-b border-b-black/10">
                 Two simple steps
               </Text>
-              <View className=" flex flex-row w-full items-center justify-start mt-3">
+              <View className="flex flex-row items-center justify-start w-full mt-3 ">
                 <View className="mr-4">
                   <Image
                     source={{uri: coinStack}}
@@ -927,7 +973,7 @@ const ProfileScreen = () => {
                   Add AXCES coins to your wallet
                 </Text>
               </View>
-              <View className=" flex flex-row w-full items-center justify-start mt-3">
+              <View className="flex flex-row items-center justify-start w-full mt-3 ">
                 <View className="mr-4">
                   <Image
                     source={{uri: coinStack}}

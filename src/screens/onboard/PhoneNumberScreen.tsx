@@ -26,7 +26,6 @@
 //   const [phoneNumber, setPhoneNumber] = useState('');
 //   const [loading, setLoading] = useState(false);
 
-
 //   const dispatch = useDispatch()
 
 //   useFocusEffect(
@@ -46,13 +45,13 @@
 //   //   }
 //   //   setLoading(true)
 //   //   Keyboard.dismiss()
-   
+
 //   //   const confirmation = await firebase.auth().signInWithPhoneNumber("+91" + number)
 //   //   navigation.navigate('OtpVerifyScreen', { confirm: confirmation, phoneNumber })
 //   // }
 
 //   const sendOtp = async () => {
-    
+
 //     if (!phoneNumber) {
 //       errorMessage('Please enter your phone number');
 //       return;
@@ -86,8 +85,8 @@
 //     }
 //   };
 //   return (
-//     <KeyboardAvoidingView className=" flex-1">
-//       <SafeAreaView className=" flex-1 relative">
+//     <KeyboardAvoidingView className="flex-1 ">
+//       <SafeAreaView className="relative flex-1 ">
 //         <Loader loading={loading} />
 //         <StatusBar barStyle={'light-content'} backgroundColor={'#181A53'} />
 //         <CenterHeader
@@ -96,19 +95,19 @@
 //           }
 //         />
 //         <View className="flex-1  bg-[#181A53] px-6 pt-14">
-//           <Text className=" text-white text-2xl font-bold">
+//           <Text className="text-2xl font-bold text-white ">
 //             Let’s get started..
 //           </Text>
-//           <Text className=" text-base text-white/60 my-3">
+//           <Text className="my-3 text-base text-white/60">
 //             Where every step forward brings you closer to your dreams
 //           </Text>
-//           <View className=" w-full p-3 bg-white/20 rounded-full flex flex-row items-center mt-3">
+//           <View className="flex flex-row items-center w-full p-3 mt-3 rounded-full bg-white/20">
 //             <Image
 //               source={{ uri: whitePhoneIc }}
 //               resizeMode="contain"
-//               className=" w-4 h-4 mr-2"
+//               className="w-4 h-4 mr-2 "
 //             />
-//             <View className=" flex flex-row items-start">
+//             <View className="flex flex-row items-start ">
 //               <Text className="text-base text-white/60 mr-1 mt-[2px]">+91</Text>
 //               <TextInput
 //                 style={{
@@ -121,16 +120,16 @@
 //                 maxLength={10}
 //                 placeholder="Enter mobile number"
 //                 placeholderTextColor="#FFFFFF99"
-//                 className=" text-base text-white/60 flex-1"
+//                 className="flex-1 text-base text-white/60"
 //                 keyboardType='number-pad'
 //               />
 //             </View>
 //           </View>
 //         </View>
-//         <View className=' absolute bottom-0 left-0 right-0 px-6'>
+//         <View className='absolute bottom-0 left-0 right-0 px-6 '>
 //           <TouchableOpacity
 //             onPress={() => {
-              
+
 //               sendOtp()
 //             }}
 //             className="w-full p-3 bg-[#BDEA09] rounded-full my-4">
@@ -146,7 +145,6 @@
 // };
 
 // export default PhoneNumberScreen;
-
 
 // import {
 //   Image,
@@ -376,7 +374,7 @@ import {useDispatch} from 'react-redux';
 import {onVerifyUser} from '../../redux/ducks/User/verifyUser';
 import {useAppSelector} from '../../constants';
 import {Linking} from 'react-native'; // Import Linking
-import Icon from 'react-native-vector-icons/MaterialIcons'; 
+import Icon from 'react-native-vector-icons/MaterialIcons';
 
 const PhoneNumberScreen = () => {
   const navigation = useNavigation<OnboardingNavigationProp>();
@@ -429,13 +427,13 @@ const PhoneNumberScreen = () => {
     }
   };
 
- const openPrivacyPolicy = () => {
-   Linking.openURL('https://www.axces.in/privacy_policy.html');
- };
+  const openPrivacyPolicy = () => {
+    Linking.openURL('https://www.axces.in/privacy_policy.html');
+  };
 
- const openTermsOfUse = () => {
-   Linking.openURL('https://www.axces.in/Terms_of_use.html');
- };
+  const openTermsOfUse = () => {
+    Linking.openURL('https://www.axces.in/Terms_of_use.html');
+  };
 
   return (
     <KeyboardAvoidingView style={styles.container}>
@@ -498,11 +496,11 @@ const PhoneNumberScreen = () => {
               </Text>
             </TouchableOpacity>
           </View>
-        </View>
-        <View style={styles.footer}>
-          <TouchableOpacity onPress={sendOtp} style={styles.button}>
-            <Text style={styles.buttonText}>Next</Text>
-          </TouchableOpacity>
+          <View style={styles.footer}>
+            <TouchableOpacity onPress={sendOtp} style={styles.button}>
+              <Text style={styles.buttonText}>Next</Text>
+            </TouchableOpacity>
+          </View>
         </View>
       </SafeAreaView>
     </KeyboardAvoidingView>
@@ -568,11 +566,7 @@ const styles = StyleSheet.create({
     textAlignVertical: 'center',
   },
   footer: {
-    position: 'absolute',
-    bottom: Platform.OS === 'ios' ? 340 :0,
-    left: 0,
-    right: 0,
-    paddingHorizontal: 24,
+    marginTop: 20,
   },
   button: {
     width: '100%',
