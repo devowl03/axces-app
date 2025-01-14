@@ -62,7 +62,6 @@
 //     }
 //   };
 
-
 //     const handleWishlist = () => {
 //       // Toggle the wishlist state
 //       setIsWishlisted(prevState => !prevState);
@@ -73,7 +72,6 @@
 //       console.log('Action Data:', actionData);
 //       dispatch(addToWishList(item?._id,actionData))
 //     };
-
 
 //   return (
 //     <ScrollView
@@ -87,7 +85,7 @@
 //         <View className="w-full bg-white rounded-xl">
 //           <View className="w-full h-[129px] rounded-t-xl overflow-hidden relative">
 //             <CardSwiper images={item?.images} />
-//             <View className="p-2 rounded-full bg-black/25 absolute w-8 h-8 right-2 top-1/3">
+//             <View className="absolute w-8 h-8 p-2 rounded-full bg-black/25 right-2 top-1/3">
 //               <Image
 //                 source={{uri: rightArrowWhite}}
 //                 resizeMode="contain"
@@ -103,8 +101,8 @@
 //                   resizeMode="contain"
 //                   className="w-3 h-3 mr-1"
 //                 />
-//                 <Text className="text-sm text-black font-medium mr-1">4.5</Text>
-//                 <Text className="text-sm text-gray-700 font-medium">
+//                 <Text className="mr-1 text-sm font-medium text-black">4.5</Text>
+//                 <Text className="text-sm font-medium text-gray-700">
 //                   {'(73)'}
 //                 </Text>
 //               </View>
@@ -149,7 +147,7 @@
 //                 </Text>
 //                 <Text
 //                   style={{color: '#000000'}}
-//                   className="text-base font-bold ml-1 ">
+//                   className="ml-1 text-base font-bold ">
 //                   {' '}
 //                   Monthly
 //                 </Text>
@@ -157,7 +155,7 @@
 //               <View>
 //                 <Text
 //                   style={{color: '#000000'}}
-//                   className="text-base font-bold ml-1">
+//                   className="ml-1 text-base font-bold">
 //                   {' '}
 //                   {item?.listing_type}
 //                 </Text>
@@ -165,7 +163,7 @@
 //             </View>
 //           </View>
 //           {editFlag ? (
-//             <View className="px-3 pb-3 flex flex-row">
+//             <View className="flex flex-row px-3 pb-3">
 //               <TouchableOpacity
 //                 onPress={() => {}}
 //                 className="flex-1 p-3 mr-2 border border-[#BDEA09] rounded-full flex flex-row items-center justify-center">
@@ -206,7 +204,7 @@
 //                   </Text>
 //                 </TouchableOpacity>
 //               </View>
-//               <View className="px-3 pb-3 mt-2 flex flex-row justify-between items-center">
+//               <View className="flex flex-row items-center justify-between px-3 pb-3 mt-2">
 //                 <Text className="text-sm text-[#181A5399] font-medium">
 //                   Charges
 //                 </Text>
@@ -223,8 +221,6 @@
 // };
 
 // export default PropertyCard;
-
-
 
 // import {
 //   Image,
@@ -279,15 +275,13 @@
 //   console.log('contactOwner', contactOwner);
 
 //   const {data, loading, error} = contactOwner;
-  
+
 //   const [isWishlisted, setIsWishlisted] = useState(item?.isInWishlist);
 //    const [showModal, setShowModal] = useState<boolean>(false);
 //    const [checkshowModal, setcheckShowModal] = useState<boolean>(false);
 
-
 //   // const {called, data, status, message} = addToList;
 //   // console.log('called', status);
-
 
 //    const handleContactOwnerPress = () => {
 //       // if (item?._id) {
@@ -298,19 +292,15 @@
 //       // }
 //    };
 
-
 //    const checkdata = () =>{
 //     console.log("checkdata",checkshowModal);
-    
+
 //     if (checkshowModal && data.length !== 0) {
 //       setShowModal(true);
 //     } else {
 //       setShowModal(false);
 //     }
 //    }
-
-   
-  
 
 //   useEffect(() => {
 //     if (addToList.called) {
@@ -352,15 +342,12 @@
 //     // Update the local state for this property
 //   };
 
-
 //    const handleCallPress = () => {
 //      const phoneNumber = contactOwner?.data?.owner_details?.contact_phone;
 //      if (phoneNumber) {
 //        Linking.openURL(`tel:${phoneNumber}`);
 //      }
 //    };
-  
-
 
 //   return (
 //     <ScrollView
@@ -374,7 +361,7 @@
 //         <View className="w-full bg-white rounded-xl">
 //           <View className="w-full h-[129px] rounded-t-xl overflow-hidden relative">
 //             <CardSwiper images={item?.images} />
-//             <View className="p-2 rounded-full bg-black/25 absolute w-8 h-8 right-2 top-1/3">
+//             <View className="absolute w-8 h-8 p-2 rounded-full bg-black/25 right-2 top-1/3">
 //               <Image
 //                 source={{uri: rightArrowWhite}}
 //                 resizeMode="contain"
@@ -390,8 +377,8 @@
 //                   resizeMode="contain"
 //                   className="w-3 h-3 mr-1"
 //                 />
-//                 <Text className="text-sm text-black font-medium mr-1">4.5</Text>
-//                 <Text className="text-sm text-gray-700 font-medium">
+//                 <Text className="mr-1 text-sm font-medium text-black">4.5</Text>
+//                 <Text className="text-sm font-medium text-gray-700">
 //                   {'(73)'}
 //                 </Text>
 //               </View>
@@ -448,7 +435,7 @@
 //                 </Text>
 //                 <Text
 //                   style={{color: '#000000'}}
-//                   className="text-base font-bold ml-1">
+//                   className="ml-1 text-base font-bold">
 //                   {' '}
 //                   Monthly
 //                 </Text>
@@ -456,7 +443,7 @@
 //               <View>
 //                 <Text
 //                   style={{color: '#000000'}}
-//                   className="text-base font-bold ml-1">
+//                   className="ml-1 text-base font-bold">
 //                   {' '}
 //                   {item?.listing_type}
 //                 </Text>
@@ -464,7 +451,7 @@
 //             </View>
 //           </View>
 //           {editFlag ? (
-//             <View className="px-3 pb-3 flex flex-row">
+//             <View className="flex flex-row px-3 pb-3">
 //               <TouchableOpacity
 //                 // onPress={() =>
 //                 //   // navigation.navigate('ListPropertyScreen', {item:item})
@@ -505,7 +492,7 @@
 //                   </Text>
 //                 </TouchableOpacity>
 //               </View>
-//               <View className="px-3 pb-3 mt-2 flex flex-row justify-between items-center">
+//               <View className="flex flex-row items-center justify-between px-3 pb-3 mt-2">
 //                 <Text className="text-sm text-[#181A5399] font-medium">
 //                   Charges
 //                 </Text>
@@ -524,14 +511,14 @@
 //           statusBarTranslucent={true}
 //           animationType="fade">
 //           <TouchableWithoutFeedback onPress={() => setShowModal(false)}>
-//             <View className="flex-1 items-center justify-center bg-black/80">
+//             <View className="items-center justify-center flex-1 bg-black/80">
 //               <TouchableWithoutFeedback>
 //                 <View className="rounded-lg p-4 bg-white w-[80%]">
-//                   <Text className="text-black text-base font-bold">
+//                   <Text className="text-base font-bold text-black">
 //                     Congratulations!!!
 //                   </Text>
 //                   <Text className="text-[#34AF48]">Contact the owner now</Text>
-//                   <View className="border border-black/10 rounded-lg p-3 my-3">
+//                   <View className="p-3 my-3 border rounded-lg border-black/10">
 //                     <View className="flex flex-row">
 //                       <Image
 //                         source={{uri: demoUser}}
@@ -553,7 +540,7 @@
 //                     <TouchableOpacity
 //                       onPress={handleCallPress}
 //                       className="py-3 px-4 flex flex-row items-center rounded-full bg-[#F2F8F6]">
-//                       <View className="flex-1 flex flex-row items-center">
+//                       <View className="flex flex-row items-center flex-1">
 //                         <Image
 //                           source={{uri: phoneIc}}
 //                           resizeMode="contain"
@@ -589,8 +576,6 @@
 
 // export default PropertyCard;
 
-
-
 import {
   Image,
   ScrollView,
@@ -603,7 +588,7 @@ import {
   StyleSheet,
   ActivityIndicator,
   Alert,
-  TextInput
+  TextInput,
 } from 'react-native';
 import CardSwiper from './CardSwiper';
 import {
@@ -628,11 +613,11 @@ import {useAppSelector} from '../../constants';
 import {errorMessage, getAccessToken, successMessage} from '../../utils';
 import {onGetProperty} from '../../redux/ducks/Properties/getSelectedProperty';
 import {onGetOwnerDetails} from '../../redux/ducks/User/contactOwner';
-import { onGetBalance } from '../../redux/ducks/Coins/getBalance';
-import { onRecharge } from '../../redux/ducks/Coins/recharge';
-import { viewWishList } from '../../redux/ducks/WishList/viewList';
+import {onGetBalance} from '../../redux/ducks/Coins/getBalance';
+import {onRecharge} from '../../redux/ducks/Coins/recharge';
+import {viewWishList} from '../../redux/ducks/WishList/viewList';
 import RazorpayCheckout from 'react-native-razorpay';
-import { onGetUserProfile } from '../../redux/ducks/User/viewProfile';
+import {onGetUserProfile} from '../../redux/ducks/User/viewProfile';
 interface Props {
   editFlag?: boolean;
   item?: any;
@@ -644,97 +629,83 @@ const PropertyCard: React.FC<Props> = ({
   item,
   isWishlist = false,
 }) => {
-
   console.log('itemwishlist', item);
-  
+
   const navigation = useNavigation<StackNavigationProp<RootStackParamList>>();
   const dispatch = useDispatch();
   const addToList = useAppSelector(state => state.addToList);
   const contactOwner = useAppSelector(state => state.contactOwner);
   console.log('contactOwner', contactOwner);
-  
+
   const getBalance = useAppSelector(state => state.getBalance);
 
-  
   // const [isWishlisted, setIsWishlisted] = useState(item?.isInWishlist);
-   const [checkshowModal, setcheckShowModal] = useState<boolean>(false);
-const [loaderVisible, setLoaderVisible] = useState(false);
+  const [checkshowModal, setcheckShowModal] = useState<boolean>(false);
+  const [loaderVisible, setLoaderVisible] = useState(false);
   const [amount, setAmount] = useState('');
 
+  const [isWishlisted, setIsWishlisted] = useState(item?.isInWishlist);
+  const wishlistData = useAppSelector(state => state.viewList.data);
 
+  console.log('isWishlisted', isWishlisted);
 
-    const [isWishlisted, setIsWishlisted] = useState(item?.isInWishlist);
-    const wishlistData = useAppSelector(state => state.viewList.data);
-
-    console.log('isWishlisted', isWishlisted);
-
-    // Fetch the wishlist when the component mounts or when `id` changes
-    useFocusEffect(
-      useCallback(() => {
-        if (item?._id) {
-          dispatch(viewWishList(item._id));
-        }
-      }, [item, dispatch]),
-    );
-
-
-    // Update `isWishlisted` whenever `wishlistData` changes
-    useEffect(() => {
-      if (wishlistData) {
-        // Assuming wishlistData contains an array of items, check if the current id is in it
-        const isInWishlist = wishlistData.some(
-          items => items._id === item?._id,
-        );
-        setIsWishlisted(isInWishlist);
+  // Fetch the wishlist when the component mounts or when `id` changes
+  useFocusEffect(
+    useCallback(() => {
+      if (item?._id) {
+        dispatch(viewWishList(item._id));
       }
-    }, [wishlistData, item]); // Depend on `wishlistData` and `id`
+    }, [item, dispatch]),
+  );
 
-    console.log('wishlistData:', wishlistData);
-    console.log('id:', item?.isInWishlist);
+  // Update `isWishlisted` whenever `wishlistData` changes
+  useEffect(() => {
+    if (wishlistData) {
+      // Assuming wishlistData contains an array of items, check if the current id is in it
+      const isInWishlist = wishlistData.some(items => items._id === item?._id);
+      setIsWishlisted(isInWishlist);
+    }
+  }, [wishlistData, item]); // Depend on `wishlistData` and `id`
 
-
+  console.log('wishlistData:', wishlistData);
+  console.log('id:', item?.isInWishlist);
 
   // const {called, data, status, message} = addToList;
   // console.log('called', status);
 
+  const handleContactOwnerPress = () => {
+    setloading(true);
+    handleModalClose();
+    if (item?._id) {
+      dispatch(onGetOwnerDetails(item._id));
+      setTimeout(() => {
+        checkdata();
+        setloading(false);
+      }, 3000);
+    }
+  };
 
-   const handleContactOwnerPress = () => {
-    setloading(true)
-        handleModalClose();
-      if (item?._id) {
-        dispatch(onGetOwnerDetails(item._id));
-        setTimeout(() => {
-          checkdata()
-            setloading(false);
-        }, 3000);
-      }
-   };
+  const handleAgree = () => {
+    console.log('getBalance', getBalance);
 
+    if (getBalance.data.coins < viewProfile?.propertyContactCost) {
+      Alert.alert('please recharge');
+    } else {
+      setLoaderVisible(true);
+      setTimeout(() => {
+        setLoaderVisible(false); // Hide loader after 3 seconds
+        checkdata();
+        setModalVisiblecontact(false);
+        // setShowModal(true);
+      }, 3000);
+    }
+  };
 
-    const handleAgree = () => {
+  const checkdata = () => {
+    console.log('checkdata', checkshowModal);
+    setShowModal(true);
+    dispatch(onGetOwnerDetails(item._id));
 
-      console.log('getBalance', getBalance);
-
-      if(getBalance.data.coins < viewProfile?.propertyContactCost){
-        Alert.alert('please recharge')
-      }
-      else{
-        setLoaderVisible(true);
-        setTimeout(() => {
-          setLoaderVisible(false); // Hide loader after 3 seconds
-           checkdata();
-           setModalVisiblecontact(false);
-          // setShowModal(true);
-        }, 3000);
-      }
-    };
-
-
-   const checkdata = () =>{
-     console.log('checkdata', checkshowModal);
-     setShowModal(true);
-     dispatch(onGetOwnerDetails(item._id));
-     
     //  dispatch(onGetOwnerDetails(item._id));
 
     //  if (getBalance.data.coins !== 0) {
@@ -743,21 +714,18 @@ const [loaderVisible, setLoaderVisible] = useState(false);
     //  } else {
     //    setShowModal(false);
     //  }
-   }
+  };
 
-      const viewProfile = useAppSelector(
-        state => state.viewProfile.data.platformCharges,
-      );
-      console.log('====================================');
-      console.log('viewProfile', viewProfile);
-      console.log('====================================');
+  const viewProfile = useAppSelector(
+    state => state.viewProfile.data.platformCharges,
+  );
+  console.log('====================================');
+  console.log('viewProfile', viewProfile);
+  console.log('====================================');
 
-   useEffect(()=>{
-     dispatch(onGetBalance());
-   },[])
-
-
-  
+  useEffect(() => {
+    dispatch(onGetBalance());
+  }, []);
 
   useEffect(() => {
     if (addToList.called) {
@@ -788,137 +756,123 @@ const [loaderVisible, setLoaderVisible] = useState(false);
     if (!editFlag) {
       navigation.push('PropertyScreen', {data: item});
       dispatch(onGetProperty(item?._id));
-    }else{
-        navigation.navigate('ListPropertyScreen', {
-          item: item,
-          isediting: true,
-        });
+    } else {
+      navigation.navigate('ListPropertyScreen', {
+        item: item,
+        isediting: true,
+      });
     }
   };
 
   const handleWishlist = () => {
-    setIsWishlisted(!isWishlisted)
+    setIsWishlisted(!isWishlisted);
     const actionData = isWishlisted ? -1 : 1;
     // Dispatch the action with the current property ID and actionData
     dispatch(addToWishList(item?._id, actionData));
     // Update the local state for this property
   };
 
+  const handleCallPress = () => {
+    const phoneNumber = contactOwner?.data?.owner_details?.contact_phone;
+    if (phoneNumber) {
+      Linking.openURL(`tel:${phoneNumber}`);
+    }
+  };
 
-   const handleCallPress = () => {
-     const phoneNumber = contactOwner?.data?.owner_details?.contact_phone;
-     if (phoneNumber) {
-       Linking.openURL(`tel:${phoneNumber}`);
-     }
-   };
+  const [modalVisiblecontact, setModalVisiblecontact] = useState(false);
 
-const [modalVisiblecontact, setModalVisiblecontact] = useState(false);
+  handleopencontactddetails = () => {
+    dispatch(onGetUserProfile());
+    dispatch(onGetBalance());
+    setModalVisiblecontact(true);
+  };
 
+  const contactusermodal = () => {
+    return (
+      <Modal
+        transparent={true}
+        visible={modalVisiblecontact}
+        animationType="slide"
+        onRequestClose={() => setModalVisiblecontact(false)}>
+        <TouchableWithoutFeedback onPress={() => setModalVisiblecontact(false)}>
+          <View style={styles.modalOverlay} />
+        </TouchableWithoutFeedback>
 
-handleopencontactddetails = () =>{
-      dispatch(onGetUserProfile());
-   dispatch(onGetBalance());
-  setModalVisiblecontact(true)
-}
+        <View style={styles.bottomSheetContainer}>
+          <View style={styles.handleBar} />
 
-
-
-    const contactusermodal = () => {
-      return (
-        <Modal
-          transparent={true}
-          visible={modalVisiblecontact}
-          animationType="slide"
-          onRequestClose={() => setModalVisiblecontact(false)}>
-          <TouchableWithoutFeedback
-            onPress={() => setModalVisiblecontact(false)}>
-            <View style={styles.modalOverlay} />
-          </TouchableWithoutFeedback>
-
-          <View style={styles.bottomSheetContainer}>
-            <View style={styles.handleBar} />
-
-            {/* Bottom Sheet Content */}
-            <View
-              style={{
-                flex: 1,
-                // backgroundColor: 'red',
-              }}
-              className="px-7">
-              <View className="w-full flex flex-row items-start border-b border-b-black/10 pb-4">
-                <View className="mr-4">
-                  <Image
-                    source={{uri: coinStack}}
-                    resizeMode="contain"
-                    className="w-10 h-10"
-                  />
-                </View>
-                <View className="flex-1 pr-6">
-                  <Text className="text-[#0E0E0C] text-lg font-bold">
-                    Do you want to contact the owner?
-                  </Text>
-                  <Text className="text-[#0E0E0C99] text-base">
-                    You will require {viewProfile?.propertyContactCost} coins to
-                    view contact details .
-                  </Text>
-                </View>
+          {/* Bottom Sheet Content */}
+          <View
+            style={{
+              flex: 1,
+              // backgroundColor: 'red',
+            }}
+            className="px-7">
+            <View className="flex flex-row items-start w-full pb-4 border-b border-b-black/10">
+              <View className="mr-4">
+                <Image
+                  source={{uri: coinStack}}
+                  resizeMode="contain"
+                  className="w-10 h-10"
+                />
               </View>
-              <View className="border-b border-b-black/10 py-4">
-                <View className=" flex bg-[#F2F8F6] rounded-full flex-row justify-between items-center px-3 py-2">
-                  <View style={{width: '60%'}}>
-                    <Text className="text-[#181A53] text-lg">
-                      Available coins:{' '}
-                      <Text className="font-bold">
-                        {getBalance?.data?.coins}
-                      </Text>
-                    </Text>
-                  </View>
-                  <TouchableOpacity
-                    className=" bg-[#BDEA09] rounded-full px-3 py-1"
-                    onPress={() => handlerechargeModalOpen()}>
-                    <Text className="text-[#181A53] text-base">
-                      + Add coins
-                    </Text>
-                  </TouchableOpacity>
-                </View>
+              <View className="flex-1 pr-6">
+                <Text className="text-[#0E0E0C] text-lg font-bold">
+                  Do you want to contact the owner?
+                </Text>
+                <Text className="text-[#0E0E0C99] text-base">
+                  You will require {viewProfile?.propertyContactCost} coins to
+                  view contact details .
+                </Text>
               </View>
-              <View className=" py-4 flex flex-row items-center">
-                <TouchableOpacity
-                  onPress={() => setModalVisiblecontact(false)}
-                  // onPress={() => bottomSheetRef.current?.close()}
-                  className="flex-1 bg-[#F2F8F6] rounded-full p-3 mr-5">
-                  <Text className="text-[#181A53] text-base text-center font-medium">
-                    No take me back
+            </View>
+            <View className="py-4 border-b border-b-black/10">
+              <View className=" flex bg-[#F2F8F6] rounded-full flex-row justify-between items-center px-3 py-2">
+                <View style={{width: '60%'}}>
+                  <Text className="text-[#181A53] text-lg">
+                    Available coins:{' '}
+                    <Text className="font-bold">{getBalance?.data?.coins}</Text>
                   </Text>
-                </TouchableOpacity>
+                </View>
                 <TouchableOpacity
-                  onPress={() => handleAgree()}
-                  className="flex-1 bg-[#BDEA09] rounded-full p-3 ">
-                  <Text className="text-[#181A53] text-base text-center font-medium">
-                    Yes, I agree
-                  </Text>
+                  className=" bg-[#BDEA09] rounded-full px-3 py-1"
+                  onPress={() => handlerechargeModalOpen()}>
+                  <Text className="text-[#181A53] text-base">+ Add coins</Text>
                 </TouchableOpacity>
               </View>
             </View>
+            <View className="flex flex-row items-center py-4 ">
+              <TouchableOpacity
+                onPress={() => setModalVisiblecontact(false)}
+                // onPress={() => bottomSheetRef.current?.close()}
+                className="flex-1 bg-[#F2F8F6] rounded-full p-3 mr-5">
+                <Text className="text-[#181A53] text-base text-center font-medium">
+                  No take me back
+                </Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                onPress={() => handleAgree()}
+                className="flex-1 bg-[#BDEA09] rounded-full p-3 ">
+                <Text className="text-[#181A53] text-base text-center font-medium">
+                  Yes, I agree
+                </Text>
+              </TouchableOpacity>
+            </View>
           </View>
-        </Modal>
-      );
-    };
+        </View>
+      </Modal>
+    );
+  };
 
-const [rechargemodal, setrechargemodal] = useState(false);
+  const [rechargemodal, setrechargemodal] = useState(false);
 
+  const handlerechargeModalOpen = () => {
+    setAmount('');
+    setModalVisiblecontact(false);
+    setrechargemodal(true);
+  };
 
-const handlerechargeModalOpen = () => {
-  setAmount('')
-  setModalVisiblecontact(false);
-  setrechargemodal(true);
-};
-
-
-
-
-  
-const addrechargemodal = () =>{
+  const addrechargemodal = () => {
     return (
       <Modal
         transparent={true}
@@ -972,7 +926,7 @@ const addrechargemodal = () =>{
             <Text className=" text-[#0E0E0CCC] text-base font-medium border-b border-b-black/10">
               Two simple steps
             </Text>
-            <View className=" flex flex-row w-full items-center justify-start mt-3">
+            <View className="flex flex-row items-center justify-start w-full mt-3 ">
               <View className="mr-4">
                 <Image
                   source={{uri: coinStack}}
@@ -984,7 +938,7 @@ const addrechargemodal = () =>{
                 Add AXCES coins to your wallet
               </Text>
             </View>
-            <View className=" flex flex-row w-full items-center justify-start mt-3">
+            <View className="flex flex-row items-center justify-start w-full mt-3 ">
               <View className="mr-4">
                 <Image
                   source={{uri: coinStack}}
@@ -998,10 +952,10 @@ const addrechargemodal = () =>{
             </View>
             <TouchableOpacity
               onPress={() => {
-               setrechargemodal(false);
-               setTimeout(() => {
-                 managerecharge();
-               }, 1000);
+                setrechargemodal(false);
+                setTimeout(() => {
+                  managerecharge();
+                }, 1000);
               }}
               className="w-full p-3 bg-[#BDEA09] rounded-full mt-4">
               <Text className="text-[#181A53] text-base text-center font-medium">
@@ -1012,12 +966,11 @@ const addrechargemodal = () =>{
         </View>
       </Modal>
     );
-   }
+  };
 
+  const [showModal, setShowModal] = useState<boolean>(false);
 
-   const [showModal, setShowModal] = useState<boolean>(false);
-
-   const contectdetailsmodal = () =>{
+  const contectdetailsmodal = () => {
     return (
       <Modal
         visible={showModal}
@@ -1025,14 +978,19 @@ const addrechargemodal = () =>{
         statusBarTranslucent={true}
         animationType="fade">
         <TouchableWithoutFeedback onPress={() => setShowModal(false)}>
-          <View style={{...styles.modalOverlay,justifyContent:'center',alignItems:'center'}}>
+          <View
+            style={{
+              ...styles.modalOverlay,
+              justifyContent: 'center',
+              alignItems: 'center',
+            }}>
             <TouchableWithoutFeedback>
               <View className="rounded-lg p-4 bg-white w-[90%]">
-                <Text className="text-black text-base font-bold">
+                <Text className="text-base font-bold text-black">
                   Congratulations!!!
                 </Text>
                 <Text className="text-[#34AF48]">Contact the owner now</Text>
-                <View className="border border-black/10 rounded-lg p-3 my-3">
+                <View className="p-3 my-3 border rounded-lg border-black/10">
                   <View className="flex flex-row">
                     <Image
                       source={{uri: demoUser}}
@@ -1054,7 +1012,7 @@ const addrechargemodal = () =>{
                   <TouchableOpacity
                     onPress={handleCallPress}
                     className="py-3 px-4 flex flex-row items-center rounded-full bg-[#F2F8F6]">
-                    <View className="flex-1 flex flex-row items-center">
+                    <View className="flex flex-row items-center flex-1">
                       <Image
                         source={{uri: phoneIc}}
                         resizeMode="contain"
@@ -1084,95 +1042,87 @@ const addrechargemodal = () =>{
         </TouchableWithoutFeedback>
       </Modal>
     );
-   }
+  };
 
+  const [postsucessshowModal, setpostsucessShowModal] =
+    useState<boolean>(false);
 
-     const [postsucessshowModal, setpostsucessShowModal] =
-       useState<boolean>(false);
-
-     const sucesspostdetailsmodal = () => {
-       setpostsucessShowModal(true);
-
-     };
+  const sucesspostdetailsmodal = () => {
+    setpostsucessShowModal(true);
+  };
 
   const [Invicedata, SetInvoicedata] = useState('');
 
+  const checkPaymentStatus = async orderId => {
+    console.log('orderId', orderId);
 
-       const checkPaymentStatus = async orderId => {
-         console.log('orderId', orderId);
+    const token = await getAccessToken();
 
-         const token = await getAccessToken();
+    const raw = JSON.stringify({
+      orderId: orderId,
+    });
 
-         const raw = JSON.stringify({
-           orderId: orderId,
-         });
+    try {
+      const response = await fetch(
+        'https://backend.axces.in/api/payment/status',
+        {
+          method: 'POST',
+          headers: {
+            Authorization: `Bearer ${token}`,
+            'Content-Type': 'application/json', // Keep this if the server expects JSON
+          },
+          body: raw, // Send raw data in string format
+        },
+      );
 
-         try {
-           const response = await fetch(
-             'https://backend.axces.in/api/payment/status',
-             {
-               method: 'POST',
-               headers: {
-                 Authorization: `Bearer ${token}`,
-                 'Content-Type': 'application/json', // Keep this if the server expects JSON
-               },
-               body: raw, // Send raw data in string format
-             },
-           );
+      const data = await response.json();
+      console.log('data++++++++++', data);
 
-           const data = await response.json();
-           console.log('data++++++++++', data);
+      if (response.ok) {
+        SetInvoicedata(data?.invoice_download_url);
+        // Alert.alert('Payment Status', `Status: ${data.message}`);
+        // }
+      } else {
+        Alert.alert('Error', `Error: ${data.message}`);
+      }
+    } catch (error) {
+      Alert.alert('Network Error', 'Failed to connect to the server');
+      console.error(error);
+    }
+  };
 
-           if (response.ok) {
-             SetInvoicedata(data?.invoice_download_url);
-             // Alert.alert('Payment Status', `Status: ${data.message}`);
-             // }
-           } else {
-             Alert.alert('Error', `Error: ${data.message}`);
-           }
-         } catch (error) {
-           Alert.alert('Network Error', 'Failed to connect to the server');
-           console.error(error);
-         }
-       };
+  const managepayment = orderdata => {
+    const ordernumber = orderdata?.data?.order?.id;
 
+    const amountInPaise = parseInt(amount) * 100;
+    const options = {
+      description: 'Purchase Product',
+      image: 'https://your-logo-url.com/logo.png',
+      currency: 'INR',
+      key: 'rzp_live_1oXCdVHL2cgMKY', // Replace with your Razorpay key ID
+      amount: amountInPaise.toString(), // Amount in paise (5000 paise = 50 INR)
+      name: 'AXCES',
+      order_id: ordernumber,
+      theme: {color: '#BDEA09'},
+    };
 
+    RazorpayCheckout.open(options)
+      .then(data => {
+        // Payment successful
+        // Alert.alert('Payment Success', `Payment ID: ${data}`);
+        checkPaymentStatus(ordernumber); //
+        setpostsucessShowModal(true);
+      })
+      .catch(error => {
+        // Payment failed
+        Alert.alert(
+          'Payment Failure',
+          `Error: ${error.code} | ${error.description}`,
+        );
+      });
+  };
 
-       const managepayment = orderdata => {
-         const ordernumber = orderdata?.data?.order?.id;
-         console.log('ordernumber', ordernumber);
-
-         const amountInPaise = parseInt(amount) * 100;
-         const options = {
-           description: 'Purchase Product',
-           image: 'https://your-logo-url.com/logo.png',
-           currency: 'INR',
-           key: 'rzp_test_AoSsXKYIm5qUCv', // Replace with your Razorpay key ID
-           amount: amountInPaise.toString(), // Amount in paise (5000 paise = 50 INR)
-           name: 'AXCES',
-           order_id: ordernumber,
-           theme: {color: '#BDEA09'},
-         };
-         console.log('options', options);
-
-         RazorpayCheckout.open(options)
-           .then(data => {
-             // Payment successful
-             // Alert.alert('Payment Success', `Payment ID: ${data}`);
-             checkPaymentStatus(ordernumber); //
-             setpostsucessShowModal(true);
-           })
-           .catch(error => {
-             // Payment failed
-             Alert.alert(
-               'Payment Failure',
-               `Error: ${error.code} | ${error.description}`,
-             );
-           });
-       };
-
-
-       const managerecharge = () => {
+  const managerecharge = () => {
     if (amount.length > 0) {
       //  setpostsucessShowModal(true); // Show success modal
       dispatch(onRecharge(amount))
@@ -1194,148 +1144,142 @@ const addrechargemodal = () =>{
       errorMessage('Please enter amount'); // Prompt user to enter amount
     }
   };
-    //  const managerecharge = () => {
-    //    if (amount.length > 0) {
-    //      setrechargemodal(false);
-    //      dispatch(onRecharge(JSON.parse(amount)));
-    //      sucesspostdetailsmodal();
-    //    } else {
-    //      errorMessage('please enter amount');
-    //    }
-    //   //  setrechargemodal(false);
-    //   //  dispatch(onRecharge(amount));
-    //   //  sucesspostdetailsmodal();
+  //  const managerecharge = () => {
+  //    if (amount.length > 0) {
+  //      setrechargemodal(false);
+  //      dispatch(onRecharge(JSON.parse(amount)));
+  //      sucesspostdetailsmodal();
+  //    } else {
+  //      errorMessage('please enter amount');
+  //    }
+  //   //  setrechargemodal(false);
+  //   //  dispatch(onRecharge(amount));
+  //   //  sucesspostdetailsmodal();
 
-    //    // setLoaderVisible(true);
-    //  };
+  //    // setLoaderVisible(true);
+  //  };
 
-
-      const openInvoice = async () => {
-        try {
-          const supported = await Linking.canOpenURL(Invicedata);
-          if (supported) {
-            await Linking.openURL(Invicedata);
-            dispatch(onGetBalance());
-            setpostsucessShowModal(false);
-          } else {
-            Alert.alert('Error', 'Unable to open this URL.');
-          }
-        } catch (error) {
-          console.error('Error opening URL:', error);
-          Alert.alert(
-            'Error',
-            'An error occurred while trying to open the invoice.',
-          );
-        }
-      };
-
-     const rechargesucessmodal = () => {
-       return (
-         <Modal
-           visible={postsucessshowModal}
-           transparent={true}
-           statusBarTranslucent={true}
-           animationType="fade">
-           <TouchableWithoutFeedback
-             onPress={() => setpostsucessShowModal(false)}>
-             <View
-               style={{
-                 ...styles.modalOverlay,
-                 justifyContent: 'center',
-                 alignItems: 'center',
-               }}>
-               <TouchableWithoutFeedback>
-                 <View className="rounded-lg p-4 bg-white w-[90%]">
-                   <View
-                     style={{
-                       top: -15,
-                       position: 'absolute',
-                       left: 14,
-                       // right: 0,
-                       zIndex: 999,
-                     }}>
-                     <Image
-                       source={require('../../../assets/coin.png')}
-                       style={{height: 34, width: 34, resizeMode: 'contain'}}
-                     />
-                   </View>
-                   <Text className="text-black text-base font-bold">
-                     Congratulations!!!
-                   </Text>
-                   <View
-                     style={{
-                       flexDirection: 'row',
-                       alignItems: 'center',
-                       width: '90%',
-                       paddingVertical: 5,
-                     }}>
-                     <Text className="text-black text-base font-bold">
-                       {amount} +coins
-                     </Text>
-                     <Text className="text-[#0E0E0C99] text-base ml-2">
-                       have been added to your wallet successfully
-                     </Text>
-                   </View>
-                   <TouchableOpacity
-                     onPress={() => setpostsucessShowModal(false)}
-                     className="w-full p-3 bg-[#BDEA09] rounded-full mt-2">
-                     <Text className="text-[#181A53] text-base text-center font-medium">
-                       Go Home
-                     </Text>
-                   </TouchableOpacity>
-                   <TouchableOpacity
-                     onPress={() => openInvoice()}
-                     className="w-full p-3 bg-[#BDEA09] rounded-full mt-2">
-                     <Text className="text-[#181A53] text-base text-center font-medium">
-                       Download Invoice
-                     </Text>
-                   </TouchableOpacity>
-                 </View>
-               </TouchableWithoutFeedback>
-             </View>
-           </TouchableWithoutFeedback>
-         </Modal>
-       );
-     };
-
-
-    const deleteProperty = async () => {
-      const server = 'https://backend.axces.in'; // Replace with actual server URL
-      const propertyId = item?._id;
-
-         const token = await getAccessToken();
-
-
-      try {
-        const response = await fetch(`${server}/api/property/delete`, {
-          method: 'DELETE',
-          headers: {
-            'Content-Type': 'application/json',
-            Authorization: `Bearer ${token}`,
-          },
-          body: JSON.stringify({propertyId}),
-        });
-
-        const data = await response.json();
-
-        console.log('response', response);
-        console.log('data', data);
-
-        if (response.ok) {
-          successMessage(data.message);
-          navigation.goBack();
-        } else {
-          errorMessage(data.message)
-          // Alert.alert('Error', data.message || 'Something went wrong.');
-        }
-      } catch (error) {
-          errorMessage(error);
-        // console.error('Error:', error);
-        Alert.alert('Error', 'An error occurred while deleting the property.');
+  const openInvoice = async () => {
+    try {
+      const supported = await Linking.canOpenURL(Invicedata);
+      if (supported) {
+        await Linking.openURL(Invicedata);
+        dispatch(onGetBalance());
+        setpostsucessShowModal(false);
+      } else {
+        Alert.alert('Error', 'Unable to open this URL.');
       }
-    };
-  
+    } catch (error) {
+      console.error('Error opening URL:', error);
+      Alert.alert(
+        'Error',
+        'An error occurred while trying to open the invoice.',
+      );
+    }
+  };
 
+  const rechargesucessmodal = () => {
+    return (
+      <Modal
+        visible={postsucessshowModal}
+        transparent={true}
+        statusBarTranslucent={true}
+        animationType="fade">
+        <TouchableWithoutFeedback onPress={() => setpostsucessShowModal(false)}>
+          <View
+            style={{
+              ...styles.modalOverlay,
+              justifyContent: 'center',
+              alignItems: 'center',
+            }}>
+            <TouchableWithoutFeedback>
+              <View className="rounded-lg p-4 bg-white w-[90%]">
+                <View
+                  style={{
+                    top: -15,
+                    position: 'absolute',
+                    left: 14,
+                    // right: 0,
+                    zIndex: 999,
+                  }}>
+                  <Image
+                    source={require('../../../assets/coin.png')}
+                    style={{height: 34, width: 34, resizeMode: 'contain'}}
+                  />
+                </View>
+                <Text className="text-base font-bold text-black">
+                  Congratulations!!!
+                </Text>
+                <View
+                  style={{
+                    flexDirection: 'row',
+                    alignItems: 'center',
+                    width: '90%',
+                    paddingVertical: 5,
+                  }}>
+                  <Text className="text-base font-bold text-black">
+                    {amount} +coins
+                  </Text>
+                  <Text className="text-[#0E0E0C99] text-base ml-2">
+                    have been added to your wallet successfully
+                  </Text>
+                </View>
+                <TouchableOpacity
+                  onPress={() => setpostsucessShowModal(false)}
+                  className="w-full p-3 bg-[#BDEA09] rounded-full mt-2">
+                  <Text className="text-[#181A53] text-base text-center font-medium">
+                    Go Home
+                  </Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  onPress={() => openInvoice()}
+                  className="w-full p-3 bg-[#BDEA09] rounded-full mt-2">
+                  <Text className="text-[#181A53] text-base text-center font-medium">
+                    Download Invoice
+                  </Text>
+                </TouchableOpacity>
+              </View>
+            </TouchableWithoutFeedback>
+          </View>
+        </TouchableWithoutFeedback>
+      </Modal>
+    );
+  };
+
+  const deleteProperty = async () => {
+    const server = 'https://backend.axces.in'; // Replace with actual server URL
+    const propertyId = item?._id;
+
+    const token = await getAccessToken();
+
+    try {
+      const response = await fetch(`${server}/api/property/delete`, {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({propertyId}),
+      });
+
+      const data = await response.json();
+
+      console.log('response', response);
+      console.log('data', data);
+
+      if (response.ok) {
+        successMessage(data.message);
+        navigation.goBack();
+      } else {
+        errorMessage(data.message);
+        // Alert.alert('Error', data.message || 'Something went wrong.');
+      }
+    } catch (error) {
+      errorMessage(error);
+      // console.error('Error:', error);
+      Alert.alert('Error', 'An error occurred while deleting the property.');
+    }
+  };
 
   return (
     <ScrollView
@@ -1352,7 +1296,7 @@ const addrechargemodal = () =>{
         <View className="w-full bg-white rounded-xl">
           <View className="w-full h-[129px] rounded-t-xl overflow-hidden relative">
             <CardSwiper images={item?.images} />
-            <View className="p-2 rounded-full bg-black/25 absolute w-8 h-8 right-2 top-1/3">
+            <View className="absolute w-8 h-8 p-2 rounded-full bg-black/25 right-2 top-1/3">
               <Image
                 source={{uri: rightArrowWhite}}
                 resizeMode="contain"
@@ -1368,8 +1312,8 @@ const addrechargemodal = () =>{
                   resizeMode="contain"
                   className="w-3 h-3 mr-1"
                 />
-                <Text className="text-sm text-black font-medium mr-1">4.5</Text>
-                <Text className="text-sm text-gray-700 font-medium">
+                <Text className="mr-1 text-sm font-medium text-black">4.5</Text>
+                <Text className="text-sm font-medium text-gray-700">
                   {'(73)'}
                 </Text>
               </View>
@@ -1426,7 +1370,7 @@ const addrechargemodal = () =>{
                 </Text>
                 <Text
                   style={{color: '#000000'}}
-                  className="text-base font-bold ml-1">
+                  className="ml-1 text-base font-bold">
                   {' '}
                   Monthly
                 </Text>
@@ -1434,7 +1378,7 @@ const addrechargemodal = () =>{
               <View>
                 <Text
                   style={{color: '#000000'}}
-                  className="text-base font-bold ml-1">
+                  className="ml-1 text-base font-bold">
                   {' '}
                   {item?.listing_type}
                 </Text>
@@ -1442,7 +1386,7 @@ const addrechargemodal = () =>{
             </View>
           </View>
           {editFlag ? (
-            <View className="px-3 pb-3 flex flex-row">
+            <View className="flex flex-row px-3 pb-3">
               <TouchableOpacity
                 onPress={() =>
                   navigation.navigate('ListPropertyScreen', {
@@ -1488,7 +1432,7 @@ const addrechargemodal = () =>{
                   </Text>
                 </TouchableOpacity>
               </View>
-              <View className="px-3 pb-3 mt-2 flex flex-row justify-between items-center">
+              <View className="flex flex-row items-center justify-between px-3 pb-3 mt-2">
                 <Text className="text-sm text-[#181A5399] font-medium">
                   Charges
                 </Text>
@@ -1515,7 +1459,6 @@ const addrechargemodal = () =>{
 };
 
 export default PropertyCard;
-
 
 const styles = StyleSheet.create({
   container: {

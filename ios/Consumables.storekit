@@ -1,0 +1,152 @@
+{
+  "appPolicies" : {
+    "eula" : "",
+    "policies" : [
+      {
+        "locale" : "en_US",
+        "policyText" : "",
+        "policyURL" : ""
+      }
+    ]
+  },
+  "identifier" : "C9265517",
+  "nonRenewingSubscriptions" : [
+
+  ],
+  "products" : [
+    {
+      "displayPrice" : "100",
+      "familyShareable" : false,
+      "internalID" : "67CFAECD",
+      "localizations" : [
+        {
+          "description" : "for adding the 100 Rs Coins",
+          "displayName" : "Axces 100 Rs Coins",
+          "locale" : "en_US"
+        }
+      ],
+      "productID" : "com.axces.coins.100",
+      "referenceName" : "Axces 100 Rs Coins",
+      "type" : "Consumable"
+    },
+    {
+      "displayPrice" : "1000",
+      "familyShareable" : false,
+      "internalID" : "C6026767",
+      "localizations" : [
+        {
+          "description" : "For Purchase Axces 1000 Rs Coins",
+          "displayName" : "Axces 1000 Rs Coins",
+          "locale" : "en_US"
+        }
+      ],
+      "productID" : "com.axces.coins.1000",
+      "referenceName" : "Axces 1000 Rs Coins",
+      "type" : "Consumable"
+    },
+    {
+      "displayPrice" : "500",
+      "familyShareable" : false,
+      "internalID" : "99002C6B",
+      "localizations" : [
+        {
+          "description" : "For Purchase 500 Rs Coins",
+          "displayName" : "Axces 500 Rs Coins",
+          "locale" : "en_US"
+        }
+      ],
+      "productID" : "com.axces.coins.500",
+      "referenceName" : "Axces 500 Rs Coins",
+      "type" : "Consumable"
+    },
+    {
+      "displayPrice" : "50",
+      "familyShareable" : false,
+      "internalID" : "2D90DF22",
+      "localizations" : [
+        {
+          "description" : "For Purchase 50 Rs Coins",
+          "displayName" : "Axces 50 Rs Coins",
+          "locale" : "en_US"
+        }
+      ],
+      "productID" : "com.axces.coins.50",
+      "referenceName" : "Axces 50 Rs Coins",
+      "type" : "Consumable"
+    },
+    {
+      "displayPrice" : "200",
+      "familyShareable" : false,
+      "internalID" : "4F0477E9",
+      "localizations" : [
+        {
+          "description" : "For Purchase 200 Rs Coins",
+          "displayName" : "Axces 200 Rs Coins",
+          "locale" : "en_US"
+        }
+      ],
+      "productID" : "com.axces.coins.200",
+      "referenceName" : "Axces 200 Rs Coins",
+      "type" : "Consumable"
+    }
+  ],
+  "settings" : {
+    "_failTransactionsEnabled" : false,
+    "_locale" : "en_US",
+    "_storefront" : "USA",
+    "_storeKitErrors" : [
+      {
+        "current" : null,
+        "enabled" : false,
+        "name" : "Load Products"
+      },
+      {
+        "current" : null,
+        "enabled" : false,
+        "name" : "Purchase"
+      },
+      {
+        "current" : null,
+        "enabled" : false,
+        "name" : "Verification"
+      },
+      {
+        "current" : null,
+        "enabled" : false,
+        "name" : "App Store Sync"
+      },
+      {
+        "current" : null,
+        "enabled" : false,
+        "name" : "Subscription Status"
+      },
+      {
+        "current" : null,
+        "enabled" : false,
+        "name" : "App Transaction"
+      },
+      {
+        "current" : null,
+        "enabled" : false,
+        "name" : "Manage Subscriptions Sheet"
+      },
+      {
+        "current" : null,
+        "enabled" : false,
+        "name" : "Refund Request Sheet"
+      },
+      {
+        "current" : null,
+        "enabled" : false,
+        "name" : "Offer Code Redeem Sheet"
+      }
+    ]
+  },
+  "subscriptionGroups" : [
+
+  ],
+  "version" : {
+    "major" : 4,
+    "minor" : 0
+  }
+}

@@ -21,106 +21,101 @@ import {SafeAreaView} from 'react-native-safe-area-context';
 import PropertyCarousel from '../../component/Carousel/Property/PropertyCarousel';
 import PropertyDscr from './component/PropertyDscr';
 import PropertyDetail from './component/PropertyDetails';
-import {demoUser,coinStack,phoneIc,greyRightArrow} from '../../constants/imgURL';
+import {
+  demoUser,
+  coinStack,
+  phoneIc,
+  greyRightArrow,
+} from '../../constants/imgURL';
 import Facilities from './component/Facilities';
 import {useEffect, useRef, useState} from 'react';
 import BottomSheet from '@gorhom/bottom-sheet/lib/typescript/components/bottomSheet/BottomSheet';
 import ContactOwner from './component/ContactOwner';
 import {BottomSheetModalProvider} from '@gorhom/bottom-sheet';
-import { useAppSelector } from '../../constants';
-import { errorMessage, getAccessToken } from '../../utils';
-import { onGetOwnerDetails } from '../../redux/ducks/User/contactOwner';
-import { useDispatch } from 'react-redux';
-import { onRecharge } from '../../redux/ducks/Coins/recharge';
-import { TextInput } from 'react-native-gesture-handler';
-import { onGetBalance } from '../../redux/ducks/Coins/getBalance';
+import {useAppSelector} from '../../constants';
+import {errorMessage, getAccessToken} from '../../utils';
+import {onGetOwnerDetails} from '../../redux/ducks/User/contactOwner';
+import {useDispatch} from 'react-redux';
+import {onRecharge} from '../../redux/ducks/Coins/recharge';
+import {TextInput} from 'react-native-gesture-handler';
+import {onGetBalance} from '../../redux/ducks/Coins/getBalance';
 import RazorpayCheckout from 'react-native-razorpay';
-import { onGetUserProfile } from '../../redux/ducks/User/viewProfile';
+import {onGetUserProfile} from '../../redux/ducks/User/viewProfile';
 
-
-const PropertyScreen = ({route}:any) => {
+const PropertyScreen = ({route}: any) => {
   const dispatch = useDispatch();
 
-  const getSelectedProperty = useAppSelector((state) => state.getSelectedProperty)
+  const getSelectedProperty = useAppSelector(
+    state => state.getSelectedProperty,
+  );
 
   const [user, setUser] = useState<any>();
   // const route = useRoute();
-  const {data}: any = route?.params
-  
+  const {data}: any = route?.params;
 
   const contactOwner = useAppSelector(state => state.contactOwner);
   const getBalance = useAppSelector(state => state.getBalance);
-
-  
 
   const [activeSection, setActiveSection] = useState('All');
   const [loaderVisible, setLoaderVisible] = useState(false);
   const [amount, setAmount] = useState('');
 
-
-
-
   useEffect(() => {
     if (getSelectedProperty.called) {
       const {data, message, status} = getSelectedProperty;
-        setUser(data)
+      setUser(data);
     }
-  },[getSelectedProperty])
+  }, [getSelectedProperty]);
 
+  const handleAgree = () => {
+    console.log('getBalance', getBalance);
 
-    const handleAgree = () => {
-      console.log('getBalance', getBalance);
+    if (getBalance.data.coins < viewProfile?.propertyContactCost) {
+      Alert.alert('please recharge');
+    } else {
+      setLoaderVisible(true);
+      setTimeout(() => {
+        setLoaderVisible(false); // Hide loader after 3 seconds
+        checkdata();
+        setModalVisiblecontact(false);
+        // setShowModal(true);
+      }, 3000);
+    }
+  };
 
-      if (getBalance.data.coins < viewProfile?.propertyContactCost) {
-        Alert.alert('please recharge');
-      } else {
-        setLoaderVisible(true);
-        setTimeout(() => {
-          setLoaderVisible(false); // Hide loader after 3 seconds
-          checkdata();
-          setModalVisiblecontact(false);
-          // setShowModal(true);
-        }, 3000);
-      }
-    };
-
-
-   const checkdata = () => {
+  const checkdata = () => {
     //  console.log('checkdata', checkshowModal);
-     setShowModal(true);
-     dispatch(onGetOwnerDetails(data._id));
+    setShowModal(true);
+    dispatch(onGetOwnerDetails(data._id));
 
-     //  dispatch(onGetOwnerDetails(item._id));
+    //  dispatch(onGetOwnerDetails(item._id));
 
-     //  if (getBalance.data.coins !== 0) {
-     //    setShowModal(true);
-     //     dispatch(onGetOwnerDetails(item._id));
-     //  } else {
-     //    setShowModal(false);
-     //  }
-   };
+    //  if (getBalance.data.coins !== 0) {
+    //    setShowModal(true);
+    //     dispatch(onGetOwnerDetails(item._id));
+    //  } else {
+    //    setShowModal(false);
+    //  }
+  };
 
-
-      const handleCallPress = () => {
-        const phoneNumber = contactOwner?.data?.owner_details?.contact_phone;
-        if (phoneNumber) {
-          Linking.openURL(`tel:${phoneNumber}`);
-        }
-      };
-
+  const handleCallPress = () => {
+    const phoneNumber = contactOwner?.data?.owner_details?.contact_phone;
+    if (phoneNumber) {
+      Linking.openURL(`tel:${phoneNumber}`);
+    }
+  };
 
   const [modalVisiblecontact, setModalVisiblecontact] = useState(false);
 
-   const viewProfile = useAppSelector(
-     state => state.viewProfile.data.platformCharges,
-   );
+  const viewProfile = useAppSelector(
+    state => state.viewProfile.data.platformCharges,
+  );
 
   handleopencontactddetails = () => {
     dispatch(onGetBalance());
     dispatch(onGetUserProfile());
     setModalVisiblecontact(true);
   };
-  
 
   const contactusermodal = () => {
     return (
@@ -143,7 +138,7 @@ const PropertyScreen = ({route}:any) => {
               // backgroundColor: 'red',
             }}
             className="px-7">
-            <View className="w-full flex flex-row items-start border-b border-b-black/10 pb-4">
+            <View className="flex flex-row items-start w-full pb-4 border-b border-b-black/10">
               <View className="mr-4">
                 <Image
                   source={{uri: coinStack}}
@@ -161,7 +156,7 @@ const PropertyScreen = ({route}:any) => {
                 </Text>
               </View>
             </View>
-            <View className="border-b border-b-black/10 py-4">
+            <View className="py-4 border-b border-b-black/10">
               <View className=" flex bg-[#F2F8F6] rounded-full flex-row justify-between items-center px-3 py-2">
                 <View style={{width: '60%'}}>
                   <Text className="text-[#181A53] text-lg">
@@ -176,7 +171,7 @@ const PropertyScreen = ({route}:any) => {
                 </TouchableOpacity>
               </View>
             </View>
-            <View className=" py-4 flex flex-row items-center">
+            <View className="flex flex-row items-center py-4 ">
               <TouchableOpacity
                 onPress={() => setModalVisiblecontact(false)}
                 // onPress={() => bottomSheetRef.current?.close()}
@@ -202,7 +197,7 @@ const PropertyScreen = ({route}:any) => {
   const [rechargemodal, setrechargemodal] = useState(false);
 
   const handlerechargeModalOpen = () => {
-    setAmount('')
+    setAmount('');
     setModalVisiblecontact(false);
     setrechargemodal(true);
   };
@@ -259,7 +254,7 @@ const PropertyScreen = ({route}:any) => {
             <Text className=" text-[#0E0E0CCC] text-base font-medium border-b border-b-black/10">
               Two simple steps
             </Text>
-            <View className=" flex flex-row w-full items-center justify-start mt-3">
+            <View className="flex flex-row items-center justify-start w-full mt-3 ">
               <View className="mr-4">
                 <Image
                   source={{uri: coinStack}}
@@ -271,7 +266,7 @@ const PropertyScreen = ({route}:any) => {
                 Add AXCES coins to your wallet
               </Text>
             </View>
-            <View className=" flex flex-row w-full items-center justify-start mt-3">
+            <View className="flex flex-row items-center justify-start w-full mt-3 ">
               <View className="mr-4">
                 <Image
                   source={{uri: coinStack}}
@@ -311,14 +306,14 @@ const PropertyScreen = ({route}:any) => {
         statusBarTranslucent={true}
         animationType="fade">
         <TouchableWithoutFeedback onPress={() => setShowModal(false)}>
-          <View className="flex-1 items-center justify-center bg-black/80">
+          <View className="items-center justify-center flex-1 bg-black/80">
             <TouchableWithoutFeedback>
               <View className="rounded-lg p-4 bg-white w-[80%]">
-                <Text className="text-black text-base font-bold">
+                <Text className="text-base font-bold text-black">
                   Congratulations!!!
                 </Text>
                 <Text className="text-[#34AF48]">Contact the owner now</Text>
-                <View className="border border-black/10 rounded-lg p-3 my-3">
+                <View className="p-3 my-3 border rounded-lg border-black/10">
                   <View className="flex flex-row">
                     <Image
                       source={{uri: demoUser}}
@@ -340,7 +335,7 @@ const PropertyScreen = ({route}:any) => {
                   <TouchableOpacity
                     onPress={handleCallPress}
                     className="py-3 px-4 flex flex-row items-center rounded-full bg-[#F2F8F6]">
-                    <View className="flex-1 flex flex-row items-center">
+                    <View className="flex flex-row items-center flex-1">
                       <Image
                         source={{uri: phoneIc}}
                         resizeMode="contain"
@@ -372,79 +367,78 @@ const PropertyScreen = ({route}:any) => {
     );
   };
 
+  const [Invicedata, SetInvoicedata] = useState('');
 
-  const [Invicedata,SetInvoicedata] = useState('')
+  const checkPaymentStatus = async orderId => {
+    console.log('orderId', orderId);
 
-    const checkPaymentStatus = async orderId => {
-      console.log('orderId', orderId);
+    const token = await getAccessToken();
 
-      const token = await getAccessToken();
+    const raw = JSON.stringify({
+      orderId: orderId,
+    });
 
-      const raw = JSON.stringify({
-        orderId: orderId,
-      });
-
-      try {
-        const response = await fetch(
-          'https://backend.axces.in/api/payment/status',
-          {
-            method: 'POST',
-            headers: {
-              Authorization: `Bearer ${token}`,
-              'Content-Type': 'application/json', // Keep this if the server expects JSON
-            },
-            body: raw, // Send raw data in string format
+    try {
+      const response = await fetch(
+        'https://backend.axces.in/api/payment/status',
+        {
+          method: 'POST',
+          headers: {
+            Authorization: `Bearer ${token}`,
+            'Content-Type': 'application/json', // Keep this if the server expects JSON
           },
-        );
+          body: raw, // Send raw data in string format
+        },
+      );
 
-        const data = await response.json();
-        console.log('data++++++++++', data);
-        
-        if (response.ok) {
-          SetInvoicedata(data?.invoice_download_url);
-          // Alert.alert('Payment Status', `Status: ${data.message}`);
-          // }
-        } else {
-          Alert.alert('Error', `Error: ${data.message}`);
-        }
-      } catch (error) {
-        Alert.alert('Network Error', 'Failed to connect to the server');
-        console.error(error);
+      const data = await response.json();
+      console.log('data++++++++++', data);
+
+      if (response.ok) {
+        SetInvoicedata(data?.invoice_download_url);
+        // Alert.alert('Payment Status', `Status: ${data.message}`);
+        // }
+      } else {
+        Alert.alert('Error', `Error: ${data.message}`);
       }
+    } catch (error) {
+      Alert.alert('Network Error', 'Failed to connect to the server');
+      console.error(error);
+    }
+  };
+
+  const managepayment = orderdata => {
+    const ordernumber = orderdata?.data?.order?.id;
+    console.log('ordernumber', ordernumber);
+
+    const amountInPaise = parseInt(amount) * 100;
+    const options = {
+      description: 'Purchase Product',
+      image: 'https://your-logo-url.com/logo.png',
+      currency: 'INR',
+      key: 'rzp_live_1oXCdVHL2cgMKY', // Replace with your Razorpay key ID
+      amount: amountInPaise.toString(), // Amount in paise (5000 paise = 50 INR)
+      name: 'AXCES',
+      order_id: ordernumber,
+      theme: {color: '#BDEA09'},
     };
+    console.log('options', options);
 
-    const managepayment = orderdata => {
-      const ordernumber = orderdata?.data?.order?.id;
-      console.log('ordernumber', ordernumber);
-
-      const amountInPaise = parseInt(amount) * 100;
-      const options = {
-        description: 'Purchase Product',
-        image: 'https://your-logo-url.com/logo.png',
-        currency: 'INR',
-        key: 'rzp_test_AoSsXKYIm5qUCv', // Replace with your Razorpay key ID
-        amount: amountInPaise.toString(), // Amount in paise (5000 paise = 50 INR)
-        name: 'AXCES',
-        order_id: ordernumber,
-        theme: {color: '#BDEA09'},
-      };
-      console.log('options', options);
-
-      RazorpayCheckout.open(options)
-        .then(data => {
-          // Payment successful
-          // Alert.alert('Payment Success', `Payment ID: ${data}`);
-          checkPaymentStatus(ordernumber); //
-          setpostsucessShowModal(true);
-        })
-        .catch(error => {
-          // Payment failed
-          Alert.alert(
-            'Payment Failure',
-            `Error: ${error.code} | ${error.description}`,
-          );
-        });
-    };
+    RazorpayCheckout.open(options)
+      .then(data => {
+        // Payment successful
+        // Alert.alert('Payment Success', `Payment ID: ${data}`);
+        checkPaymentStatus(ordernumber); //
+        setpostsucessShowModal(true);
+      })
+      .catch(error => {
+        // Payment failed
+        Alert.alert(
+          'Payment Failure',
+          `Error: ${error.code} | ${error.description}`,
+        );
+      });
+  };
 
   const managerecharge = () => {
     if (amount.length > 0) {
@@ -470,157 +464,151 @@ const PropertyScreen = ({route}:any) => {
     }
   };
 
+  const [postsucessshowModal, setpostsucessShowModal] =
+    useState<boolean>(false);
 
-       const [postsucessshowModal, setpostsucessShowModal] =
-         useState<boolean>(false);
+  const sucesspostdetailsmodal = () => {
+    setpostsucessShowModal(true);
+  };
 
-       const sucesspostdetailsmodal = () => {
-         setpostsucessShowModal(true);
-       };
+  const openInvoice = async () => {
+    try {
+      const supported = await Linking.canOpenURL(Invicedata);
+      if (supported) {
+        await Linking.openURL(Invicedata);
+        dispatch(onGetBalance());
+        setpostsucessShowModal(false);
+      } else {
+        Alert.alert('Error', 'Unable to open this URL.');
+      }
+    } catch (error) {
+      console.error('Error opening URL:', error);
+      Alert.alert(
+        'Error',
+        'An error occurred while trying to open the invoice.',
+      );
+    }
+  };
 
-        const openInvoice = async () => {
-          try {
-            const supported = await Linking.canOpenURL(Invicedata);
-            if (supported) {
-              await Linking.openURL(Invicedata);
-              dispatch(onGetBalance());
-              setpostsucessShowModal(false);
-            } else {
-              Alert.alert('Error', 'Unable to open this URL.');
-            }
-          } catch (error) {
-            console.error('Error opening URL:', error);
-            Alert.alert(
-              'Error',
-              'An error occurred while trying to open the invoice.',
-            );
-          }
-        };
-
-
-       const rechargesucessmodal = () => {
-         return (
-           <Modal
-             visible={postsucessshowModal}
-             transparent={true}
-             statusBarTranslucent={true}
-             animationType="fade">
-             <TouchableWithoutFeedback
-               onPress={() => setpostsucessShowModal(false)}>
-               <View
-                 style={{
-                   ...styles.modalOverlay,
-                   justifyContent: 'center',
-                   alignItems: 'center',
-                 }}>
-                 <TouchableWithoutFeedback>
-                   <View className="rounded-lg p-4 bg-white w-[90%]">
-                     <View
-                       style={{
-                         top: -15,
-                         position: 'absolute',
-                         left: 14,
-                         // right: 0,
-                         zIndex: 999,
-                       }}>
-                       <Image
-                         source={require('../../../assets/coin.png')}
-                         style={{height: 34, width: 34, resizeMode: 'contain'}}
-                       />
-                     </View>
-                     <Text className="text-black text-base font-bold">
-                       Congratulations!!!
-                     </Text>
-                     <View
-                       style={{
-                         flexDirection: 'row',
-                         alignItems: 'center',
-                         width: '90%',
-                         paddingVertical: 5,
-                       }}>
-                       <Text className="text-black text-base font-bold">
-                         {amount} +coins
-                       </Text>
-                       <Text className="text-[#0E0E0C99] text-base ml-2">
-                         have been added to your wallet successfully
-                       </Text>
-                     </View>
-                     <TouchableOpacity
-                       onPress={() => setpostsucessShowModal(false)}
-                       className="w-full p-3 bg-[#BDEA09] rounded-full mt-2">
-                       <Text className="text-[#181A53] text-base text-center font-medium">
-                         Go Home
-                       </Text>
-                     </TouchableOpacity>
-                     <TouchableOpacity
-                       onPress={() => openInvoice()}
-                       className="w-full p-3 bg-[#BDEA09] rounded-full mt-2">
-                       <Text className="text-[#181A53] text-base text-center font-medium">
-                         Download Invoice
-                       </Text>
-                     </TouchableOpacity>
-                   </View>
-                 </TouchableWithoutFeedback>
-               </View>
-             </TouchableWithoutFeedback>
-           </Modal>
-         );
-       };
-
-
-  
-const {width} = Dimensions.get('window');
-
-const {height: windowHeight} = Dimensions.get('window');
-
-
-const renderActiveSection = () => {
-  return (
-    <ScrollView
-      contentContainerStyle={{paddingHorizontal: 16, paddingBottom: 12}}>
-      {(activeSection === 'All' || activeSection === 'Description') && (
-        <View style={{marginBottom: 12}}>
-          <PropertyDscr item={data} />
-        </View>
-      )}
-
-      {(activeSection === 'All' || activeSection === 'Details') && (
-        <View style={{marginBottom: 12}}>
-          <PropertyDetail item={data} />
-        </View>
-      )}
-
-      {(activeSection === 'All' || activeSection === 'Facilities') && (
-        <View style={{marginBottom: 12}}>
-          <Facilities item={data} />
-        </View>
-      )}
-
-      {(activeSection === 'All' || activeSection === 'Owner') && (
-        <View
-          style={{
-            width: width * 0.9, // Responsive width
-            marginBottom: 12,
-            backgroundColor: '#fff',
-            alignItems: 'center',
-            alignSelf: 'center',
-            justifyContent: 'center',
-            borderRadius: 25,
-            paddingVertical: 20,
-          }}>
+  const rechargesucessmodal = () => {
+    return (
+      <Modal
+        visible={postsucessshowModal}
+        transparent={true}
+        statusBarTranslucent={true}
+        animationType="fade">
+        <TouchableWithoutFeedback onPress={() => setpostsucessShowModal(false)}>
           <View
             style={{
-              flexDirection: 'row',
-              justifyContent: 'space-between',
-              width: '80%',
+              ...styles.modalOverlay,
+              justifyContent: 'center',
+              alignItems: 'center',
             }}>
-            <View style={{alignItems: 'center'}}>
-              <Image
-                source={{uri: demoUser}}
-                style={{width: 62, height: 62, borderRadius: 31}}
-                resizeMode="cover"
-              />
-              {/* <Text
+            <TouchableWithoutFeedback>
+              <View className="rounded-lg p-4 bg-white w-[90%]">
+                <View
+                  style={{
+                    top: -15,
+                    position: 'absolute',
+                    left: 14,
+                    // right: 0,
+                    zIndex: 999,
+                  }}>
+                  <Image
+                    source={require('../../../assets/coin.png')}
+                    style={{height: 34, width: 34, resizeMode: 'contain'}}
+                  />
+                </View>
+                <Text className="text-base font-bold text-black">
+                  Congratulations!!!
+                </Text>
+                <View
+                  style={{
+                    flexDirection: 'row',
+                    alignItems: 'center',
+                    width: '90%',
+                    paddingVertical: 5,
+                  }}>
+                  <Text className="text-base font-bold text-black">
+                    {amount} +coins
+                  </Text>
+                  <Text className="text-[#0E0E0C99] text-base ml-2">
+                    have been added to your wallet successfully
+                  </Text>
+                </View>
+                <TouchableOpacity
+                  onPress={() => setpostsucessShowModal(false)}
+                  className="w-full p-3 bg-[#BDEA09] rounded-full mt-2">
+                  <Text className="text-[#181A53] text-base text-center font-medium">
+                    Go Home
+                  </Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  onPress={() => openInvoice()}
+                  className="w-full p-3 bg-[#BDEA09] rounded-full mt-2">
+                  <Text className="text-[#181A53] text-base text-center font-medium">
+                    Download Invoice
+                  </Text>
+                </TouchableOpacity>
+              </View>
+            </TouchableWithoutFeedback>
+          </View>
+        </TouchableWithoutFeedback>
+      </Modal>
+    );
+  };
+
+  const {width} = Dimensions.get('window');
+
+  const {height: windowHeight} = Dimensions.get('window');
+
+  const renderActiveSection = () => {
+    return (
+      <ScrollView
+        contentContainerStyle={{paddingHorizontal: 16, paddingBottom: 12}}>
+        {(activeSection === 'All' || activeSection === 'Description') && (
+          <View style={{marginBottom: 12}}>
+            <PropertyDscr item={data} />
+          </View>
+        )}
+
+        {(activeSection === 'All' || activeSection === 'Details') && (
+          <View style={{marginBottom: 12}}>
+            <PropertyDetail item={data} />
+          </View>
+        )}
+
+        {(activeSection === 'All' || activeSection === 'Facilities') && (
+          <View style={{marginBottom: 12}}>
+            <Facilities item={data} />
+          </View>
+        )}
+
+        {(activeSection === 'All' || activeSection === 'Owner') && (
+          <View
+            style={{
+              width: width * 0.9, // Responsive width
+              marginBottom: 12,
+              backgroundColor: '#fff',
+              alignItems: 'center',
+              alignSelf: 'center',
+              justifyContent: 'center',
+              borderRadius: 25,
+              paddingVertical: 20,
+            }}>
+            <View
+              style={{
+                flexDirection: 'row',
+                justifyContent: 'space-between',
+                width: '80%',
+              }}>
+              <View style={{alignItems: 'center'}}>
+                <Image
+                  source={{uri: demoUser}}
+                  style={{width: 62, height: 62, borderRadius: 31}}
+                  resizeMode="cover"
+                />
+                {/* <Text
                 style={{
                   color: '#181A53',
                   fontWeight: '500',
@@ -629,34 +617,33 @@ const renderActiveSection = () => {
                 }}>
                 Charges
               </Text> */}
-            </View>
-            <View style={{alignItems: 'center'}}>
-              {/* <Text style={{fontSize: 17, color: '#000000', fontWeight: '500'}}>
+              </View>
+              <View style={{alignItems: 'center'}}>
+                {/* <Text style={{fontSize: 17, color: '#000000', fontWeight: '500'}}>
                 +91-9999955555
               </Text> */}
-              <TouchableOpacity
-                onPress={() => handleopencontactddetails()}
-                style={{
-                  width: width * 0.45, // Responsive button width
-                  backgroundColor: '#BDEA09',
-                  height: 50,
-                  justifyContent: 'center',
-                  alignItems: 'center',
-                  borderRadius: 30,
-                  marginTop: 8,
-                }}>
-                <Text style={{color: '#000000', fontWeight: '600'}}>
-                  Contact Owner
-                </Text>
-              </TouchableOpacity>
+                <TouchableOpacity
+                  onPress={() => handleopencontactddetails()}
+                  style={{
+                    width: width * 0.45, // Responsive button width
+                    backgroundColor: '#BDEA09',
+                    height: 50,
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                    borderRadius: 30,
+                    marginTop: 8,
+                  }}>
+                  <Text style={{color: '#000000', fontWeight: '600'}}>
+                    Contact Owner
+                  </Text>
+                </TouchableOpacity>
+              </View>
             </View>
           </View>
-        </View>
-      )}
-    </ScrollView>
-  );
-};
-
+        )}
+      </ScrollView>
+    );
+  };
 
   return (
     <View style={{backgroundColor: '#181A53'}}>
@@ -674,11 +661,11 @@ const renderActiveSection = () => {
           <View className="bg-[#181A53] w-full h-[70%] z-10 absolute top-0" />
         </View>
         <View className="px-6 pt-2">
-          <View className=" flex flex-row justify-between">
+          <View className="flex flex-row justify-between ">
             <Text className=" text-base font-bold text-[#0E0E0C]">
               {data?.building_name}
             </Text>
-            <View className=" flex flex-row">
+            <View className="flex flex-row ">
               <Text className=" text-base font-bold text-[#BDEA09]">
                 ₹ {data?.monthly_rent}
               </Text>
@@ -775,9 +762,7 @@ const renderActiveSection = () => {
   );
 };
 
-export default PropertyScreen
-
-
+export default PropertyScreen;
 
 const styles = StyleSheet.create({
   container: {

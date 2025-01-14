@@ -6,8 +6,9 @@ import MainStack from './src/routes/MainStack';
 import {GestureHandlerRootView} from 'react-native-gesture-handler';
 import {Alert, PermissionsAndroid, Platform} from 'react-native';
 import PushNotificationIOS from '@react-native-community/push-notification-ios';
-import configurePushNotifications from './Pushnotificationsconfig'; // Import the config
+// import configurePushNotifications from './Pushnotificationsconfig'; // Import the config
 import messaging from '@react-native-firebase/messaging';
+import {withIAPContext} from 'react-native-iap';
 
 function App(): React.JSX.Element {
   const requestUserPermission = async () => {
@@ -31,27 +32,25 @@ function App(): React.JSX.Element {
     }
   };
 
-
   const getFCMToken = async () => {
     const token = await messaging().getToken();
     console.log('FCM Token:', token);
     return token;
   };
 
-
   useEffect(() => {
-      getFCMToken();
+    getFCMToken();
     requestUserPermission();
     // configurePushNotifications(); // Initialize push notifications
   }, []);
 
- useEffect(() => {
-   const unsubscribe = messaging().onMessage(async remoteMessage => {
-     Alert.alert('A new FCM message arrived!', JSON.stringify(remoteMessage));
-   });
+  useEffect(() => {
+    const unsubscribe = messaging().onMessage(async remoteMessage => {
+      Alert.alert('A new FCM message arrived!', JSON.stringify(remoteMessage));
+    });
 
-   return unsubscribe;
- }, []);
+    return unsubscribe;
+  }, []);
 
   return (
     <GestureHandlerRootView style={{flex: 1}}>
@@ -64,8 +63,7 @@ function App(): React.JSX.Element {
   );
 }
 
-export default App;
-
+export default withIAPContext(App);
 
 // import 'react-native-gesture-handler';
 // import React, {useEffect} from 'react';

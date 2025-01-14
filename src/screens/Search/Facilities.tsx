@@ -52,7 +52,7 @@ const Facilities: React.FC<Props> = ({
         {filterName}
       </Text>
       {wrap ? (
-        <View className="w-full flex flex-row flex-wrap pl-6">
+        <View className="flex flex-row flex-wrap w-full pl-6">
           {options.map((item, idx) => (
             <TouchableOpacity
               onPress={() => handleSelect(item)}

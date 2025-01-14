@@ -11,6 +11,7 @@ import {
   Modal,
   TouchableWithoutFeedback,
   StyleSheet,
+  Platform,
 } from 'react-native';
 import {Linking} from 'react-native';
 import {SafeAreaView} from 'react-native-safe-area-context';
@@ -55,6 +56,14 @@ import Loader from '../../component/Loader/Loader';
 import {Alert} from 'react-native';
 import {onGetUserProfile} from '../../redux/ducks/User/viewProfile';
 import RazorpayCheckout from 'react-native-razorpay';
+import {
+  initConnection,
+  endConnection,
+  useIAP,
+  getProducts,
+  requestPurchase,
+  isIosStorekit2,
+} from 'react-native-iap';
 
 export interface OthersDataInterface {
   title: string;
@@ -234,6 +243,92 @@ const ProfileScreen = () => {
   const [postsucessshowModal, setpostsucessShowModal] =
     useState<boolean>(false);
 
+  const [products, setProducts] = useState([]);
+  const [isIAPReady, setIsIAPReady] = useState(false);
+
+  const {finishTransaction} = useIAP();
+
+  const productIds = {
+    '100_coins': 'com.axces.coins.100',
+    '500_coins': 'com.axces.coins.500',
+    '1000_coins': 'com.axces.coins.1000',
+  };
+
+  const skus = Platform.select({
+    ios: ['com.axces.coins.100', 'com.axces.coins.500', 'com.axces.coins.1000'],
+    android: [
+      'com.axces.coins.100',
+      'com.axces.coins.500',
+      'com.axces.coins.1000',
+    ],
+  });
+
+  const initializeIAP = async () => {
+    try {
+      if (Platform.OS === 'ios') {
+        await initConnection();
+        const iapProducts = await getProducts({skus});
+        console.log('IAP products:', iapProducts);
+        setProducts(iapProducts);
+        setIsIAPReady(true);
+      }
+    } catch (error) {
+      console.error('Failed to initialize IAP:', error);
+      Alert.alert('Error', 'Failed to initialize in-app purchases');
+    }
+  };
+
+  useEffect(() => {
+    if (Platform.OS === 'ios') {
+      initializeIAP();
+    }
+
+    return () => {
+      if (Platform.OS === 'ios') {
+        endConnection();
+      }
+    };
+  }, []);
+
+  const handleIOSPurchase = async () => {
+    try {
+      const productId = productIds[`${amount}_coins`];
+      if (!productId) {
+        Alert.alert('Error', 'Invalid amount selected');
+        return;
+      }
+
+      console.log('Initiating purchase for product ID:', productId);
+
+      // Request purchase for the identified product ID
+      const purchase = await requestPurchase({sku: productId});
+
+      console.log('Purchase result:', purchase);
+
+      if (!purchase) {
+        throw new Error('Purchase result is null or undefined');
+      }
+
+      // // Finish the transaction
+      // await finishTransaction(purchase);
+
+      // After successful purchase
+      // const orderData = {
+      //   data: {
+      //     order: {
+      //       id: purchase.transactionId,
+      //     },
+      //   },
+      // };
+
+      // checkPaymentStatus(purchase.transactionId);
+      setpostsucessShowModal(true);
+    } catch (error) {
+      console.error('Purchase error:', error);
+      Alert.alert('Purchase Failed', 'Failed to complete the purchase');
+    }
+  };
+
   const managepayment = orderdata => {
     const ordernumber = orderdata?.data?.order?.id;
     console.log('ordernumber', ordernumber);
@@ -243,7 +338,7 @@ const ProfileScreen = () => {
       description: 'Purchase Product',
       image: 'https://your-logo-url.com/logo.png',
       currency: 'INR',
-      key: 'rzp_test_AoSsXKYIm5qUCv', // Replace with your Razorpay key ID
+      key: 'rzp_live_1oXCdVHL2cgMKY', // Replace with your Razorpay key ID
       amount: amountInPaise.toString(), // Amount in paise (5000 paise = 50 INR)
       name: 'AXCES',
       order_id: ordernumber,
@@ -268,26 +363,29 @@ const ProfileScreen = () => {
   };
 
   const managerecharge = () => {
-    if (amount.length > 0) {
-      //  setpostsucessShowModal(true); // Show success modal
-      dispatch(onRecharge(amount))
-        .then(response => {
-          // Handle success
-          console.log('Recharge successful:', response.data);
-          //  const orderdata = response?.data?.data?.order?.id;
-          managepayment(response.data); // Continue with payment management
-        })
-        .catch(error => {
-          // Handle error
-          console.error('Recharge failed:', error);
-          errorMessage('Recharge failed. Please try again.');
-        })
-        .finally(() => {
-          // Close bottom sheet regardless of success or failure
-          nocoinbottomSheetRef.current?.close();
-        });
+    if (amount > 0 && amount !== '') {
+      if (Platform.OS === 'android') {
+        dispatch(onRecharge(amount))
+          .then(response => {
+            console.log('Recharge successful:', response.data);
+            managepayment(response.data);
+          })
+          .catch(error => {
+            console.error('Recharge failed:', error);
+            errorMessage('Recharge failed. Please try again.');
+          })
+          .finally(() => {
+            nocoinbottomSheetRef.current?.close();
+          });
+      } else {
+        if (!isIAPReady) {
+          Alert.alert('Error', 'In-app purchases are not ready');
+          return;
+        }
+        handleIOSPurchase();
+      }
     } else {
-      errorMessage('Please enter amount'); // Prompt user to enter amount
+      errorMessage('Please enter amount');
     }
   };
 
@@ -418,24 +516,54 @@ const ProfileScreen = () => {
             <Text className="text-[#0E0E0C] text-xl font-bold my-3">
               Amount
             </Text>
-            <TextInput
-              placeholder="Enter Amount"
-              maxLength={5}
-              keyboardType="numeric"
-              returnKeyType="done"
-              value={amount}
-              placeholderTextColor={'black'}
-              style={{
-                width: '100%',
-                height: 50,
-                borderRadius: 5,
-                backgroundColor: '#F2F8F6',
-                paddingHorizontal: 10,
-                fontSize: 14,
-                color: '#181A53',
-              }}
-              onChangeText={text => setAmount(text)}
-            />
+            {Platform.OS === 'ios' ? (
+              <View style={{flexDirection: 'row', flexWrap: 'wrap', gap: 10}}>
+                {products.map((product, index) => {
+                  const fixedAmount = parseInt(
+                    product.productId.replace('com.axces.coins.', ''),
+                  );
+                  return (
+                    <TouchableOpacity
+                      key={index}
+                      onPress={() => setAmount(fixedAmount)}
+                      style={{
+                        padding: 10,
+                        borderRadius: 5,
+                        backgroundColor:
+                          amount === fixedAmount ? '#BDEA09' : '#F2F8F6',
+                        justifyContent: 'center',
+                      }}>
+                      <Text
+                        style={{
+                          fontSize: 14,
+                          color: '#181A53',
+                        }}>
+                        ₹{fixedAmount}
+                      </Text>
+                    </TouchableOpacity>
+                  );
+                })}
+              </View>
+            ) : (
+              <TextInput
+                placeholder="Enter Amount"
+                maxLength={5}
+                keyboardType="numeric"
+                returnKeyType="done"
+                value={amount}
+                placeholderTextColor={'black'}
+                style={{
+                  width: '100%',
+                  height: 50,
+                  borderRadius: 5,
+                  backgroundColor: '#F2F8F6',
+                  paddingHorizontal: 10,
+                  fontSize: 14,
+                  color: '#181A53',
+                }}
+                onChangeText={text => setAmount(text)}
+              />
+            )}
             <View style={{height: 30}} />
             <Text className=" text-[#0E0E0CCC] text-base font-medium border-b border-b-black/10">
               Two simple steps
@@ -770,6 +898,103 @@ const ProfileScreen = () => {
                 />
               </View>
             </TouchableOpacity>
+
+            {/* Transactions */}
+            <TouchableOpacity
+              onPress={() => navigation.navigate('TransactionHistory')}
+              className=" w-full flex flex-row items-center justify-between py-3 border-b border-b-[#0E0E0C0F]">
+              <View className="flex flex-row items-center justify-start ">
+                <View
+                  style={{width: scale(32), height: verticalScale(32)}}
+                  className="flex items-center justify-center w-10 h-10 mr-3 bg-white rounded-lg ">
+                  <Image
+                    style={{width: scale(16), height: verticalScale(16)}}
+                    source={{uri: Help}}
+                    resizeMode="contain"
+                  />
+                </View>
+                <Text
+                  style={{fontSize: RFValue(14)}}
+                  className="text-[#181A53] font-mediumM">
+                  Transactions
+                </Text>
+              </View>
+              <View>
+                <Image
+                  style={{width: scale(12), height: verticalScale(12)}}
+                  source={{
+                    uri: 'https://res.cloudinary.com/krishanucloud/image/upload/v1713692204/Vector_yfj7en.png',
+                  }}
+                  resizeMode="contain"
+                  className="-rotate-90"
+                />
+              </View>
+            </TouchableOpacity>
+
+            {/* Help & support */}
+            <TouchableOpacity
+              onPress={handlehelpEmail}
+              className=" w-full flex flex-row items-center justify-between py-3 border-b border-b-[#0E0E0C0F]">
+              <View className="flex flex-row items-center justify-start ">
+                <View
+                  style={{width: scale(32), height: verticalScale(32)}}
+                  className="flex items-center justify-center w-10 h-10 mr-3 bg-white rounded-lg ">
+                  <Image
+                    style={{width: scale(16), height: verticalScale(16)}}
+                    source={{uri: Help}}
+                    resizeMode="contain"
+                  />
+                </View>
+                <Text
+                  style={{fontSize: RFValue(14)}}
+                  className="text-[#181A53] font-mediumM">
+                  Help & Support
+                </Text>
+              </View>
+              <View>
+                <Image
+                  style={{width: scale(12), height: verticalScale(12)}}
+                  source={{
+                    uri: 'https://res.cloudinary.com/krishanucloud/image/upload/v1713692204/Vector_yfj7en.png',
+                  }}
+                  resizeMode="contain"
+                  className="-rotate-90"
+                />
+              </View>
+            </TouchableOpacity>
+
+            {/* Report and fraud */}
+            <TouchableOpacity
+              onPress={handleReportEmail}
+              className=" w-full flex flex-row items-center justify-between py-3 border-b border-b-[#0E0E0C0F]">
+              <View className="flex flex-row items-center justify-start ">
+                <View
+                  style={{width: scale(32), height: verticalScale(32)}}
+                  className="flex items-center justify-center w-10 h-10 mr-3 bg-white rounded-lg ">
+                  <Image
+                    style={{width: scale(16), height: verticalScale(16)}}
+                    source={{uri: Report}}
+                    resizeMode="contain"
+                  />
+                </View>
+                <Text
+                  style={{fontSize: RFValue(14)}}
+                  className="text-[#181A53] font-mediumM">
+                  Report & Fraud
+                </Text>
+              </View>
+              <View>
+                <Image
+                  style={{width: scale(12), height: verticalScale(12)}}
+                  source={{
+                    uri: 'https://res.cloudinary.com/krishanucloud/image/upload/v1713692204/Vector_yfj7en.png',
+                  }}
+                  resizeMode="contain"
+                  className="-rotate-90"
+                />
+              </View>
+            </TouchableOpacity>
+
             {/* Delete an account */}
             <TouchableOpacity
               onPress={() => {
@@ -803,98 +1028,7 @@ const ProfileScreen = () => {
                 />
               </View>
             </TouchableOpacity>
-            {/* Report and fraud */}
-            <TouchableOpacity
-              onPress={handleReportEmail}
-              className=" w-full flex flex-row items-center justify-between py-3 border-b border-b-[#0E0E0C0F]">
-              <View className="flex flex-row items-center justify-start ">
-                <View
-                  style={{width: scale(32), height: verticalScale(32)}}
-                  className="flex items-center justify-center w-10 h-10 mr-3 bg-white rounded-lg ">
-                  <Image
-                    style={{width: scale(16), height: verticalScale(16)}}
-                    source={{uri: Report}}
-                    resizeMode="contain"
-                  />
-                </View>
-                <Text
-                  style={{fontSize: RFValue(14)}}
-                  className="text-[#181A53] font-mediumM">
-                  Report & Fraud
-                </Text>
-              </View>
-              <View>
-                <Image
-                  style={{width: scale(12), height: verticalScale(12)}}
-                  source={{
-                    uri: 'https://res.cloudinary.com/krishanucloud/image/upload/v1713692204/Vector_yfj7en.png',
-                  }}
-                  resizeMode="contain"
-                  className="-rotate-90"
-                />
-              </View>
-            </TouchableOpacity>
-            {/* Help & support */}
-            <TouchableOpacity
-              onPress={handlehelpEmail}
-              className=" w-full flex flex-row items-center justify-between py-3 border-b border-b-[#0E0E0C0F]">
-              <View className="flex flex-row items-center justify-start ">
-                <View
-                  style={{width: scale(32), height: verticalScale(32)}}
-                  className="flex items-center justify-center w-10 h-10 mr-3 bg-white rounded-lg ">
-                  <Image
-                    style={{width: scale(16), height: verticalScale(16)}}
-                    source={{uri: Help}}
-                    resizeMode="contain"
-                  />
-                </View>
-                <Text
-                  style={{fontSize: RFValue(14)}}
-                  className="text-[#181A53] font-mediumM">
-                  Help & Support
-                </Text>
-              </View>
-              <View>
-                <Image
-                  style={{width: scale(12), height: verticalScale(12)}}
-                  source={{
-                    uri: 'https://res.cloudinary.com/krishanucloud/image/upload/v1713692204/Vector_yfj7en.png',
-                  }}
-                  resizeMode="contain"
-                  className="-rotate-90"
-                />
-              </View>
-            </TouchableOpacity>
-            <TouchableOpacity
-              onPress={() => navigation.navigate('TransactionHistory')}
-              className=" w-full flex flex-row items-center justify-between py-3 border-b border-b-[#0E0E0C0F]">
-              <View className="flex flex-row items-center justify-start ">
-                <View
-                  style={{width: scale(32), height: verticalScale(32)}}
-                  className="flex items-center justify-center w-10 h-10 mr-3 bg-white rounded-lg ">
-                  <Image
-                    style={{width: scale(16), height: verticalScale(16)}}
-                    source={{uri: Help}}
-                    resizeMode="contain"
-                  />
-                </View>
-                <Text
-                  style={{fontSize: RFValue(14)}}
-                  className="text-[#181A53] font-mediumM">
-                  Transactions
-                </Text>
-              </View>
-              <View>
-                <Image
-                  style={{width: scale(12), height: verticalScale(12)}}
-                  source={{
-                    uri: 'https://res.cloudinary.com/krishanucloud/image/upload/v1713692204/Vector_yfj7en.png',
-                  }}
-                  resizeMode="contain"
-                  className="-rotate-90"
-                />
-              </View>
-            </TouchableOpacity>
+
             <TouchableOpacity
               onPress={handleLogout}
               className="w-full py-2 my-4 bg-white rounded-full shadow-lg ">
