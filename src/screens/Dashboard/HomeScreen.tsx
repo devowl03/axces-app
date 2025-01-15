@@ -16,7 +16,7 @@ import {
   View,
   Modal,
   Keyboard,
-  Platform
+  Platform,
 } from 'react-native';
 import {
   bell,
@@ -42,16 +42,15 @@ import {onGetUserProfile} from '../../redux/ducks/User/viewProfile';
 import Loader from '../../component/Loader/Loader';
 import {errorMessage} from '../../utils';
 import axios from 'axios';
-import { TouchableWithoutFeedback } from 'react-native-gesture-handler';
+import {TouchableWithoutFeedback} from 'react-native-gesture-handler';
 import FlashMessage, {showMessage} from 'react-native-flash-message';
 // import Modal from 'react-native-modal';
 
 const MAX_LENGTH = 28;
 
 const HomeScreen = ({route}) => {
-
   console.log('route', route);
-  
+
   const insets = useSafeAreaInsets();
   const navigation = useNavigation<StackNavigationProp<RootStackParamList>>();
   const [currentLocation, setCurrentLocation] = useState('');
@@ -64,7 +63,7 @@ const HomeScreen = ({route}) => {
   const [latitude, setLatitude] = useState(latitude);
   const [longitude, setLongitude] = useState(longitude);
   const [refreshing, setRefreshing] = useState(false);
-    const [locationModalVisible, setLocationModalVisible] = useState(false);
+  const [locationModalVisible, setLocationModalVisible] = useState(false);
   const dropdownHeight = useRef(new Animated.Value(0)).current;
   const dropdownOpacity = useRef(new Animated.Value(0)).current;
 
@@ -141,7 +140,6 @@ const HomeScreen = ({route}) => {
       };
     }, [route.name]), // Depend on the route name so it updates on screen change
   );
-  
 
   const requestLocationPermission = async () => {
     if (Platform.OS === 'ios') {
@@ -188,28 +186,27 @@ const HomeScreen = ({route}) => {
       );
 
       if (granted === PermissionsAndroid.RESULTS.GRANTED) {
-         Geolocation.getCurrentPosition(
-           position => {
-             dispatch(
-               onGetLocation(
-                 position.coords.latitude,
-                 position.coords.longitude,
-               ),
-             );
-             setLatitude(position.coords.latitude);
-             setLongitude(position.coords.longitude);
-           },
-           error => {
-             console.log('Error:', error);
-           },
-           {enableHighAccuracy: true, timeout: 15000, maximumAge: 10000},
-         );
+        Geolocation.getCurrentPosition(
+          position => {
+            dispatch(
+              onGetLocation(
+                position.coords.latitude,
+                position.coords.longitude,
+              ),
+            );
+            setLatitude(position.coords.latitude);
+            setLongitude(position.coords.longitude);
+          },
+          error => {
+            console.log('Error:', error);
+          },
+          {enableHighAccuracy: true, timeout: 15000, maximumAge: 10000},
+        );
       } else {
         console.log('You cannot use Geolocation');
       }
     }
   };
-
 
   // const requestLocationPermission = async () => {
   //   try {
@@ -300,7 +297,7 @@ const HomeScreen = ({route}) => {
     const {latitude, longitude} = item?.coordinates;
     setLatitude(latitude);
     setLongitude(longitude);
-      dispatch(onGetLocation(parseFloat(latitude), parseFloat(longitude)));
+    dispatch(onGetLocation(parseFloat(latitude), parseFloat(longitude)));
     setModalVisible(false);
   };
 
@@ -320,7 +317,7 @@ const HomeScreen = ({route}) => {
   const getGreeting = () => {
     const hours = new Date().getHours();
     console.log('"\\====================================');
-    console.log("hots",hours);
+    console.log('hots', hours);
     console.log('====================================');
     if (hours < 12) {
       return 'Good Morning';
@@ -332,110 +329,108 @@ const HomeScreen = ({route}) => {
   };
   const trimText = (text, maxLength) => {
     if (text.length > maxLength) {
-      return text.substring(0, maxLength ) + '...';
+      return text.substring(0, maxLength) + '...';
     }
     return text;
   };
 
-    const changeLocation = () => {
-      setCurrentLocation(newLocation);
-      setModalVisible(false);
-    };
+  const changeLocation = () => {
+    setCurrentLocation(newLocation);
+    setModalVisible(false);
+  };
 
-     const getLatLongFromAddress = async address => {
-       try {
-         const response = await axios.get(
-           `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(
-             address,
-           )}`,
-           {
-             headers: {
-               'User-Agent': 'axces/1.0 (axces.customercare@gmail.com)',
-             },
-           },
-         );
+  const getLatLongFromAddress = async address => {
+    try {
+      const response = await axios.get(
+        `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(
+          address,
+        )}`,
+        {
+          headers: {
+            'User-Agent': 'axces/1.0 (axces.customercare@gmail.com)',
+          },
+        },
+      );
 
-         if (response.data.length > 0) {
-           const location = response.data[0];
-           const {lat, lon} = location;
+      if (response.data.length > 0) {
+        const location = response.data[0];
+        const {lat, lon} = location;
 
-           // Convert lat and lon to numbers and set in the state
-           setLatitude(parseFloat(lat));
-           setLongitude(parseFloat(lon));
+        // Convert lat and lon to numbers and set in the state
+        setLatitude(parseFloat(lat));
+        setLongitude(parseFloat(lon));
 
-           // Dispatch the location to onGetLocation function
-           dispatch(onGetLocation(parseFloat(lat), parseFloat(lon)));
-         } else {
-           console.log('Address not found');
-         }
-       } catch (error) {
-         console.log('Error fetching coordinates:', error);
-       }
-     };
+        // Dispatch the location to onGetLocation function
+        dispatch(onGetLocation(parseFloat(lat), parseFloat(lon)));
+      } else {
+        console.log('Address not found');
+      }
+    } catch (error) {
+      console.log('Error fetching coordinates:', error);
+    }
+  };
 
-      const [locationsuggestions, setlocationSuggestions] = useState([]);
+  const [locationsuggestions, setlocationSuggestions] = useState([]);
 
+  const getSuggestions = async text => {
+    setAddress(text);
+    if (text.length > 2) {
+      // Fetch suggestions if text length is more than 2 characters
+      try {
+        const response = await axios.get(
+          `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(
+            text,
+          )}&countrycodes=IN`,
+          {
+            headers: {
+              'User-Agent': 'axces/1.0 (axces.customercare@gmail.com)',
+            },
+          },
+        );
+        console.log('response', response);
+        setlocationSuggestions(response.data);
+      } catch (error) {
+        console.log('Error fetching suggestions:', error);
+      }
+    } else {
+      setlocationSuggestions([]); // Clear suggestions when input is less than 3 characters
+    }
+  };
 
-     const getSuggestions = async text => {
-       setAddress(text);
-       if (text.length > 2) {
-         // Fetch suggestions if text length is more than 2 characters
-         try {
-            const response = await axios.get(
-              `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(
-                text,
-              )}`,
-              {
-                headers: {
-                  'User-Agent': 'axces/1.0 (axces.customercare@gmail.com)',
-                },
-              },
-            );
-            console.log('response', response);
-           
-           setlocationSuggestions(response.data);
-         } catch (error) {
-           console.log('Error fetching suggestions:', error);
-         }
-       } else {
-         setlocationSuggestions([]); // Clear suggestions when input is less than 3 characters
-       }
-     };
+  const handleSuggestionSelect = item => {
+    const {display_name, lat, lon} = item;
+    setAddress(display_name); // Update input with selected suggestion
+    setLatitude(parseFloat(lat));
+    setLongitude(parseFloat(lon));
+    setlocationSuggestions([]); // Clear suggestions after selection
+    setModalVisible(false);
+    Keyboard.dismiss();
+  };
 
-     const handleSuggestionSelect = item => {
-       const {display_name, lat, lon} = item;
-       setAddress(display_name); // Update input with selected suggestion
-       setLatitude(parseFloat(lat));
-       setLongitude(parseFloat(lon));
-       setlocationSuggestions([]); // Clear suggestions after selection
-       setModalVisible(false);
-       Keyboard.dismiss()
-     };
+  // Handle the user submitting the new address
+  const handleNewLocation = () => {
+    if (address) {
+      getLatLongFromAddress(address);
+      setLocationModalVisible(false);
+      //  setAddress('')
+    } else {
+      console.log('Please enter an address or city');
+    }
+  };
 
-     // Handle the user submitting the new address
-     const handleNewLocation = () => {
-       if (address) {
-         getLatLongFromAddress(address);
-         setLocationModalVisible(false)
-        //  setAddress('')
-       } else {
-         console.log('Please enter an address or city');
-       }
-     };
-
-     const handlePress = () => {
-       showMessage({
-         message: 'Please Select Current Location',
-         //  description: 'Please Select Current Location',
-         type: 'danger',
-         statusBarHeight: 50,
-         animated: true,
-         duration: 2000,
-         icon: 'danger',
-         position: 'top',
-         autoHide: true,
-       });
-     };
+  const handlePress = () => {
+    showMessage({
+      message: 'Please Select Current Location',
+      //  description: 'Please Select Current Location',
+      type: 'danger',
+      statusBarHeight: 50,
+      animated: true,
+      duration: 2000,
+      icon: 'danger',
+      position: 'top',
+      autoHide: true,
+    });
+  };
 
   return (
     <SafeAreaView
@@ -458,14 +453,14 @@ const HomeScreen = ({route}) => {
         <View
           style={{paddingTop: insets.top}}
           className="overflow-visible w-full relative h-[60vh] rounded-b-2xl pb-8">
-          <View className="z-20 px-6 pt-6 flex flex-row justify-between items-center">
+          <View className="z-20 flex flex-row items-center justify-between px-6 pt-6">
             <View>
-              <Text className="text-white/60 font-medium text-lg ml-7 mb-2">
+              <Text className="mb-2 text-lg font-medium text-white/60 ml-7">
                 Current Location
               </Text>
               <TouchableOpacity
                 onPress={() => setLocationModalVisible(true)}
-                className="flex flex-row justify-start items-center">
+                className="flex flex-row items-center justify-start">
                 <Image
                   source={{uri: location}}
                   resizeMode="contain"
@@ -477,12 +472,12 @@ const HomeScreen = ({route}) => {
                       ? trimText(currentLocation, MAX_LENGTH)
                       : 'Fetching...'}
                   </Text>
-                  {/* <Image source={{ uri: greenDown }} resizeMode="contain" className="w-3 aspect-auto ml-1" /> */}
+                  {/* <Image source={{ uri: greenDown }} resizeMode="contain" className="w-3 ml-1 aspect-auto" /> */}
                 </View>
               </TouchableOpacity>
             </View>
             <TouchableOpacity
-              className="bg-white/10 rounded-full flex items-center justify-center w-10 h-10"
+              className="flex items-center justify-center w-10 h-10 rounded-full bg-white/10"
               onPress={() => navigation.navigate('Notifications')}>
               <Image
                 source={{uri: bell}}
@@ -491,8 +486,8 @@ const HomeScreen = ({route}) => {
               />
             </TouchableOpacity>
           </View>
-          <View className="z-20 px-6 absolute bottom-0 left-0 right-0">
-            <Text className="text-2xl text-white font-medium">
+          <View className="absolute bottom-0 left-0 right-0 z-20 px-6">
+            <Text className="text-2xl font-medium text-white">
               {getGreeting()} {userData?.name} !
             </Text>
             {/* <View style={{flex: 1, padding: 16}}>
@@ -556,7 +551,7 @@ const HomeScreen = ({route}) => {
                 </Animated.View>
               )}
             </View> */}
-            <View className="bg-white p-3 mt-4 rounded-2xl">
+            <View className="p-3 mt-4 bg-white rounded-2xl">
               <Text className="text-[#0E0E0C] text-base font-bold mb-3">
                 What are you looking for today?
               </Text>
@@ -605,13 +600,13 @@ const HomeScreen = ({route}) => {
           <Image
             source={{uri: homeBanner}}
             resizeMode="cover"
-            className="w-full z-10 h-full absolute top-0 bottom-0 left-0 right-0 rounded-b-3xl"
+            className="absolute top-0 bottom-0 left-0 right-0 z-10 w-full h-full rounded-b-3xl"
           />
         </View>
         {/* Want to showcase */}
         <View className="px-6 my-6">
           <View className="flex flex-row w-full bg-white rounded-xl">
-            <View className="flex-1 flex justify-between p-4">
+            <View className="flex justify-between flex-1 p-4">
               <Text className="text-xl text-[#181A53] font-bold">
                 Want to showcase your property?
               </Text>
@@ -638,31 +633,31 @@ const HomeScreen = ({route}) => {
         {/* Offer */}
         {/* <View className="px-6 mb-6">
           <View className="relative w-full px-4 pb-4 rounded-xl">
-            <View className="absolute top-0 left-0 right-0 flex items-center justify-center z-20 mx-auto">
+            <View className="absolute top-0 left-0 right-0 z-20 flex items-center justify-center mx-auto">
               <View className="bg-white/40 w-[90%] flex flex-row justify-between items-center px-2 py-1 rounded-b-xl">
-                <Text className="text-white text-sm">Use code</Text>
+                <Text className="text-sm text-white">Use code</Text>
                 <Text className="text-base font-bold text-white">FAB50</Text>
               </View>
             </View>
-            <View className="mt-10 z-20 flex flex-row justify-between items-center">
+            <View className="z-20 flex flex-row items-center justify-between mt-10">
               <View>
-                <Text className="text-white text-4xl font-bold">5% off</Text>
-                <Text className="text-white text-base">on car wash</Text>
+                <Text className="text-4xl font-bold text-white">5% off</Text>
+                <Text className="text-base text-white">on car wash</Text>
               </View>
-              <TouchableOpacity className="bg-white/30 rounded-full">
-                <Text className="text-white text-base py-3 px-8">Book now</Text>
+              <TouchableOpacity className="rounded-full bg-white/30">
+                <Text className="px-8 py-3 text-base text-white">Book now</Text>
               </TouchableOpacity>
             </View>
             <Image
               source={{uri: offerBanner}}
               resizeMode="cover"
-              className="absolute top-0 left-0 right-0 bottom-0 rounded-xl z-10"
+              className="absolute top-0 bottom-0 left-0 right-0 z-10 rounded-xl"
             />
           </View>
         </View> */}
         {/* Check history */}
         {/* <View className="px-6 mb-6">
-          <View className="flex flex-row w-full bg-white rounded-xl p-4">
+          <View className="flex flex-row w-full p-4 bg-white rounded-xl">
             <View className="flex-1">
               <Text className="text-base font-medium text-[#181A53]">
                 Check your recent views
@@ -679,7 +674,7 @@ const HomeScreen = ({route}) => {
         <View className="px-6 mb-6">
           <View className="w-full bg-white rounded-xl">
             <View className="flex flex-row w-full">
-              <View className="flex-1 flex justify-between p-4">
+              <View className="flex justify-between flex-1 p-4">
                 <Text className="text-xl text-[#181A53] font-bold">
                   Got stuck? Check our FAQ
                 </Text>
@@ -712,7 +707,7 @@ const HomeScreen = ({route}) => {
                 longitude,
               })
             }>
-            <Text className="text-black font-bold text-base my-6">
+            <Text className="my-6 text-base font-bold text-black">
               Test mode: Propertylisted Screen Click
             </Text>
           </TouchableOpacity> */}
