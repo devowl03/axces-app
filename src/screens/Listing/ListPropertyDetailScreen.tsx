@@ -65,6 +65,8 @@ const ListPropertyDetailScreen = () => {
     state => state.viewProfile.data.platformCharges,
   );
 
+  const userData = useAppSelector(state => state?.viewProfile?.data?.data);
+
   const bottomSheetRef = useRef<BottomSheetModal>(null);
   const nocoinbottomSheetRef = useRef<BottomSheetModal>(null);
   const [selected, setSelected] = useState<boolean>(false);
@@ -1223,6 +1225,11 @@ const ListPropertyDetailScreen = () => {
       name: 'AXCES',
       order_id: ordernumber,
       theme: {color: '#BDEA09'},
+      prefill: {
+        name: userData?.name,
+        email: userData?.email,
+        contact: userData?.number,
+      },
     };
     console.log('options', options);
 
@@ -1235,10 +1242,11 @@ const ListPropertyDetailScreen = () => {
       })
       .catch(error => {
         // Payment failed
-        Alert.alert(
-          'Payment Failure',
-          `Error: ${error.code} | ${error.description}`,
-        );
+        // Alert.alert(
+        //   'Payment Failure',
+        //   `Error: ${error.code} | ${error.description}`,
+        // );
+        errorMessage('Payment failed. Please try again.');
       });
   };
 

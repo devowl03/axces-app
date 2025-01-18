@@ -225,7 +225,7 @@ const ProfileScreen = () => {
       );
 
       const data = await response.json();
-      console.log('data++++++++++', data);
+      console.log('Invoice Data Url', data);
 
       if (response.ok) {
         SetInvoicedata(data?.invoice_download_url);
@@ -268,7 +268,7 @@ const ProfileScreen = () => {
       if (Platform.OS === 'ios') {
         await initConnection();
         const iapProducts = await getProducts({skus});
-        console.log('IAP products:', iapProducts);
+        // console.log('IAP products:', iapProducts);
         setProducts(iapProducts);
         setIsIAPReady(true);
       }
@@ -343,6 +343,11 @@ const ProfileScreen = () => {
       name: 'AXCES',
       order_id: ordernumber,
       theme: {color: '#BDEA09'},
+      prefill: {
+        name: userData?.name,
+        email: userData?.email,
+        contact: userData?.number,
+      },
     };
     console.log('options', options);
 
@@ -355,10 +360,11 @@ const ProfileScreen = () => {
       })
       .catch(error => {
         // Payment failed
-        Alert.alert(
-          'Payment Failure',
-          `Error: ${error.code} | ${error.description}`,
-        );
+        // Alert.alert(
+        //   'Payment Failure',
+        //   `Error: ${error.code} | ${error.description}`,
+        // );
+        errorMessage('Payment failed. Please try again.');
       });
   };
 
@@ -391,6 +397,7 @@ const ProfileScreen = () => {
 
   const openInvoice = async () => {
     try {
+      console.log('Invicedata', Invicedata);
       const supported = await Linking.canOpenURL(Invicedata);
       if (supported) {
         await Linking.openURL(Invicedata);

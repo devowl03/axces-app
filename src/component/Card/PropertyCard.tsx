@@ -719,9 +719,7 @@ const PropertyCard: React.FC<Props> = ({
   const viewProfile = useAppSelector(
     state => state.viewProfile.data.platformCharges,
   );
-  console.log('====================================');
-  console.log('viewProfile', viewProfile);
-  console.log('====================================');
+  const userData = useAppSelector(state => state?.viewProfile?.data?.data);
 
   useEffect(() => {
     dispatch(onGetBalance());
@@ -1104,6 +1102,11 @@ const PropertyCard: React.FC<Props> = ({
       name: 'AXCES',
       order_id: ordernumber,
       theme: {color: '#BDEA09'},
+      prefill: {
+        name: userData?.name,
+        email: userData?.email,
+        contact: userData?.number,
+      },
     };
 
     RazorpayCheckout.open(options)
@@ -1115,10 +1118,11 @@ const PropertyCard: React.FC<Props> = ({
       })
       .catch(error => {
         // Payment failed
-        Alert.alert(
-          'Payment Failure',
-          `Error: ${error.code} | ${error.description}`,
-        );
+        // Alert.alert(
+        //   'Payment Failure',
+        //   `Error: ${error.code} | ${error.description}`,
+        // );
+        errorMessage('Payment failed. Please try again.');
       });
   };
 

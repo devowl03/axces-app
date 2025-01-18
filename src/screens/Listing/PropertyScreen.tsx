@@ -68,8 +68,6 @@ const PropertyScreen = ({route}: any) => {
   }, [getSelectedProperty]);
 
   const handleAgree = () => {
-    console.log('getBalance', getBalance);
-
     if (getBalance.data.coins < viewProfile?.propertyContactCost) {
       Alert.alert('please recharge');
     } else {
@@ -84,7 +82,6 @@ const PropertyScreen = ({route}: any) => {
   };
 
   const checkdata = () => {
-    //  console.log('checkdata', checkshowModal);
     setShowModal(true);
     dispatch(onGetOwnerDetails(data._id));
 
@@ -110,6 +107,8 @@ const PropertyScreen = ({route}: any) => {
   const viewProfile = useAppSelector(
     state => state.viewProfile.data.platformCharges,
   );
+
+  const userData = useAppSelector(state => state?.viewProfile?.data?.data);
 
   handleopencontactddetails = () => {
     dispatch(onGetBalance());
@@ -370,8 +369,6 @@ const PropertyScreen = ({route}: any) => {
   const [Invicedata, SetInvoicedata] = useState('');
 
   const checkPaymentStatus = async orderId => {
-    console.log('orderId', orderId);
-
     const token = await getAccessToken();
 
     const raw = JSON.stringify({
@@ -392,7 +389,6 @@ const PropertyScreen = ({route}: any) => {
       );
 
       const data = await response.json();
-      console.log('data++++++++++', data);
 
       if (response.ok) {
         SetInvoicedata(data?.invoice_download_url);
@@ -409,7 +405,6 @@ const PropertyScreen = ({route}: any) => {
 
   const managepayment = orderdata => {
     const ordernumber = orderdata?.data?.order?.id;
-    console.log('ordernumber', ordernumber);
 
     const amountInPaise = parseInt(amount) * 100;
     const options = {
@@ -421,8 +416,12 @@ const PropertyScreen = ({route}: any) => {
       name: 'AXCES',
       order_id: ordernumber,
       theme: {color: '#BDEA09'},
+      prefill: {
+        name: userData?.name,
+        email: userData?.email,
+        contact: userData?.number,
+      },
     };
-    console.log('options', options);
 
     RazorpayCheckout.open(options)
       .then(data => {
@@ -433,10 +432,11 @@ const PropertyScreen = ({route}: any) => {
       })
       .catch(error => {
         // Payment failed
-        Alert.alert(
-          'Payment Failure',
-          `Error: ${error.code} | ${error.description}`,
-        );
+        // Alert.alert(
+        //   'Payment Failure',
+        //   `Error: ${error.code} | ${error.description}`,
+        // );
+        errorMessage('Payment failed. Please try again.');
       });
   };
 
@@ -482,7 +482,6 @@ const PropertyScreen = ({route}: any) => {
         Alert.alert('Error', 'Unable to open this URL.');
       }
     } catch (error) {
-      console.error('Error opening URL:', error);
       Alert.alert(
         'Error',
         'An error occurred while trying to open the invoice.',
