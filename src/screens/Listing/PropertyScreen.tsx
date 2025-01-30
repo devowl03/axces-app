@@ -11,6 +11,7 @@ import {
   Alert,
   Linking,
   Dimensions,
+  Platform,
 } from 'react-native';
 import {View} from 'react-native';
 import Header from '../../component/Header/Header';
@@ -41,6 +42,13 @@ import {TextInput} from 'react-native-gesture-handler';
 import {onGetBalance} from '../../redux/ducks/Coins/getBalance';
 import RazorpayCheckout from 'react-native-razorpay';
 import {onGetUserProfile} from '../../redux/ducks/User/viewProfile';
+import {
+  initConnection,
+  endConnection,
+  getProducts,
+  requestPurchase,
+} from 'react-native-iap';
+import axios from 'axios';
 
 const PropertyScreen = ({route}: any) => {
   const dispatch = useDispatch();
@@ -233,22 +241,52 @@ const PropertyScreen = ({route}: any) => {
             <Text className="text-[#0E0E0C] text-xl font-bold my-3">
               Amount
             </Text>
-            <TextInput
-              placeholder="Enter Amount"
-              maxLength={5}
-              keyboardType="numeric"
-              value={amount}
-              style={{
-                width: '100%',
-                height: 50,
-                borderRadius: 5,
-                backgroundColor: '#F2F8F6',
-                paddingHorizontal: 10,
-                fontSize: 14,
-                color: '#181A53',
-              }}
-              onChangeText={text => setAmount(text)}
-            />
+            {Platform.OS === 'ios' ? (
+              <View style={{flexDirection: 'row', flexWrap: 'wrap', gap: 10}}>
+                {products.map((product, index) => {
+                  const fixedAmount = parseInt(
+                    product.productId.replace('com.axces.coins.', ''),
+                  );
+                  return (
+                    <TouchableOpacity
+                      key={index}
+                      onPress={() => setAmount(fixedAmount)}
+                      style={{
+                        padding: 10,
+                        borderRadius: 5,
+                        backgroundColor:
+                          amount === fixedAmount ? '#BDEA09' : '#F2F8F6',
+                        justifyContent: 'center',
+                      }}>
+                      <Text
+                        style={{
+                          fontSize: 14,
+                          color: '#181A53',
+                        }}>
+                        ₹{fixedAmount}
+                      </Text>
+                    </TouchableOpacity>
+                  );
+                })}
+              </View>
+            ) : (
+              <TextInput
+                placeholder="Enter Amount"
+                maxLength={5}
+                keyboardType="numeric"
+                value={amount}
+                style={{
+                  width: '100%',
+                  height: 50,
+                  borderRadius: 5,
+                  backgroundColor: '#F2F8F6',
+                  paddingHorizontal: 10,
+                  fontSize: 14,
+                  color: '#181A53',
+                }}
+                onChangeText={text => setAmount(text)}
+              />
+            )}
             <View style={{height: 30}} />
             <Text className=" text-[#0E0E0CCC] text-base font-medium border-b border-b-black/10">
               Two simple steps
@@ -391,7 +429,7 @@ const PropertyScreen = ({route}: any) => {
       const data = await response.json();
 
       if (response.ok) {
-        SetInvoicedata(data?.invoice_download_url);
+        SetInvoicedata(data?.invoice_url);
         // Alert.alert('Payment Status', `Status: ${data.message}`);
         // }
       } else {
@@ -400,6 +438,103 @@ const PropertyScreen = ({route}: any) => {
     } catch (error) {
       Alert.alert('Network Error', 'Failed to connect to the server');
       console.error(error);
+    }
+  };
+
+  const [products, setProducts] = useState([]);
+  const [isIAPReady, setIsIAPReady] = useState(false);
+
+  const productIds = {
+    '50_coins': 'com.axces.coins.50',
+    '100_coins': 'com.axces.coins.100',
+    '200_coins': 'com.axces.coins.200',
+    '500_coins': 'com.axces.coins.500',
+    '1000_coins': 'com.axces.coins.1000',
+  };
+
+  const initializeIAP = async () => {
+    try {
+      if (Platform.OS === 'ios') {
+        await initConnection();
+        const iapProducts = await getProducts({
+          skus: Object.values(productIds),
+        });
+        const sortedProducts = iapProducts.sort(
+          (a, b) =>
+            parseInt(a.productId.replace('com.axces.coins.', '')) -
+            parseInt(b.productId.replace('com.axces.coins.', '')),
+        );
+        setProducts(sortedProducts);
+        setIsIAPReady(true);
+      }
+    } catch (error) {
+      console.error(error);
+      Alert.alert('Error', 'Failed to initialize in-app purchases');
+    }
+  };
+
+  useEffect(() => {
+    if (Platform.OS === 'ios') {
+      initializeIAP();
+    }
+
+    return () => {
+      if (Platform.OS === 'ios') {
+        endConnection();
+      }
+    };
+  }, []);
+
+  const checkINAppPurchase = async purchaseItem => {
+    const token = await getAccessToken();
+
+    const data = {
+      ...purchaseItem,
+    };
+
+    try {
+      const response = await axios.post(
+        'https://backend.axces.in/api/validate-purchase',
+        data,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            'Content-Type': 'application/json',
+          },
+        },
+      );
+
+      if (response.status === 200) {
+        SetInvoicedata(response.data?.invoice_url);
+      } else {
+        Alert.alert('Error', `Error: ${response.data.message}`);
+      }
+    } catch (error) {
+      Alert.alert('Network Error', 'Failed to connect to the server');
+    }
+  };
+
+  const handleIOSPurchase = async () => {
+    try {
+      const productId = productIds[`${amount}_coins`];
+      if (!productId) {
+        Alert.alert('Error', 'Invalid amount selected');
+        return;
+      }
+
+      const purchase = await requestPurchase({sku: productId});
+
+      if (!purchase) {
+        throw new Error('Purchase result is null or undefined');
+      }
+
+      // Finish the transaction
+      // await finishTransaction(purchase);
+
+      await checkINAppPurchase(purchase);
+      setpostsucessShowModal(true);
+    } catch (error) {
+      Alert.alert('Purchase Failed', 'Failed to complete the purchase');
     }
   };
 
@@ -441,24 +576,32 @@ const PropertyScreen = ({route}: any) => {
   };
 
   const managerecharge = () => {
-    if (amount.length > 0) {
-      //  setpostsucessShowModal(true); // Show success modal
-      dispatch(onRecharge(amount))
-        .then(response => {
-          // Handle success
-          console.log('Recharge successful:', response.data);
-          //  const orderdata = response?.data?.data?.order?.id;
-          managepayment(response.data); // Continue with payment management
-        })
-        .catch(error => {
-          // Handle error
-          console.error('Recharge failed:', error);
-          errorMessage('Recharge failed. Please try again.');
-        })
-        .finally(() => {
-          // Close bottom sheet regardless of success or failure
-          // nocoinbottomSheetRef.current?.close();
-        });
+    if (amount > 0 && amount !== '') {
+      if (Platform.OS === 'android') {
+        //  setpostsucessShowModal(true); // Show success modal
+        dispatch(onRecharge(amount))
+          .then(response => {
+            // Handle success
+            console.log('Recharge successful:', response.data);
+            //  const orderdata = response?.data?.data?.order?.id;
+            managepayment(response.data); // Continue with payment management
+          })
+          .catch(error => {
+            // Handle error
+            console.error('Recharge failed:', error);
+            errorMessage('Recharge failed. Please try again.');
+          })
+          .finally(() => {
+            // Close bottom sheet regardless of success or failure
+            // nocoinbottomSheetRef.current?.close();
+          });
+      } else {
+        if (!isIAPReady) {
+          Alert.alert('Error', 'In-app purchases are not ready');
+          return;
+        }
+        handleIOSPurchase();
+      }
     } else {
       errorMessage('Please enter amount'); // Prompt user to enter amount
     }

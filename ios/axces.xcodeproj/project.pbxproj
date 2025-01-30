@@ -16,6 +16,7 @@
 		765EEC282D22A9580045579B /* StoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 765EEC272D22A9580045579B /* StoreKit.framework */; };
 		81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */; };
 		856A40E7ECB0798AD69B8A8E /* Pods_axces.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 70BBC61E38876FDFF250C906 /* Pods_axces.framework */; };
+		8E5C686EFC33FB79E9431D51 /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = E3BD80C24D6D503E1BF58133 /* PrivacyInfo.xcprivacy */; };
 		BC2A09BB071B22A3CBAF348C /* Pods_axces_axcesTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 54EDB13CE3E7FD815BA47E6C /* Pods_axces_axcesTests.framework */; };
 		FA496F442CC78A53006DB284 /* Figtree-Black.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 0F16C29E558E4008A8734C75 /* Figtree-Black.ttf */; };
 		FA496F452CC78A53006DB284 /* Figtree-BlackItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 0174DEB582F847B2B7406A51 /* Figtree-BlackItalic.ttf */; };
@@ -76,6 +77,7 @@
 		DE5C670F5FA24A348C47FA83 /* Figtree-Light.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Figtree-Light.ttf"; path = "../assets/fonts/Figtree-Light.ttf"; sourceTree = "<group>"; };
 		DE68C3CA0E4946CD84342C9A /* Figtree-ExtraBold.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Figtree-ExtraBold.ttf"; path = "../assets/fonts/Figtree-ExtraBold.ttf"; sourceTree = "<group>"; };
 		E0F7944283E6471ABE293F95 /* Figtree-SemiBold.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Figtree-SemiBold.ttf"; path = "../assets/fonts/Figtree-SemiBold.ttf"; sourceTree = "<group>"; };
+		E3BD80C24D6D503E1BF58133 /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; includeInIndex = 1; name = PrivacyInfo.xcprivacy; path = axces/PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
 		EA420366C972415A9889A4FF /* Figtree-Medium.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Figtree-Medium.ttf"; path = "../assets/fonts/Figtree-Medium.ttf"; sourceTree = "<group>"; };
 		ED297162215061F000B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
 		FAB795292CABD52800199464 /* axces.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; name = axces.entitlements; path = axces/axces.entitlements; sourceTree = "<group>"; };
@@ -131,6 +133,7 @@
 				13B07FB61A68108700A75B9A /* Info.plist */,
 				81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */,
 				13B07FB71A68108700A75B9A /* main.m */,
+				E3BD80C24D6D503E1BF58133 /* PrivacyInfo.xcprivacy */,
 			);
 			name = axces;
 			sourceTree = "<group>";
@@ -324,6 +327,7 @@
 				81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */,
 				13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */,
 				760D19AB2D2F9ED4003B3376 /* Consumables.storekit in Resources */,
+				8E5C686EFC33FB79E9431D51 /* PrivacyInfo.xcprivacy in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -613,6 +617,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				CC = "";
 				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
 				CLANG_CXX_LANGUAGE_STANDARD = "c++20";
 				CLANG_CXX_LIBRARY = "libc++";
@@ -640,6 +645,7 @@
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				COPY_PHASE_STRIP = NO;
+				CXX = "";
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
 				"EXCLUDED_ARCHS[sdk=iphonesimulator*]" = i386;
@@ -670,6 +676,8 @@
 					"${PODS_CONFIGURATION_BUILD_DIR}/React-graphics/React_graphics.framework/Headers/react/renderer/graphics/platform/ios",
 				);
 				IPHONEOS_DEPLOYMENT_TARGET = 13.4;
+				LD = "";
+				LDPLUSPLUS = "";
 				LD_RUNPATH_SEARCH_PATHS = (
 					/usr/lib/swift,
 					"$(inherited)",
@@ -703,6 +711,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				CC = "";
 				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
 				CLANG_CXX_LANGUAGE_STANDARD = "c++20";
 				CLANG_CXX_LIBRARY = "libc++";
@@ -730,6 +739,7 @@
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				COPY_PHASE_STRIP = YES;
+				CXX = "";
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				"EXCLUDED_ARCHS[sdk=iphonesimulator*]" = i386;
@@ -753,6 +763,8 @@
 					"${PODS_CONFIGURATION_BUILD_DIR}/React-graphics/React_graphics.framework/Headers/react/renderer/graphics/platform/ios",
 				);
 				IPHONEOS_DEPLOYMENT_TARGET = 13.4;
+				LD = "";
+				LDPLUSPLUS = "";
 				LD_RUNPATH_SEARCH_PATHS = (
 					/usr/lib/swift,
 					"$(inherited)",

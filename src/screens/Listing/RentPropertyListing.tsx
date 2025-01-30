@@ -1,288 +1,335 @@
-import { FlatList, ScrollView, StatusBar, Text, View,Animated, TouchableOpacity, StyleSheet } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import {
+  FlatList,
+  ScrollView,
+  StatusBar,
+  Text,
+  View,
+  Animated,
+  TouchableOpacity,
+  StyleSheet,
+  Platform,
+  Alert,
+} from 'react-native';
+import {SafeAreaView} from 'react-native-safe-area-context';
 import Header from '../../component/Header/Header';
 import PropertyCard from '../../component/Card/PropertyCard';
-import { useEffect, useRef, useState } from 'react';
+import {useEffect, useRef, useState} from 'react';
 import Loader from '../../component/Loader/Loader';
-import { errorMessage, getAccessToken } from '../../utils';
-import { useRoute } from '@react-navigation/native';
-import { useAppSelector } from '../../constants';
-import { onGetLocation } from '../../redux/ducks/User/getLocation';
-import { useDispatch } from 'react-redux';
+import {errorMessage, getAccessToken} from '../../utils';
+import {useRoute} from '@react-navigation/native';
+import {useAppSelector} from '../../constants';
+import {onGetLocation} from '../../redux/ducks/User/getLocation';
+import {useDispatch} from 'react-redux';
 import Ionic from 'react-native-vector-icons/Ionicons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import {initConnection, endConnection, getProducts} from 'react-native-iap';
 
 const RentPropertyListing = () => {
   const [list, setList] = useState([]);
- 
+
   const [loading, setLoading] = useState(false);
-const dispatch = useDispatch();
-    const route = useRoute();
-    console.log('route?.params?.latitude', route?.params?.latitude);
+  const dispatch = useDispatch();
+  const route = useRoute();
+  console.log('route?.params?.latitude', route?.params?.latitude);
 
-    const [latitude, setLatitude] = useState<number>(route?.params?.latitude);
-    const [longitude, setLongitude] = useState<number>(
-      route?.params?.longitude,
-    );
-    
-     const getProperties = useAppSelector(state => state.getProperties.data);
-     console.log('getProperties', getProperties);
-      const [input, setInput] = useState('');
-      const [suggestions, setSuggestions] = useState([]);
-      const [modalVisible, setModalVisible] = useState(false);
+  const [latitude, setLatitude] = useState<number>(route?.params?.latitude);
+  const [longitude, setLongitude] = useState<number>(route?.params?.longitude);
 
-      const dropdownHeight = useRef(new Animated.Value(0)).current;
-      const dropdownOpacity = useRef(new Animated.Value(0)).current;
+  const getProperties = useAppSelector(state => state.getProperties.data);
+  console.log('getProperties', getProperties);
+  const [input, setInput] = useState('');
+  const [suggestions, setSuggestions] = useState([]);
+  const [modalVisible, setModalVisible] = useState(false);
 
-      useEffect(() => {
-        if (modalVisible) {
-          Animated.parallel([
-            Animated.timing(dropdownHeight, {
-              toValue: 200, // Adjust as needed
-              duration: 300,
-              useNativeDriver: false,
-            }),
-            Animated.timing(dropdownOpacity, {
-              toValue: 1,
-              duration: 300,
-              useNativeDriver: false,
-            }),
-          ]).start();
-        } else {
-          Animated.parallel([
-            Animated.timing(dropdownHeight, {
-              toValue: 0,
-              duration: 300,
-              useNativeDriver: false,
-            }),
-            Animated.timing(dropdownOpacity, {
-              toValue: 0,
-              duration: 300,
-              useNativeDriver: false,
-            }),
-          ]).start();
-        }
-      }, [modalVisible]);
+  const dropdownHeight = useRef(new Animated.Value(0)).current;
+  const dropdownOpacity = useRef(new Animated.Value(0)).current;
 
-      const fetchSuggestions = async (query: string) => {
-        setInput(query);
-        if (query.trim().length === 0) {
-          setSuggestions([]);
-          setModalVisible(false);
-          return;
-        }
+  const [products, setProducts] = useState([]);
 
-        try {
-          const response = await fetch(
-            `https://backend.axces.in/api/auto?query=${query}`,
-            {
-              method: 'GET',
-            },
-          );
-          const responseData = await response.json();
-          const {data} = responseData;
-          setSuggestions(data);
-          setModalVisible(true);
-        } catch (error) {
-          console.error('Error fetching suggestions:', error);
-          setSuggestions([]);
-          setModalVisible(false);
-        }
-      };
+  const productIds = {
+    '50_coins': 'com.axces.coins.50',
+    '100_coins': 'com.axces.coins.100',
+    '200_coins': 'com.axces.coins.200',
+    '500_coins': 'com.axces.coins.500',
+    '1000_coins': 'com.axces.coins.1000',
+  };
 
-    const handleSelectSuggestion = (item: any) => {
-        console.log('====================================');
-        console.log('item', item);
-        console.log('====================================');
-        setInput(item?.place_name);
-        const {latitude, longitude} = item?.coordinates;
-        setLatitude(latitude);
-        setLongitude(longitude);
-        // fetchProperties();
-        dispatch(onGetLocation(parseFloat(latitude), parseFloat(longitude)));
-        setModalVisible(false);
-      };
-
-
-      const [addPincode, setAddPincode] = useState<string>('');
-      const [lookingFor, setLookingFor] = useState<string>('');
-      const [purpose, setPurpose] = useState<string>('');
-      const [propType, setPropType] = useState<string>('');
-      const [listedFor, setListedFor] = useState<string>('');
-      const [size, setSize] = useState<string>('');
-      // const [latitude, setLatitude] = useState<number>();
-      // const [longitude, setLongitude] = useState<number>();
-      // const [loading, setLoading] = useState<boolean>(false);
-      const [price, setPrice] = useState(0);
-      const [Rentprice, setRentPrice] = useState(0);
-      const [area, setArea] = useState(0);
-      const [furnish, setFurnish] = useState('');
-      const [preferred, setPreferred] = useState('');
-
-      const loadFilters = async () => {
-        const filters = await AsyncStorage.getItem('propertyFilters');
-        console.log('applyfilter++++++++++', filters);
-
-        if (filters) {
-          const parsedFilters = JSON.parse(filters);
-          setAddPincode(parsedFilters.addPincode);
-          setLookingFor(parsedFilters.lookingFor);
-          setPurpose(parsedFilters.purpose);
-          setPropType(parsedFilters.propType);
-          setListedFor(parsedFilters.listedFor);
-          setSize(parsedFilters.size);
-          setPrice(parsedFilters.price);
-          setArea(parsedFilters.area);
-          setFurnish(parsedFilters.furnish);
-          setPreferred(parsedFilters.preferred);
-        }
-      };
-
-
-      useEffect(() => {
-        loadFilters();
-      }, []);
-
-      const saveFilters = async updatedFilters => {
-        await AsyncStorage.setItem(
-          'propertyFilters',
-          JSON.stringify(updatedFilters),
+  const initializeIAP = async () => {
+    try {
+      if (Platform.OS === 'ios') {
+        await initConnection();
+        const iapProducts = await getProducts({
+          skus: Object.values(productIds),
+        });
+        const sortedProducts = iapProducts.sort(
+          (a, b) =>
+            parseInt(a.productId.replace('com.axces.coins.', '')) -
+            parseInt(b.productId.replace('com.axces.coins.', '')),
         );
-      };
+        setProducts(sortedProducts);
+      }
+    } catch (error) {
+      Alert.alert('Error', 'Failed to initialize in-app purchases proper');
+    }
+  };
 
-      const clearFilter = async (filterKey, setterFunction) => {
-        const storedFilters = await AsyncStorage.getItem('propertyFilters');
-        const filters = storedFilters ? JSON.parse(storedFilters) : {};
+  useEffect(() => {
+    if (Platform.OS === 'ios') {
+      initializeIAP();
+    }
 
-        // Remove the filter key
-        delete filters[filterKey];
+    return () => {
+      if (Platform.OS === 'ios') {
+        endConnection();
+      }
+    };
+  }, []);
 
-        // Clear the related state
-        setterFunction('');
+  useEffect(() => {
+    if (modalVisible) {
+      Animated.parallel([
+        Animated.timing(dropdownHeight, {
+          toValue: 200, // Adjust as needed
+          duration: 300,
+          useNativeDriver: false,
+        }),
+        Animated.timing(dropdownOpacity, {
+          toValue: 1,
+          duration: 300,
+          useNativeDriver: false,
+        }),
+      ]).start();
+    } else {
+      Animated.parallel([
+        Animated.timing(dropdownHeight, {
+          toValue: 0,
+          duration: 300,
+          useNativeDriver: false,
+        }),
+        Animated.timing(dropdownOpacity, {
+          toValue: 0,
+          duration: 300,
+          useNativeDriver: false,
+        }),
+      ]).start();
+    }
+  }, [modalVisible]);
 
-        // Save the updated filters
-        await saveFilters(filters);
-      };
+  const fetchSuggestions = async (query: string) => {
+    setInput(query);
+    if (query.trim().length === 0) {
+      setSuggestions([]);
+      setModalVisible(false);
+      return;
+    }
 
-      // Example usage for clearing each filter
-      const clearPincode = () => {
-        clearFilter('addPincode', setAddPincode);
-        // setAppliedFilters(prev => ({...prev, addPincode: undefined})); // Update applied filters
-      };
+    try {
+      const response = await fetch(
+        `https://backend.axces.in/api/auto?query=${query}`,
+        {
+          method: 'GET',
+        },
+      );
+      const responseData = await response.json();
+      const {data} = responseData;
+      setSuggestions(data);
+      setModalVisible(true);
+    } catch (error) {
+      console.error('Error fetching suggestions:', error);
+      setSuggestions([]);
+      setModalVisible(false);
+    }
+  };
 
-      const clearLookingFor = () => {
-        clearFilter('lookingFor', setLookingFor);
-        setLoading(true);
-        fetchProperties();
-        setLoading(false);
-        // setAppliedFilters(prev => ({...prev, lookingFor: undefined}));
-      };
+  const handleSelectSuggestion = (item: any) => {
+    console.log('====================================');
+    console.log('item', item);
+    console.log('====================================');
+    setInput(item?.place_name);
+    const {latitude, longitude} = item?.coordinates;
+    setLatitude(latitude);
+    setLongitude(longitude);
+    // fetchProperties();
+    dispatch(onGetLocation(parseFloat(latitude), parseFloat(longitude)));
+    setModalVisible(false);
+  };
 
-      const clearPurpose = () => {
-        clearFilter('purpose', setPurpose);
-        setLoading(true);
-        fetchProperties();
-        setLoading(false);
-        // setAppliedFilters(prev => ({...prev, purpose: undefined}));
-      };
+  const [addPincode, setAddPincode] = useState<string>('');
+  const [lookingFor, setLookingFor] = useState<string>('');
+  const [purpose, setPurpose] = useState<string>('');
+  const [propType, setPropType] = useState<string>('');
+  const [listedFor, setListedFor] = useState<string>('');
+  const [size, setSize] = useState<string>('');
+  // const [latitude, setLatitude] = useState<number>();
+  // const [longitude, setLongitude] = useState<number>();
+  // const [loading, setLoading] = useState<boolean>(false);
+  const [price, setPrice] = useState(0);
+  const [Rentprice, setRentPrice] = useState(0);
+  const [area, setArea] = useState(0);
+  const [furnish, setFurnish] = useState('');
+  const [preferred, setPreferred] = useState('');
 
-      const clearPropType = () => {
-        clearFilter('propType', setPropType);
-        setLoading(true);
-        fetchProperties();
-        setLoading(false);
-        // setAppliedFilters(prev => ({...prev, propType: undefined}));
-      };
+  const loadFilters = async () => {
+    const filters = await AsyncStorage.getItem('propertyFilters');
+    console.log('applyfilter++++++++++', filters);
 
-      const clearListedFor = () => {
-        clearFilter('listedFor', setListedFor);
-        setLoading(true);
-        fetchProperties();
-        setLoading(false);
-        // setAppliedFilters(prev => ({...prev, listedFor: undefined}));
-      };
+    if (filters) {
+      const parsedFilters = JSON.parse(filters);
+      setAddPincode(parsedFilters.addPincode);
+      setLookingFor(parsedFilters.lookingFor);
+      setPurpose(parsedFilters.purpose);
+      setPropType(parsedFilters.propType);
+      setListedFor(parsedFilters.listedFor);
+      setSize(parsedFilters.size);
+      setPrice(parsedFilters.price);
+      setArea(parsedFilters.area);
+      setFurnish(parsedFilters.furnish);
+      setPreferred(parsedFilters.preferred);
+    }
+  };
 
-      const clearSize = () => {
-        clearFilter('size', setSize);
-        setLoading(true);
-        fetchProperties();
-        setLoading(false);
-        // setAppliedFilters(prev => ({...prev, size: undefined}));
-      };
+  useEffect(() => {
+    loadFilters();
+  }, []);
 
-      const clearFurnish = () => {
-        clearFilter('furnish', setFurnish);
-        setLoading(true);
-        fetchProperties();
-        setLoading(false);
-        // setAppliedFilters(prev => ({...prev, furnish: undefined}));
-      };
+  const saveFilters = async updatedFilters => {
+    await AsyncStorage.setItem(
+      'propertyFilters',
+      JSON.stringify(updatedFilters),
+    );
+  };
 
-      const clearPreferred = () => {
-        clearFilter('preferred', setPreferred);
-        setLoading(true);
-        fetchProperties();
-        setLoading(false);
-        // setAppliedFilters(prev => ({...prev, preferred: undefined}));
-      };
+  const clearFilter = async (filterKey, setterFunction) => {
+    const storedFilters = await AsyncStorage.getItem('propertyFilters');
+    const filters = storedFilters ? JSON.parse(storedFilters) : {};
 
-    
- const fetchProperties = async () => {
-   const token = await getAccessToken();
-   console.log('userId', token);
-   setLoading(true);
-   const url = `https://backend.axces.in/api/property/list`;
+    // Remove the filter key
+    delete filters[filterKey];
 
-   try {
-     const response = await fetch(url, {
-       method: 'POST', // Changed to POST
-       headers: {
-         'Content-Type': 'application/json',
-         Authorization: `Bearer ${token} `,
-       },
-       body: JSON.stringify({
-         userLatitude: latitude,
-         userLongitude: longitude,
-         filters: {},
-       }),
-     });
+    // Clear the related state
+    setterFunction('');
 
-     if (!response.ok) {
-       throw new Error(`HTTP error! status: ${response.status}`);
-     }
+    // Save the updated filters
+    await saveFilters(filters);
+  };
 
-     const result = await response.json();
+  // Example usage for clearing each filter
+  const clearPincode = () => {
+    clearFilter('addPincode', setAddPincode);
+    // setAppliedFilters(prev => ({...prev, addPincode: undefined})); // Update applied filters
+  };
 
-     // Log the fetched data
-     console.log('Fetched Data:', result);
+  const clearLookingFor = () => {
+    clearFilter('lookingFor', setLookingFor);
+    setLoading(true);
+    fetchProperties();
+    setLoading(false);
+    // setAppliedFilters(prev => ({...prev, lookingFor: undefined}));
+  };
 
-     const filteredData = result.data.filter(
-       property => property.listing_type === 'rent',
-     );
-     setList(filteredData);
+  const clearPurpose = () => {
+    clearFilter('purpose', setPurpose);
+    setLoading(true);
+    fetchProperties();
+    setLoading(false);
+    // setAppliedFilters(prev => ({...prev, purpose: undefined}));
+  };
+
+  const clearPropType = () => {
+    clearFilter('propType', setPropType);
+    setLoading(true);
+    fetchProperties();
+    setLoading(false);
+    // setAppliedFilters(prev => ({...prev, propType: undefined}));
+  };
+
+  const clearListedFor = () => {
+    clearFilter('listedFor', setListedFor);
+    setLoading(true);
+    fetchProperties();
+    setLoading(false);
+    // setAppliedFilters(prev => ({...prev, listedFor: undefined}));
+  };
+
+  const clearSize = () => {
+    clearFilter('size', setSize);
+    setLoading(true);
+    fetchProperties();
+    setLoading(false);
+    // setAppliedFilters(prev => ({...prev, size: undefined}));
+  };
+
+  const clearFurnish = () => {
+    clearFilter('furnish', setFurnish);
+    setLoading(true);
+    fetchProperties();
+    setLoading(false);
+    // setAppliedFilters(prev => ({...prev, furnish: undefined}));
+  };
+
+  const clearPreferred = () => {
+    clearFilter('preferred', setPreferred);
+    setLoading(true);
+    fetchProperties();
+    setLoading(false);
+    // setAppliedFilters(prev => ({...prev, preferred: undefined}));
+  };
+
+  const fetchProperties = async () => {
+    const token = await getAccessToken();
+    console.log('userId', token);
+    setLoading(true);
+    const url = 'https://backend.axces.in/api/property/list';
+
+    try {
+      const response = await fetch(url, {
+        method: 'POST', // Changed to POST
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token} `,
+        },
+        body: JSON.stringify({
+          userLatitude: latitude,
+          userLongitude: longitude,
+          filters: {},
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      const result = await response.json();
+
+      // Log the fetched data
+      console.log('Fetched Data:', result);
+
+      const filteredData = result.data.filter(
+        property => property.listing_type === 'rent',
+      );
+      setList(filteredData);
       loadFilters();
-   } catch (error) {
-     errorMessage(error.message);
-   } finally {
-     setLoading(false);
-   }
- };
-
+    } catch (error) {
+      errorMessage(error.message);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   useEffect(() => {
     fetchProperties();
   }, [latitude, longitude]);
 
-   useEffect(() => {
-     // Update the list with filtered getProperties data
-     if (Array.isArray(getProperties)) {
-       const filteredData = getProperties
-       setList(filteredData);
-         loadFilters();
-     } else {
-       setList([]);
-     }
-   }, [getProperties]);
+  useEffect(() => {
+    // Update the list with filtered getProperties data
+    if (Array.isArray(getProperties)) {
+      const filteredData = getProperties;
+      setList(filteredData);
+      loadFilters();
+    } else {
+      setList([]);
+    }
+  }, [getProperties]);
 
   return (
     <SafeAreaView className="bg-[#181A53]">
@@ -527,7 +574,9 @@ const dispatch = useDispatch();
           <FlatList
             contentContainerStyle={{gap: 20}}
             data={list}
-            renderItem={({item}) => <PropertyCard item={item} />}
+            renderItem={({item}) => (
+              <PropertyCard item={item} iapProducts={products} />
+            )}
             ListEmptyComponent={() => (
               <View style={{width: '100%', alignItems: 'center'}}>
                 {!loading && (
@@ -546,7 +595,6 @@ const dispatch = useDispatch();
 };
 
 export default RentPropertyListing;
-
 
 const styles = StyleSheet.create({
   container: {
@@ -608,14 +656,6 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
 });
-
-
-
-
-
-
-
-
 
 // Redux code
 // import { FlatList, ScrollView, StatusBar, View } from 'react-native';

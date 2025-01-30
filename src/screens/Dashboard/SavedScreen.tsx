@@ -1,4 +1,12 @@
-import {Image, ScrollView, StatusBar, Text, View} from 'react-native';
+import {
+  Image,
+  ScrollView,
+  StatusBar,
+  Text,
+  View,
+  Platform,
+  Alert,
+} from 'react-native';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import Header from '../../component/Header/Header';
 import {tapIcon} from '../../constants/imgURL';
@@ -13,6 +21,7 @@ import {errorMessage, getAccessToken, successMessage} from '../../utils';
 import {RootState} from '../../redux/store';
 import Loader from '../../component/Loader/Loader';
 import {useFocusEffect} from '@react-navigation/native';
+import {initConnection, endConnection, getProducts} from 'react-native-iap';
 
 const SavedScreen = () => {
   const [list, setList] = useState([]);
@@ -20,39 +29,80 @@ const SavedScreen = () => {
   const getWishlist = useAppSelector(state => state.viewList);
   const [loading, setLoading] = useState(false);
 
-   const fetchWishlist = async () => {
-     const token = await getAccessToken();
-     try {
-       setLoading(true);
-       const response = await fetch(
-         `https://backend.axces.in/api/property/viewWishlist`,
-         {
-           method: 'GET',
-           headers: {
-             'Content-Type': 'application/json',
-             Authorization: `Bearer ${token}`, // Pass the token here
-           },
-         },
-       );
+  const fetchWishlist = async () => {
+    const token = await getAccessToken();
+    try {
+      setLoading(true);
+      const response = await fetch(
+        'https://backend.axces.in/api/property/viewWishlist',
+        {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${token}`, // Pass the token here
+          },
+        },
+      );
 
-       const data = await response.json();
-       if (response.ok) {
-         setList(data.data); // Assuming the API returns the wishlist directly
-       } else {
-         console.error(data.message || 'Failed to fetch wishlist');
-       }
-     } catch (error) {
-       console.error('Error fetching wishlist:', error);
-     } finally {
-       setLoading(false);
-     }
-   };
+      const data = await response.json();
+      if (response.ok) {
+        setList(data.data); // Assuming the API returns the wishlist directly
+      } else {
+        console.error(data.message || 'Failed to fetch wishlist');
+      }
+    } catch (error) {
+      console.error('Error fetching wishlist:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
-   useFocusEffect(
-     useCallback(() => {
-       fetchWishlist(); // Call the fetch function when component is focused
-     }, []),
-   );
+  const [products, setProducts] = useState([]);
+
+  const productIds = {
+    '50_coins': 'com.axces.coins.50',
+    '100_coins': 'com.axces.coins.100',
+    '200_coins': 'com.axces.coins.200',
+    '500_coins': 'com.axces.coins.500',
+    '1000_coins': 'com.axces.coins.1000',
+  };
+
+  const initializeIAP = async () => {
+    try {
+      if (Platform.OS === 'ios') {
+        await initConnection();
+        const iapProducts = await getProducts({
+          skus: Object.values(productIds),
+        });
+        const sortedProducts = iapProducts.sort(
+          (a, b) =>
+            parseInt(a.productId.replace('com.axces.coins.', '')) -
+            parseInt(b.productId.replace('com.axces.coins.', '')),
+        );
+        setProducts(sortedProducts);
+      }
+    } catch (error) {
+      Alert.alert('Error', 'Failed to initialize in-app purchases proper');
+    }
+  };
+
+  useEffect(() => {
+    if (Platform.OS === 'ios') {
+      initializeIAP();
+    }
+
+    return () => {
+      if (Platform.OS === 'ios') {
+        endConnection();
+      }
+    };
+  }, []);
+
+  useFocusEffect(
+    useCallback(() => {
+      fetchWishlist(); // Call the fetch function when component is focused
+    }, []),
+  );
 
   return (
     <SafeAreaView className="flex-1 bg-[#F2F8F6]">
@@ -63,7 +113,7 @@ const SavedScreen = () => {
       />
       <CenterHeader title="My Wishlist" lightMode={true} />
       <Loader loading={loading} />
-      <ScrollView className="mt-2" style={{backgroundColor:'#F2F8F6'}}>
+      <ScrollView className="mt-2" style={{backgroundColor: '#F2F8F6'}}>
         <View className="w-full mb-4">
           <View
             style={{
@@ -86,7 +136,9 @@ const SavedScreen = () => {
             contentContainerStyle={{gap: 20, marginTop: 10}}
             data={list}
             keyExtractor={item => item?._id}
-            renderItem={({item}) => <PropertyCard item={item} />}
+            renderItem={({item}) => (
+              <PropertyCard item={item} iapProducts={products} />
+            )}
             ListEmptyComponent={() => (
               <View style={{width: '100%', alignItems: 'center'}}>
                 {!loading && (

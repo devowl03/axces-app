@@ -1,581 +1,3 @@
-// import { Image, ScrollView, Text, TouchableOpacity, View } from 'react-native';
-// import CardSwiper from './CardSwiper';
-// import {
-//   deleteIc,
-//   demoUser,
-//   editPen,
-//   ratingstar,
-//   rightArrowWhite,
-//   setwishlist,
-//   wishlist,
-// } from '../../constants/imgURL';
-// import { StackNavigationProp } from '@react-navigation/stack';
-// import { useNavigation } from '@react-navigation/native';
-// import { RootStackParamList } from '../../routes/MainStack';
-// import { useDispatch } from 'react-redux';
-// import { addToWishList } from '../../redux/ducks/WishList/addToList';
-// import { useEffect, useState } from 'react';
-// import { useAppSelector } from '../../constants';
-// import { errorMessage, successMessage } from '../../utils';
-// import { onGetProperty } from '../../redux/ducks/Properties/getSelectedProperty';
-// import { onGetOwnerDetails } from '../../redux/ducks/User/contactOwner';
-
-// interface Props {
-//   editFlag?: boolean;
-//   item?: any;
-//   isWishlist?: boolean;
-// }
-
-// const PropertyCard: React.FC<Props> = ({ editFlag, item, isWishlist = false }) => {
-//   const navigation = useNavigation<StackNavigationProp<RootStackParamList>>();
-//   const dispatch = useDispatch();
-//   const addToList = useAppSelector((state) => state.addToList);
-//   const contactOwner = useAppSelector((state) => state.contactOwner);
-//   const [isWishlisted, setIsWishlisted] = useState(isWishlist);
-
-//   useEffect(() => {
-//     if (addToList.called) {
-//       const { message, status } = addToList;
-//       if (status === 'fail') {
-//         errorMessage(message);
-//       } else {
-//         successMessage(message);
-//         setIsWishlisted(true);
-//       }
-//     }
-//     if (contactOwner.called) {
-//       const { message, status } = contactOwner;
-//       if (status === 'fail') {
-//         errorMessage(message);
-//       } else if (status === 'success') {
-//         successMessage(message);
-//         navigation.navigate('ContactOwner');
-//       }
-//     }
-
-//   }, [addToList, contactOwner]);
-
-//   const handlePropertyPress = () => {
-//     if (!editFlag) {
-//       navigation.push('PropertyScreen', { data: item });
-//       dispatch(onGetProperty(item?._id));
-//     }
-//   };
-
-//     const handleWishlist = () => {
-//       // Toggle the wishlist state
-//       setIsWishlisted(prevState => !prevState);
-
-//       // Determine the action data based on the new state
-//       const actionData = !isWishlisted ? 1 : -1;
-//       // Log or handle the action data here
-//       console.log('Action Data:', actionData);
-//       dispatch(addToWishList(item?._id,actionData))
-//     };
-
-//   return (
-//     <ScrollView
-//       contentContainerStyle={{
-//         flex: 1,
-//         justifyContent: 'center',
-//         alignSelf: 'center',
-//       }}
-//       style={{marginBottom: 20}}>
-//       <TouchableOpacity onPress={handlePropertyPress} style={{width: '100%'}}>
-//         <View className="w-full bg-white rounded-xl">
-//           <View className="w-full h-[129px] rounded-t-xl overflow-hidden relative">
-//             <CardSwiper images={item?.images} />
-//             <View className="absolute w-8 h-8 p-2 rounded-full bg-black/25 right-2 top-1/3">
-//               <Image
-//                 source={{uri: rightArrowWhite}}
-//                 resizeMode="contain"
-//                 className="w-4 h-4"
-//               />
-//             </View>
-//           </View>
-//           <View className="p-3">
-//             {editFlag && (
-//               <View className="flex flex-row items-center">
-//                 <Image
-//                   source={{uri: ratingstar}}
-//                   resizeMode="contain"
-//                   className="w-3 h-3 mr-1"
-//                 />
-//                 <Text className="mr-1 text-sm font-medium text-black">4.5</Text>
-//                 <Text className="text-sm font-medium text-gray-700">
-//                   {'(73)'}
-//                 </Text>
-//               </View>
-//             )}
-//             <View className="flex flex-row items-start">
-//               <View className="flex-1">
-//                 <Text className="text-lg font-bold text-[#1A1E25]">
-//                   {item?.building_name}
-//                 </Text>
-//                 <Text className="text-base text-[#2F4858]">
-//                   {item?.address}
-//                 </Text>
-//               </View>
-//               <TouchableOpacity onPress={() => handleWishlist()}>
-//                 <Image
-//                   source={{uri:  isWishlisted ? setwishlist : wishlist}}
-//                   resizeMode="contain"
-//                   className="w-8 h-8"
-//                 />
-//               </TouchableOpacity>
-//             </View>
-//             <View className="flex flex-row items-center justify-start p-1 rounded-md bg-[#F2F8F6] mt-1 mb-3">
-//               <Text className="text-sm text-[#738D9C]">
-//                 {item?.bedrooms} BHK
-//               </Text>
-//               <View className="w-[6px] h-[6px] rounded-full bg-[#738D9C] mx-2" />
-//               <Text className="text-sm text-[#738D9C]">
-//                 {item?.area_sqft} Sq.ft
-//               </Text>
-//               <View className="w-[6px] h-[6px] rounded-full bg-[#738D9C] mx-2" />
-//               <Text className="text-sm text-[#738D9C]">
-//                 {item?.furnish_type}
-//               </Text>
-//               <View className="w-[6px] h-[6px] rounded-full bg-[#738D9C] mx-2" />
-//               <Text className="text-sm text-[#738D9C]">{item?.owner_name}</Text>
-//             </View>
-//             <View className="flex flex-row justify-between">
-//               <View className="flex flex-row ">
-//                 <Text className="text-base font-bold text-[#BDEA09]">
-//                   {' '}
-//                   ₹ {item?.monthly_rent}/-
-//                 </Text>
-//                 <Text
-//                   style={{color: '#000000'}}
-//                   className="ml-1 text-base font-bold ">
-//                   {' '}
-//                   Monthly
-//                 </Text>
-//               </View>
-//               <View>
-//                 <Text
-//                   style={{color: '#000000'}}
-//                   className="ml-1 text-base font-bold">
-//                   {' '}
-//                   {item?.listing_type}
-//                 </Text>
-//               </View>
-//             </View>
-//           </View>
-//           {editFlag ? (
-//             <View className="flex flex-row px-3 pb-3">
-//               <TouchableOpacity
-//                 onPress={() => {}}
-//                 className="flex-1 p-3 mr-2 border border-[#BDEA09] rounded-full flex flex-row items-center justify-center">
-//                 <Text className="text-[#BDEA09] text-base text-center font-medium mr-2">
-//                   Edit Details
-//                 </Text>
-//                 <Image
-//                   source={{uri: editPen}}
-//                   resizeMode="contain"
-//                   className="w-4 h-4"
-//                 />
-//               </TouchableOpacity>
-//               <TouchableOpacity className="p-4 rounded-full bg-[#EA0909]/10 flex items-center justify-center">
-//                 <Image
-//                   source={{uri: deleteIc}}
-//                   resizeMode="contain"
-//                   className="w-4 h-5"
-//                 />
-//               </TouchableOpacity>
-//             </View>
-//           ) : (
-//             <View>
-//               <View className="flex flex-row items-center px-3 pt-3 border-t border-t-gray-400">
-//                 <View>
-//                   <Image
-//                     source={{uri: demoUser}}
-//                     resizeMode="contain"
-//                     className="w-10 h-10 rounded-full"
-//                   />
-//                 </View>
-//                 <TouchableOpacity
-//                   onPress={() => {
-//                     dispatch(onGetOwnerDetails(item?._id));
-//                   }}
-//                   className="flex-1 rounded-full ml-3 bg-[#BDEA09] p-3">
-//                   <Text className="text-center text-base font-bold text-[#181A53]">
-//                     Contact Owner
-//                   </Text>
-//                 </TouchableOpacity>
-//               </View>
-//               <View className="flex flex-row items-center justify-between px-3 pb-3 mt-2">
-//                 <Text className="text-sm text-[#181A5399] font-medium">
-//                   Charges
-//                 </Text>
-//                 <Text className="text-[#181A53] text-base font-bold">
-//                   50 Coins
-//                 </Text>
-//               </View>
-//             </View>
-//           )}
-//         </View>
-//       </TouchableOpacity>
-//     </ScrollView>
-//   );
-// };
-
-// export default PropertyCard;
-
-// import {
-//   Image,
-//   ScrollView,
-//   Text,
-//   TouchableOpacity,
-//   View,
-//   TouchableWithoutFeedback,
-//   Modal,
-//   Linking,
-//   StyleSheet
-// } from 'react-native';
-// import CardSwiper from './CardSwiper';
-// import {
-//   deleteIc,
-//   demoUser,
-//   editPen,
-//   ratingstar,
-//   rightArrowWhite,
-//   setwishlist,
-//   wishlist,
-//   phoneIc,
-//   coinStack,
-//   greyRightArrow,
-// } from '../../constants/imgURL';
-// import {StackNavigationProp} from '@react-navigation/stack';
-// import {useNavigation} from '@react-navigation/native';
-// import {RootStackParamList} from '../../routes/MainStack';
-// import {useDispatch} from 'react-redux';
-// import {addToWishList} from '../../redux/ducks/WishList/addToList';
-// import {useEffect, useState} from 'react';
-// import {useAppSelector} from '../../constants';
-// import {errorMessage, successMessage} from '../../utils';
-// import {onGetProperty} from '../../redux/ducks/Properties/getSelectedProperty';
-// import {onGetOwnerDetails} from '../../redux/ducks/User/contactOwner';
-
-// interface Props {
-//   editFlag?: boolean;
-//   item?: any;
-//   isWishlist?: boolean;
-// }
-
-// const PropertyCard: React.FC<Props> = ({
-//   editFlag,
-//   item,
-//   isWishlist = false,
-// }) => {
-//   const navigation = useNavigation<StackNavigationProp<RootStackParamList>>();
-//   const dispatch = useDispatch();
-//   const addToList = useAppSelector(state => state.addToList);
-//   const contactOwner = useAppSelector(state => state.contactOwner);
-//   console.log('contactOwner', contactOwner);
-
-//   const {data, loading, error} = contactOwner;
-
-//   const [isWishlisted, setIsWishlisted] = useState(item?.isInWishlist);
-//    const [showModal, setShowModal] = useState<boolean>(false);
-//    const [checkshowModal, setcheckShowModal] = useState<boolean>(false);
-
-//   // const {called, data, status, message} = addToList;
-//   // console.log('called', status);
-
-//    const handleContactOwnerPress = () => {
-//       // if (item?._id) {
-//         dispatch(onGetOwnerDetails(item._id));
-//         setTimeout(() => {
-//           checkdata()
-//         }, 3000);
-//       // }
-//    };
-
-//    const checkdata = () =>{
-//     console.log("checkdata",checkshowModal);
-
-//     if (checkshowModal && data.length !== 0) {
-//       setShowModal(true);
-//     } else {
-//       setShowModal(false);
-//     }
-//    }
-
-//   useEffect(() => {
-//     if (addToList.called) {
-//       const {message, status} = addToList;
-//       if (status === 'fail') {
-//         errorMessage(message);
-//       } else {
-//         successMessage(message);
-//         // Update the local state only for the current property
-//         // setIsWishlisted(!isWishlisted);
-//       }
-//     }
-//     // if (contactOwner.code == 200) {
-//     // const {message, status} = contactOwner;
-//     if (contactOwner.code == 200) {
-//       successMessage(contactOwner.message);
-//       setcheckShowModal(true);
-//     } else if (contactOwner.code == 402) {
-//       setShowModal(false);
-//       setcheckShowModal(false);
-//       errorMessage(contactOwner.message);
-//     }
-//     setShowModal(false);
-//     // }
-//   }, [addToList, contactOwner, checkshowModal, isWishlisted]);
-
-//   const handlePropertyPress = () => {
-//     if (!editFlag) {
-//       navigation.push('PropertyScreen', {data: item});
-//       dispatch(onGetProperty(item?._id));
-//     }
-//   };
-
-//   const handleWishlist = () => {
-//     setIsWishlisted(!isWishlisted)
-//     const actionData = isWishlisted ? -1 : 1;
-//     // Dispatch the action with the current property ID and actionData
-//     dispatch(addToWishList(item?._id, actionData));
-//     // Update the local state for this property
-//   };
-
-//    const handleCallPress = () => {
-//      const phoneNumber = contactOwner?.data?.owner_details?.contact_phone;
-//      if (phoneNumber) {
-//        Linking.openURL(`tel:${phoneNumber}`);
-//      }
-//    };
-
-//   return (
-//     <ScrollView
-//       contentContainerStyle={{
-//         flex: 1,
-//         justifyContent: 'center',
-//         alignSelf: 'center',
-//       }}
-//       style={{marginBottom: 20}}>
-//       <TouchableOpacity onPress={handlePropertyPress} style={{width: '100%'}}>
-//         <View className="w-full bg-white rounded-xl">
-//           <View className="w-full h-[129px] rounded-t-xl overflow-hidden relative">
-//             <CardSwiper images={item?.images} />
-//             <View className="absolute w-8 h-8 p-2 rounded-full bg-black/25 right-2 top-1/3">
-//               <Image
-//                 source={{uri: rightArrowWhite}}
-//                 resizeMode="contain"
-//                 className="w-4 h-4"
-//               />
-//             </View>
-//           </View>
-//           <View className="p-3">
-//             {editFlag && (
-//               <View className="flex flex-row items-center">
-//                 <Image
-//                   source={{uri: ratingstar}}
-//                   resizeMode="contain"
-//                   className="w-3 h-3 mr-1"
-//                 />
-//                 <Text className="mr-1 text-sm font-medium text-black">4.5</Text>
-//                 <Text className="text-sm font-medium text-gray-700">
-//                   {'(73)'}
-//                 </Text>
-//               </View>
-//             )}
-//             <View className="flex flex-row items-start">
-//               <View className="flex-1">
-//                 <Text className="text-lg font-bold text-[#1A1E25]">
-//                   {item?.building_name}
-//                 </Text>
-//                 <Text className="text-base text-[#2F4858]">
-//                   {item?.address}
-//                 </Text>
-//               </View>
-//               <TouchableOpacity
-//                 onPress={() => handleWishlist()}
-//                 style={{
-//                   // borderWidth: 1,
-//                   height: 28,
-//                   width: 28, // Set width to be consistent
-//                   justifyContent: 'center', // Center the image vertically
-//                   alignItems: 'center', // Center the image horizontally
-//                 }}>
-//                 <Image
-//                   source={{uri: isWishlisted ? setwishlist : wishlist}}
-//                   resizeMode="contain"
-//                   style={{
-//                     width: isWishlisted ? 34 : 22,
-//                     height: isWishlisted ? 34 : 22,
-//                   }}
-//                   // className="w-8 h-8"
-//                 />
-//               </TouchableOpacity>
-//             </View>
-//             <View className="flex flex-row items-center justify-start p-1 rounded-md bg-[#F2F8F6] mt-1 mb-3">
-//               <Text className="text-sm text-[#738D9C]">
-//                 {item?.bedrooms} BHK
-//               </Text>
-//               <View className="w-[6px] h-[6px] rounded-full bg-[#738D9C] mx-2" />
-//               <Text className="text-sm text-[#738D9C]">
-//                 {item?.area_sqft} Sq.ft
-//               </Text>
-//               <View className="w-[6px] h-[6px] rounded-full bg-[#738D9C] mx-2" />
-//               <Text className="text-sm text-[#738D9C]">
-//                 {item?.furnish_type}
-//               </Text>
-//               <View className="w-[6px] h-[6px] rounded-full bg-[#738D9C] mx-2" />
-//               <Text className="text-sm text-[#738D9C]">{item?.owner_name}</Text>
-//             </View>
-//             <View className="flex flex-row justify-between">
-//               <View className="flex flex-row ">
-//                 <Text className="text-base font-bold text-[#BDEA09]">
-//                   {' '}
-//                   ₹ {item?.monthly_rent}/-
-//                 </Text>
-//                 <Text
-//                   style={{color: '#000000'}}
-//                   className="ml-1 text-base font-bold">
-//                   {' '}
-//                   Monthly
-//                 </Text>
-//               </View>
-//               <View>
-//                 <Text
-//                   style={{color: '#000000'}}
-//                   className="ml-1 text-base font-bold">
-//                   {' '}
-//                   {item?.listing_type}
-//                 </Text>
-//               </View>
-//             </View>
-//           </View>
-//           {editFlag ? (
-//             <View className="flex flex-row px-3 pb-3">
-//               <TouchableOpacity
-//                 // onPress={() =>
-//                 //   // navigation.navigate('ListPropertyScreen', {item:item})
-//                 // }
-//                 className="flex-1 p-3 mr-2 border border-[#BDEA09] rounded-full flex flex-row items-center justify-center">
-//                 <Text className="text-[#BDEA09] text-base text-center font-medium mr-2">
-//                   Edit Details
-//                 </Text>
-//                 <Image
-//                   source={{uri: editPen}}
-//                   resizeMode="contain"
-//                   className="w-4 h-4"
-//                 />
-//               </TouchableOpacity>
-//               <TouchableOpacity className="p-4 rounded-full bg-[#EA0909]/10 flex items-center justify-center">
-//                 <Image
-//                   source={{uri: deleteIc}}
-//                   resizeMode="contain"
-//                   className="w-4 h-5"
-//                 />
-//               </TouchableOpacity>
-//             </View>
-//           ) : (
-//             <View>
-//               <View className="flex flex-row items-center px-3 pt-3 border-t border-t-gray-400">
-//                 <View>
-//                   <Image
-//                     source={{uri: demoUser}}
-//                     resizeMode="contain"
-//                     className="w-10 h-10 rounded-full"
-//                   />
-//                 </View>
-//                 <TouchableOpacity
-//                   onPress={handleContactOwnerPress}
-//                   className="flex-1 rounded-full ml-3 bg-[#BDEA09] p-3">
-//                   <Text className="text-center text-base font-bold text-[#181A53]">
-//                     Contact Owner
-//                   </Text>
-//                 </TouchableOpacity>
-//               </View>
-//               <View className="flex flex-row items-center justify-between px-3 pb-3 mt-2">
-//                 <Text className="text-sm text-[#181A5399] font-medium">
-//                   Charges
-//                 </Text>
-//                 <Text className="text-[#181A53] text-base font-bold">
-//                   50 Coins
-//                 </Text>
-//               </View>
-//             </View>
-//           )}
-//         </View>
-//       </TouchableOpacity>
-//       {contactOwner && showModal && (
-//         <Modal
-//           visible={showModal}
-//           transparent={true}
-//           statusBarTranslucent={true}
-//           animationType="fade">
-//           <TouchableWithoutFeedback onPress={() => setShowModal(false)}>
-//             <View className="items-center justify-center flex-1 bg-black/80">
-//               <TouchableWithoutFeedback>
-//                 <View className="rounded-lg p-4 bg-white w-[80%]">
-//                   <Text className="text-base font-bold text-black">
-//                     Congratulations!!!
-//                   </Text>
-//                   <Text className="text-[#34AF48]">Contact the owner now</Text>
-//                   <View className="p-3 my-3 border rounded-lg border-black/10">
-//                     <View className="flex flex-row">
-//                       <Image
-//                         source={{uri: demoUser}}
-//                         resizeMode="contain"
-//                         className="w-10 h-10 rounded-full"
-//                       />
-//                       <View className="ml-3">
-//                         <Text className="text-[#7D7F88] text-sm font-medium">
-//                           Property Owner
-//                         </Text>
-//                         <Text className="text-[#1A1E25] text-base font-bold">
-//                           {contactOwner?.data?.owner_details?.owner_name}
-//                         </Text>
-//                       </View>
-//                     </View>
-//                     <Text className="text-[#0E0E0C] text-sm my-2">
-//                       Tap to call
-//                     </Text>
-//                     <TouchableOpacity
-//                       onPress={handleCallPress}
-//                       className="py-3 px-4 flex flex-row items-center rounded-full bg-[#F2F8F6]">
-//                       <View className="flex flex-row items-center flex-1">
-//                         <Image
-//                           source={{uri: phoneIc}}
-//                           resizeMode="contain"
-//                           className="w-4 h-4 mr-2"
-//                         />
-//                         <Text className="text-[#181A53] font-medium text-lg">
-//                           {contactOwner?.data?.owner_details?.contact_phone}
-//                         </Text>
-//                       </View>
-//                       <Image
-//                         source={{uri: greyRightArrow}}
-//                         resizeMode="contain"
-//                         className="w-2 h-5 mr-2"
-//                       />
-//                     </TouchableOpacity>
-//                   </View>
-//                   <TouchableOpacity
-//                     onPress={() => setShowModal(false)}
-//                     className="w-full p-2 bg-[#BDEA09] rounded-full mt-2">
-//                     <Text className="text-[#181A53] text-base text-center font-medium">
-//                       Okay
-//                     </Text>
-//                   </TouchableOpacity>
-//                 </View>
-//               </TouchableWithoutFeedback>
-//             </View>
-//           </TouchableWithoutFeedback>
-//         </Modal>
-//       )}
-//     </ScrollView>
-//   )
-// };
-
-// export default PropertyCard;
-
 import {
   Image,
   ScrollView,
@@ -589,6 +11,7 @@ import {
   ActivityIndicator,
   Alert,
   TextInput,
+  Platform,
 } from 'react-native';
 import CardSwiper from './CardSwiper';
 import {
@@ -618,6 +41,14 @@ import {onRecharge} from '../../redux/ducks/Coins/recharge';
 import {viewWishList} from '../../redux/ducks/WishList/viewList';
 import RazorpayCheckout from 'react-native-razorpay';
 import {onGetUserProfile} from '../../redux/ducks/User/viewProfile';
+import {
+  initConnection,
+  endConnection,
+  getProducts,
+  requestPurchase,
+} from 'react-native-iap';
+import axios from 'axios';
+
 interface Props {
   editFlag?: boolean;
   item?: any;
@@ -627,6 +58,7 @@ interface Props {
 const PropertyCard: React.FC<Props> = ({
   editFlag,
   item,
+  iapProducts,
   isWishlist = false,
 }) => {
   console.log('itemwishlist', item);
@@ -902,24 +334,54 @@ const PropertyCard: React.FC<Props> = ({
             <Text className="text-[#0E0E0C] text-xl font-bold my-3">
               Amount
             </Text>
-            <TextInput
-              placeholder="Enter Amount"
-              maxLength={5}
-              keyboardType="numeric"
-              returnKeyType="done"
-              value={amount}
-              placeholderTextColor={'black'}
-              style={{
-                width: '100%',
-                height: 50,
-                borderRadius: 5,
-                backgroundColor: '#F2F8F6',
-                paddingHorizontal: 10,
-                fontSize: 14,
-                color: '#181A53',
-              }}
-              onChangeText={text => setAmount(text)}
-            />
+            {Platform.OS === 'ios' ? (
+              <View style={{flexDirection: 'row', flexWrap: 'wrap', gap: 10}}>
+                {products.map((product, index) => {
+                  const fixedAmount = parseInt(
+                    product.productId.replace('com.axces.coins.', ''),
+                  );
+                  return (
+                    <TouchableOpacity
+                      key={index}
+                      onPress={() => setAmount(fixedAmount)}
+                      style={{
+                        padding: 10,
+                        borderRadius: 5,
+                        backgroundColor:
+                          amount === fixedAmount ? '#BDEA09' : '#F2F8F6',
+                        justifyContent: 'center',
+                      }}>
+                      <Text
+                        style={{
+                          fontSize: 14,
+                          color: '#181A53',
+                        }}>
+                        ₹{fixedAmount}
+                      </Text>
+                    </TouchableOpacity>
+                  );
+                })}
+              </View>
+            ) : (
+              <TextInput
+                placeholder="Enter Amount"
+                maxLength={5}
+                keyboardType="numeric"
+                returnKeyType="done"
+                value={amount}
+                placeholderTextColor={'black'}
+                style={{
+                  width: '100%',
+                  height: 50,
+                  borderRadius: 5,
+                  backgroundColor: '#F2F8F6',
+                  paddingHorizontal: 10,
+                  fontSize: 14,
+                  color: '#181A53',
+                }}
+                onChangeText={text => setAmount(text)}
+              />
+            )}
             <View style={{height: 30}} />
             <Text className=" text-[#0E0E0CCC] text-base font-medium border-b border-b-black/10">
               Two simple steps
@@ -1077,7 +539,7 @@ const PropertyCard: React.FC<Props> = ({
       console.log('data++++++++++', data);
 
       if (response.ok) {
-        SetInvoicedata(data?.invoice_download_url);
+        SetInvoicedata(data?.invoice_url);
         // Alert.alert('Payment Status', `Status: ${data.message}`);
         // }
       } else {
@@ -1086,6 +548,70 @@ const PropertyCard: React.FC<Props> = ({
     } catch (error) {
       Alert.alert('Network Error', 'Failed to connect to the server');
       console.error(error);
+    }
+  };
+
+  const products = iapProducts;
+  const isIAPReady = iapProducts?.length > 0;
+
+  const productIds = {
+    '50_coins': 'com.axces.coins.50',
+    '100_coins': 'com.axces.coins.100',
+    '200_coins': 'com.axces.coins.200',
+    '500_coins': 'com.axces.coins.500',
+    '1000_coins': 'com.axces.coins.1000',
+  };
+
+  const checkINAppPurchase = async purchaseItem => {
+    const token = await getAccessToken();
+
+    const data = {
+      ...purchaseItem,
+    };
+
+    try {
+      const response = await axios.post(
+        'https://backend.axces.in/api/validate-purchase',
+        data,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            'Content-Type': 'application/json',
+          },
+        },
+      );
+
+      if (response.status === 200) {
+        SetInvoicedata(response.data?.invoice_url);
+      } else {
+        Alert.alert('Error', `Error: ${response.data.message}`);
+      }
+    } catch (error) {
+      Alert.alert('Network Error', 'Failed to connect to the server');
+    }
+  };
+
+  const handleIOSPurchase = async () => {
+    try {
+      const productId = productIds[`${amount}_coins`];
+      if (!productId) {
+        Alert.alert('Error', 'Invalid amount selected');
+        return;
+      }
+
+      const purchase = await requestPurchase({sku: productId});
+
+      if (!purchase) {
+        throw new Error('Purchase result is null or undefined');
+      }
+
+      // Finish the transaction
+      // await finishTransaction(purchase);
+
+      await checkINAppPurchase(purchase);
+      setpostsucessShowModal(true);
+    } catch (error) {
+      Alert.alert('Purchase Failed', 'Failed to complete the purchase');
     }
   };
 
@@ -1127,23 +653,31 @@ const PropertyCard: React.FC<Props> = ({
   };
 
   const managerecharge = () => {
-    if (amount.length > 0) {
-      //  setpostsucessShowModal(true); // Show success modal
-      dispatch(onRecharge(amount))
-        .then(response => {
-          // Handle success
-          console.log('Recharge successful:', response.data);
-          //  const orderdata = response?.data?.data?.order?.id;
-          managepayment(response.data); // Continue with payment management
-        })
-        .catch(error => {
-          // Handle error
-          console.error('Recharge failed:', error);
-          errorMessage('Recharge failed. Please try again.');
-        })
-        .finally(() => {
-          // Close bottom sheet regardless of success or failure
-        });
+    if (amount > 0 && amount !== '') {
+      if (Platform.OS === 'android') {
+        //  setpostsucessShowModal(true); // Show success modal
+        dispatch(onRecharge(amount))
+          .then(response => {
+            // Handle success
+            console.log('Recharge successful:', response.data);
+            //  const orderdata = response?.data?.data?.order?.id;
+            managepayment(response.data); // Continue with payment management
+          })
+          .catch(error => {
+            // Handle error
+            console.error('Recharge failed:', error);
+            errorMessage('Recharge failed. Please try again.');
+          })
+          .finally(() => {
+            // Close bottom sheet regardless of success or failure
+          });
+      } else {
+        if (!isIAPReady) {
+          Alert.alert('Error', 'In-app purchases are not ready');
+          return;
+        }
+        handleIOSPurchase();
+      }
     } else {
       errorMessage('Please enter amount'); // Prompt user to enter amount
     }

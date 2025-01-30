@@ -59,11 +59,10 @@ import RazorpayCheckout from 'react-native-razorpay';
 import {
   initConnection,
   endConnection,
-  useIAP,
   getProducts,
   requestPurchase,
-  isIosStorekit2,
 } from 'react-native-iap';
+import axios from 'axios';
 
 export interface OthersDataInterface {
   title: string;
@@ -228,7 +227,7 @@ const ProfileScreen = () => {
       console.log('Invoice Data Url', data);
 
       if (response.ok) {
-        SetInvoicedata(data?.invoice_download_url);
+        SetInvoicedata(data?.invoice_url);
         // Alert.alert('Payment Status', `Status: ${data.message}`);
         // }
       } else {
@@ -246,34 +245,30 @@ const ProfileScreen = () => {
   const [products, setProducts] = useState([]);
   const [isIAPReady, setIsIAPReady] = useState(false);
 
-  const {finishTransaction} = useIAP();
-
   const productIds = {
+    '50_coins': 'com.axces.coins.50',
     '100_coins': 'com.axces.coins.100',
+    '200_coins': 'com.axces.coins.200',
     '500_coins': 'com.axces.coins.500',
     '1000_coins': 'com.axces.coins.1000',
   };
-
-  const skus = Platform.select({
-    ios: ['com.axces.coins.100', 'com.axces.coins.500', 'com.axces.coins.1000'],
-    android: [
-      'com.axces.coins.100',
-      'com.axces.coins.500',
-      'com.axces.coins.1000',
-    ],
-  });
 
   const initializeIAP = async () => {
     try {
       if (Platform.OS === 'ios') {
         await initConnection();
-        const iapProducts = await getProducts({skus});
-        // console.log('IAP products:', iapProducts);
-        setProducts(iapProducts);
+        const iapProducts = await getProducts({
+          skus: Object.values(productIds),
+        });
+        const sortedProducts = iapProducts.sort(
+          (a, b) =>
+            parseInt(a.productId.replace('com.axces.coins.', '')) -
+            parseInt(b.productId.replace('com.axces.coins.', '')),
+        );
+        setProducts(sortedProducts);
         setIsIAPReady(true);
       }
     } catch (error) {
-      console.error('Failed to initialize IAP:', error);
       Alert.alert('Error', 'Failed to initialize in-app purchases');
     }
   };
@@ -290,6 +285,36 @@ const ProfileScreen = () => {
     };
   }, []);
 
+  const checkINAppPurchase = async purchaseItem => {
+    const token = await getAccessToken();
+
+    const data = {
+      ...purchaseItem,
+    };
+
+    try {
+      const response = await axios.post(
+        'https://backend.axces.in/api/validate-purchase',
+        data,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            'Content-Type': 'application/json',
+          },
+        },
+      );
+
+      if (response.status === 200) {
+        fetchData();
+        SetInvoicedata(response.data?.invoice_url);
+      } else {
+        Alert.alert('Error', `Error: ${response.data.message}`);
+      }
+    } catch (error) {
+      Alert.alert('Network Error', 'Failed to connect to the server');
+    }
+  };
+
   const handleIOSPurchase = async () => {
     try {
       const productId = productIds[`${amount}_coins`];
@@ -298,40 +323,24 @@ const ProfileScreen = () => {
         return;
       }
 
-      console.log('Initiating purchase for product ID:', productId);
-
-      // Request purchase for the identified product ID
       const purchase = await requestPurchase({sku: productId});
-
-      console.log('Purchase result:', purchase);
 
       if (!purchase) {
         throw new Error('Purchase result is null or undefined');
       }
 
-      // // Finish the transaction
+      // Finish the transaction
       // await finishTransaction(purchase);
 
-      // After successful purchase
-      // const orderData = {
-      //   data: {
-      //     order: {
-      //       id: purchase.transactionId,
-      //     },
-      //   },
-      // };
-
-      // checkPaymentStatus(purchase.transactionId);
+      await checkINAppPurchase(purchase);
       setpostsucessShowModal(true);
     } catch (error) {
-      console.error('Purchase error:', error);
       Alert.alert('Purchase Failed', 'Failed to complete the purchase');
     }
   };
 
   const managepayment = orderdata => {
     const ordernumber = orderdata?.data?.order?.id;
-    console.log('ordernumber', ordernumber);
 
     const amountInPaise = parseInt(amount) * 100;
     const options = {
@@ -801,7 +810,7 @@ const ProfileScreen = () => {
             </View>
             <View className="z-10 absolute top-0 left-0 right-0 h-6 bg-[#181A53]" />
           </View>
-          <View className="px-6 mt-5 " style={{height: 580}}>
+          <View className="px-6 mt-5 mb-6">
             <Text
               style={{fontSize: RFValue(14)}}
               className=" text-[#0E0E0C99] mb-4">
@@ -1038,7 +1047,7 @@ const ProfileScreen = () => {
 
             <TouchableOpacity
               onPress={handleLogout}
-              className="w-full py-2 my-4 bg-white rounded-full shadow-lg ">
+              className="w-full py-2 my-4 bg-white rounded-full shadow-lg">
               <Text className=" text-[#181A53] text-base font-medium text-center">
                 Logout
               </Text>
@@ -1081,23 +1090,53 @@ const ProfileScreen = () => {
               <Text className="text-[#0E0E0C] text-xl font-bold my-3">
                 Amount
               </Text>
-              <TextInput
-                placeholder="Enter Amount"
-                maxLength={5}
-                keyboardType="numeric"
-                value={amount}
-                placeholderTextColor={'black'}
-                style={{
-                  width: '100%',
-                  height: 50,
-                  borderRadius: 5,
-                  backgroundColor: '#F2F8F6',
-                  paddingHorizontal: 10,
-                  fontSize: 14,
-                  color: '#181A53',
-                }}
-                onChangeText={text => setAmount(text)}
-              />
+              {Platform.OS === 'ios' ? (
+                <View style={{flexDirection: 'row', flexWrap: 'wrap', gap: 10}}>
+                  {products.map((product, index) => {
+                    const fixedAmount = parseInt(
+                      product.productId.replace('com.axces.coins.', ''),
+                    );
+                    return (
+                      <TouchableOpacity
+                        key={index}
+                        onPress={() => setAmount(fixedAmount)}
+                        style={{
+                          padding: 10,
+                          borderRadius: 5,
+                          backgroundColor:
+                            amount === fixedAmount ? '#BDEA09' : '#F2F8F6',
+                          justifyContent: 'center',
+                        }}>
+                        <Text
+                          style={{
+                            fontSize: 14,
+                            color: '#181A53',
+                          }}>
+                          ₹{fixedAmount}
+                        </Text>
+                      </TouchableOpacity>
+                    );
+                  })}
+                </View>
+              ) : (
+                <TextInput
+                  placeholder="Enter Amount"
+                  maxLength={5}
+                  keyboardType="numeric"
+                  value={amount}
+                  placeholderTextColor={'black'}
+                  style={{
+                    width: '100%',
+                    height: 50,
+                    borderRadius: 5,
+                    backgroundColor: '#F2F8F6',
+                    paddingHorizontal: 10,
+                    fontSize: 14,
+                    color: '#181A53',
+                  }}
+                  onChangeText={text => setAmount(text)}
+                />
+              )}
               <View style={{height: 30}} />
               <Text className=" text-[#0E0E0CCC] text-base font-medium border-b border-b-black/10">
                 Two simple steps
