@@ -665,7 +665,12 @@ const PropertyListingScreen = () => {
           )}
         </ScrollView>
       </View>
-      <ScrollView className="mt-2" style={{backgroundColor: '#FFFFFF'}}>
+      <ScrollView
+        className="mt-2"
+        style={{
+          backgroundColor: '#FFFFFF',
+          minHeight: Dimensions.get('window').height,
+        }}>
         <View className="w-full mb-4">
           <View style={{width: '90%', marginHorizontal: 18, padding: 10}}>
             <Text
@@ -682,7 +687,8 @@ const PropertyListingScreen = () => {
               <PropertyCard item={item} iapProducts={products} />
             )}
             ListEmptyComponent={() => (
-              <View style={{width: '100%', alignItems: 'center'}}>
+              <View
+                style={{width: '100%', alignItems: 'center', paddingTop: 20}}>
                 {!loading && (
                   <Text
                     style={{color: 'red', fontSize: 20, fontWeight: 'bold'}}>

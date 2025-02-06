@@ -383,8 +383,22 @@ const ListPropertyDetailScreen = () => {
   //    }
   //  };
 
+  // Custom debounce function
+  const debounce = (func, delay) => {
+    let timeoutId;
+    return (...args) => {
+      if (timeoutId) {
+        clearTimeout(timeoutId);
+      }
+      timeoutId = setTimeout(() => {
+        func(...args);
+      }, delay);
+    };
+  };
+
+  // Fetch suggestions with debounce
   const fetchSuggestions = async query => {
-    setInput(query);
+    // Clear previous timeout if exists
     if (query.trim().length === 0) {
       setSuggestions([]);
       setModalVisible(false);
@@ -407,6 +421,18 @@ const ListPropertyDetailScreen = () => {
       setSuggestions([]);
       setModalVisible(false);
     }
+  };
+
+  // Create a debounced version of fetchSuggestions
+  const debouncedFetchSuggestions = React.useCallback(
+    debounce(fetchSuggestions, 300),
+    [],
+  );
+
+  // Handle input change
+  const handleInputChange = query => {
+    setInput(query);
+    debouncedFetchSuggestions(query);
   };
 
   const handleSelectSuggestion = (item: any) => {
@@ -1624,6 +1650,7 @@ const ListPropertyDetailScreen = () => {
               backgroundColor: '#F2F8F6',
               height: 46,
               justifyContent: 'center',
+              marginTop: 8,
             }}>
             <View style={{marginLeft: 15, marginRight: 15}}>
               <View
@@ -1934,7 +1961,7 @@ const ListPropertyDetailScreen = () => {
                 }}
                 multiline={false}
                 value={input}
-                onChangeText={text => fetchSuggestions(text)}
+                onChangeText={text => handleInputChange(text)}
               />
             </View>
             {/* )} */}

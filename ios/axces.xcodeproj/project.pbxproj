@@ -11,8 +11,6 @@
 		13B07FBC1A68108700A75B9A /* AppDelegate.mm in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB01A68108700A75B9A /* AppDelegate.mm */; };
 		13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB51A68108700A75B9A /* Images.xcassets */; };
 		13B07FC11A68108700A75B9A /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB71A68108700A75B9A /* main.m */; };
-		760D19AB2D2F9ED4003B3376 /* Consumables.storekit in Resources */ = {isa = PBXBuildFile; fileRef = 760D19AA2D2F9ED4003B3376 /* Consumables.storekit */; };
-		760D19AC2D2F9ED4003B3376 /* Consumables.storekit in Resources */ = {isa = PBXBuildFile; fileRef = 760D19AA2D2F9ED4003B3376 /* Consumables.storekit */; };
 		765EEC282D22A9580045579B /* StoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 765EEC272D22A9580045579B /* StoreKit.framework */; };
 		81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */; };
 		856A40E7ECB0798AD69B8A8E /* Pods_axces.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 70BBC61E38876FDFF250C906 /* Pods_axces.framework */; };
@@ -64,7 +62,6 @@
 		5709B34CF0A7D63546082F79 /* Pods-axces.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-axces.release.xcconfig"; path = "Target Support Files/Pods-axces/Pods-axces.release.xcconfig"; sourceTree = "<group>"; };
 		5B7EB9410499542E8C5724F5 /* Pods-axces-axcesTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-axces-axcesTests.debug.xcconfig"; path = "Target Support Files/Pods-axces-axcesTests/Pods-axces-axcesTests.debug.xcconfig"; sourceTree = "<group>"; };
 		70BBC61E38876FDFF250C906 /* Pods_axces.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_axces.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		760D19AA2D2F9ED4003B3376 /* Consumables.storekit */ = {isa = PBXFileReference; lastKnownFileType = text; path = Consumables.storekit; sourceTree = "<group>"; };
 		765EEC272D22A9580045579B /* StoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = StoreKit.framework; path = System/Library/Frameworks/StoreKit.framework; sourceTree = SDKROOT; };
 		81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = LaunchScreen.storyboard; path = axces/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		89C6BE57DB24E9ADA2F236DE /* Pods-axces-axcesTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-axces-axcesTests.release.xcconfig"; path = "Target Support Files/Pods-axces-axcesTests/Pods-axces-axcesTests.release.xcconfig"; sourceTree = "<group>"; };
@@ -77,7 +74,7 @@
 		DE5C670F5FA24A348C47FA83 /* Figtree-Light.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Figtree-Light.ttf"; path = "../assets/fonts/Figtree-Light.ttf"; sourceTree = "<group>"; };
 		DE68C3CA0E4946CD84342C9A /* Figtree-ExtraBold.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Figtree-ExtraBold.ttf"; path = "../assets/fonts/Figtree-ExtraBold.ttf"; sourceTree = "<group>"; };
 		E0F7944283E6471ABE293F95 /* Figtree-SemiBold.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Figtree-SemiBold.ttf"; path = "../assets/fonts/Figtree-SemiBold.ttf"; sourceTree = "<group>"; };
-		E3BD80C24D6D503E1BF58133 /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; includeInIndex = 1; name = PrivacyInfo.xcprivacy; path = axces/PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
+		E3BD80C24D6D503E1BF58133 /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xml; name = PrivacyInfo.xcprivacy; path = axces/PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
 		EA420366C972415A9889A4FF /* Figtree-Medium.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Figtree-Medium.ttf"; path = "../assets/fonts/Figtree-Medium.ttf"; sourceTree = "<group>"; };
 		ED297162215061F000B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
 		FAB795292CABD52800199464 /* axces.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; name = axces.entitlements; path = axces/axces.entitlements; sourceTree = "<group>"; };
@@ -180,7 +177,6 @@
 		83CBB9F61A601CBA00E9B192 = {
 			isa = PBXGroup;
 			children = (
-				760D19AA2D2F9ED4003B3376 /* Consumables.storekit */,
 				13B07FAE1A68108700A75B9A /* axces */,
 				832341AE1AAA6A7D00B99B32 /* Libraries */,
 				00E356EF1AD99517003FC87E /* axcesTests */,
@@ -301,7 +297,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				760D19AC2D2F9ED4003B3376 /* Consumables.storekit in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -326,7 +321,6 @@
 				FA496F4C2CC78A53006DB284 /* Figtree-LightItalic.ttf in Resources */,
 				81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */,
 				13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */,
-				760D19AB2D2F9ED4003B3376 /* Consumables.storekit in Resources */,
 				8E5C686EFC33FB79E9431D51 /* PrivacyInfo.xcprivacy in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -564,10 +558,12 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = axces/axces.entitlements;
-				CURRENT_PROJECT_VERSION = 16;
+				CURRENT_PROJECT_VERSION = 19;
 				DEVELOPMENT_TEAM = R7ZZT44SMP;
 				ENABLE_BITCODE = NO;
 				INFOPLIST_FILE = axces/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = Axces;
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.business";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -593,9 +589,11 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = axces/axces.entitlements;
-				CURRENT_PROJECT_VERSION = 16;
+				CURRENT_PROJECT_VERSION = 19;
 				DEVELOPMENT_TEAM = R7ZZT44SMP;
 				INFOPLIST_FILE = axces/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = Axces;
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.business";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -697,10 +695,7 @@
 					"-DFOLLY_USE_LIBCPP=1",
 					"-DFOLLY_CFG_NO_COROUTINES=1",
 				);
-				OTHER_LDFLAGS = (
-					"$(inherited)",
-					" ",
-				);
+				OTHER_LDFLAGS = "$(inherited)  ";
 				REACT_NATIVE_PATH = "${PODS_ROOT}/../../node_modules/react-native";
 				SDKROOT = iphoneos;
 				USE_HERMES = true;
@@ -783,10 +778,7 @@
 					"-DFOLLY_USE_LIBCPP=1",
 					"-DFOLLY_CFG_NO_COROUTINES=1",
 				);
-				OTHER_LDFLAGS = (
-					"$(inherited)",
-					" ",
-				);
+				OTHER_LDFLAGS = "$(inherited)  ";
 				REACT_NATIVE_PATH = "${PODS_ROOT}/../../node_modules/react-native";
 				SDKROOT = iphoneos;
 				USE_HERMES = true;

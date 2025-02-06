@@ -6,6 +6,7 @@ import {
   View,
   Platform,
   Alert,
+  Dimensions,
 } from 'react-native';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import Header from '../../component/Header/Header';
@@ -105,15 +106,21 @@ const SavedScreen = () => {
   );
 
   return (
-    <SafeAreaView className="flex-1 bg-[#F2F8F6]">
+    <SafeAreaView className="flex-1 bg-[#181A53]">
       <StatusBar
-        barStyle={'dark-content'}
+        barStyle={'light-content'}
         backgroundColor={'transparent'}
         translucent
       />
-      <CenterHeader title="My Wishlist" lightMode={true} />
+      <CenterHeader title="My Wishlist" />
       <Loader loading={loading} />
-      <ScrollView className="mt-2" style={{backgroundColor: '#F2F8F6'}}>
+      <ScrollView
+        className="mt-2"
+        style={{
+          backgroundColor: '#F2F8F6',
+          flex: 1,
+          minHeight: Dimensions.get('window').height,
+        }}>
         <View className="w-full mb-4">
           <View
             style={{

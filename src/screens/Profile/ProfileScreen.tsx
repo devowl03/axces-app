@@ -29,6 +29,7 @@ import {
   Report,
   whiteHome,
   whiteWallet,
+  Transaction,
 } from '../../constants/imgURL';
 import {useFocusEffect, useNavigation} from '@react-navigation/native';
 import {StackNavigationProp} from '@react-navigation/stack';
@@ -925,7 +926,7 @@ const ProfileScreen = () => {
                   className="flex items-center justify-center w-10 h-10 mr-3 bg-white rounded-lg ">
                   <Image
                     style={{width: scale(16), height: verticalScale(16)}}
-                    source={{uri: Help}}
+                    source={{uri: Transaction}}
                     resizeMode="contain"
                   />
                 </View>

@@ -128,6 +128,7 @@ const ListPropertyScreen = () => {
               paddingVertical: 12,
               paddingHorizontal: 16,
               marginHorizontal: 16,
+              marginTop: 8,
               flexDirection: 'row',
               alignItems: 'center',
               borderRadius: 25,
@@ -141,7 +142,13 @@ const ListPropertyScreen = () => {
             <TextInput
               placeholder="Enter your pincode"
               placeholderTextColor="#181A53"
-              style={{color: '#181A53', fontSize: 16, flex: 1}}
+              style={{
+                color: '#181A53',
+                fontWeight: '500',
+                fontFamily: 'Poppins-Regular',
+                fontSize: 16,
+                flex: 1,
+              }}
               value={addPincode}
               onChangeText={setAddPincode}
               keyboardType="numeric"
