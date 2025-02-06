@@ -1,4 +1,13 @@
-import {Image, ScrollView, StatusBar, Text, View} from 'react-native';
+import {
+  Image,
+  ScrollView,
+  StatusBar,
+  Text,
+  View,
+  Platform,
+  Alert,
+  Dimensions,
+} from 'react-native';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import Header from '../../component/Header/Header';
 import {tapIcon} from '../../constants/imgURL';
@@ -20,50 +29,56 @@ const SavedScreen = () => {
   const getWishlist = useAppSelector(state => state.viewList);
   const [loading, setLoading] = useState(false);
 
-   const fetchWishlist = async () => {
-     const token = await getAccessToken();
-     try {
-       setLoading(true);
-       const response = await fetch(
-         `https://backend.axces.in/api/property/viewWishlist`,
-         {
-           method: 'GET',
-           headers: {
-             'Content-Type': 'application/json',
-             Authorization: `Bearer ${token}`, // Pass the token here
-           },
-         },
-       );
+  const fetchWishlist = async () => {
+    const token = await getAccessToken();
+    try {
+      setLoading(true);
+      const response = await fetch(
+        `https://backend.axces.in/api/property/viewWishlist`,
+        {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${token}`, // Pass the token here
+          },
+        },
+      );
 
-       const data = await response.json();
-       if (response.ok) {
-         setList(data.data); // Assuming the API returns the wishlist directly
-       } else {
-         console.error(data.message || 'Failed to fetch wishlist');
-       }
-     } catch (error) {
-       console.error('Error fetching wishlist:', error);
-     } finally {
-       setLoading(false);
-     }
-   };
+      const data = await response.json();
+      if (response.ok) {
+        setList(data.data); // Assuming the API returns the wishlist directly
+      } else {
+        console.error(data.message || 'Failed to fetch wishlist');
+      }
+    } catch (error) {
+      console.error('Error fetching wishlist:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
-   useFocusEffect(
-     useCallback(() => {
-       fetchWishlist(); // Call the fetch function when component is focused
-     }, []),
-   );
+  useFocusEffect(
+    useCallback(() => {
+      fetchWishlist(); // Call the fetch function when component is focused
+    }, []),
+  );
 
   return (
-    <SafeAreaView className="flex-1 bg-[#F2F8F6]">
+    <SafeAreaView className="flex-1 bg-[#181A53]">
       <StatusBar
-        barStyle={'dark-content'}
+        barStyle={'light-content'}
         backgroundColor={'transparent'}
         translucent
       />
-      <CenterHeader title="My Wishlist" lightMode={true} />
+      <CenterHeader title="My Wishlist" />
       <Loader loading={loading} />
-      <ScrollView className="mt-2" style={{backgroundColor:'#F2F8F6'}}>
+      <ScrollView
+        className="mt-2"
+        style={{
+          backgroundColor: '#F2F8F6',
+          flex: 1,
+          minHeight: Dimensions.get('window').height,
+        }}>
         <View className="w-full mb-4">
           <View
             style={{

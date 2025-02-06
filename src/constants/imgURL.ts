@@ -124,3 +124,6 @@ export const Help = 'https://cdn-icons-png.flaticon.com/512/18/18436.png';
 export const Tools = 'https://cdn-icons-png.flaticon.com/512/1077/1077198.png';
 export const DeleteFilled =
   'https://cdn-icons-png.flaticon.com/512/3096/3096687.png';
+
+export const Transaction =
+  'https://img.icons8.com/?size=1000&id=P1YG1sk94HiB&format=png&color=000000';
