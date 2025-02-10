@@ -86,9 +86,7 @@ const FaqScreen = () => {
 
   const handlehelpEmail = () => {
     const email = 'axces.customercare@gmail.com';
-    const url = `mailto:${email}?subject=Subject #issue related to app&body=${encodeURIComponent(
-      'Hello, I need support with...',
-    )}`;
+    const url = `mailto:${email}?subject=Subject #issue related to app&body=Hello, I need support with...`;
     Linking.openURL(url).catch(err =>
       console.error('Failed to open email link: ', err),
     );
@@ -98,26 +96,26 @@ const FaqScreen = () => {
     <SafeAreaView className="flex-1 bg-[#181A53]">
       <StatusBar barStyle={'light-content'} backgroundColor={'#181A53'} />
       <Header centerTile={true} title="FAQ" />
-      <View className="flex-1 relative">
+      <View className="relative flex-1">
         <ScrollView className="flex-1" style={{backgroundColor: '#fff'}}>
           <View className="w-full flex flex-row items-center justify-center bg-[#181A53] px-6 py-3">
             <Image
               source={{uri: faqChatBot}}
               resizeMode="contain"
-              className=" w-28 h-28 mr-3 "
+              className="mr-3 w-28 h-28"
             />
-            <View className=" flex-1">
-              <Text className=" text-xl text-white font-bold">FAQs</Text>
-              <Text className=" text-sm text-white/50">
+            <View className="flex-1 ">
+              <Text className="text-xl font-bold text-white ">FAQs</Text>
+              <Text className="text-sm text-white/50">
                 Unlock insights with our user-friendly FAQ guide
               </Text>
             </View>
           </View>
 
           {/* question answer section */}
-          <View className="flex-1 px-6 relative">
-            <View className="z-20 w-full rounded-2xl p-4 bg-white shadow-md">
-              <View className=" flex flex-row justify-between items-center">
+          <View className="relative flex-1 px-6">
+            <View className="z-20 w-full p-4 bg-white shadow-md rounded-2xl">
+              <View className="flex flex-row items-center justify-between ">
                 <Text className=" text-[#0E0E0C] text-lg font-bold">
                   Frequent Questions
                 </Text>
@@ -143,7 +141,7 @@ const FaqScreen = () => {
           </View>
           <View className="w-full h-24" />
         </ScrollView>
-        <View className="bottom-0 left-0 right-0 h-20 bg-white z-30 absolute px-6 py-4 flex flex-row items-center justify-between">
+        <View className="absolute bottom-0 left-0 right-0 z-30 flex flex-row items-center justify-between h-20 px-6 py-4 bg-white">
           <Text className=" text-sm text-[#0E0E0C]/60 w-[40%] mr-6">
             Didn’t get your answer
           </Text>

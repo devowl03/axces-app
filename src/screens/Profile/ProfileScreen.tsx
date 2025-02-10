@@ -62,6 +62,7 @@ import {
   endConnection,
   getProducts,
   requestPurchase,
+  useIAP,
 } from 'react-native-iap';
 import axios from 'axios';
 
@@ -91,12 +92,10 @@ const ProfileScreen = () => {
   console.log('getLocation', getLocation?.data?.display_name);
   console.log('getLocationdata', getLocation?.data?.lat);
 
-  const handleReportEmail = (subject: string) => {
+  const handleReportEmail = () => {
     const email = 'axces.customercare@gmail.com';
-    const encodedSubject = encodeURIComponent(
-      subject || 'Subject fraud with property inside the app',
-    );
-    const encodedBody = encodeURIComponent('Hello, I need support with...');
+    const encodedSubject = 'Subject fraud with property inside the app';
+    const encodedBody = 'Hello, I need support with...';
     const url = `mailto:${email}?subject=${encodedSubject}&body=${encodedBody}`;
 
     Linking.canOpenURL(url)
@@ -112,12 +111,10 @@ const ProfileScreen = () => {
       });
   };
 
-  const handlehelpEmail = (subject: string) => {
+  const handlehelpEmail = () => {
     const email = 'axces.customercare@gmail.com';
-    const encodedSubject = encodeURIComponent(
-      subject || 'Subject #issue related to app',
-    );
-    const encodedBody = encodeURIComponent('Hello, I need support with...');
+    const encodedSubject = 'Subject #issue related to app';
+    const encodedBody = 'Hello, I need support with...';
     const url = `mailto:${email}?subject=${encodedSubject}&body=${encodedBody}`;
 
     Linking.canOpenURL(url)
@@ -242,6 +239,7 @@ const ProfileScreen = () => {
 
   const [postsucessshowModal, setpostsucessShowModal] =
     useState<boolean>(false);
+  const {finishTransaction} = useIAP();
 
   const [products, setProducts] = useState([]);
   const [isIAPReady, setIsIAPReady] = useState(false);
@@ -331,7 +329,7 @@ const ProfileScreen = () => {
       }
 
       // Finish the transaction
-      // await finishTransaction(purchase);
+      await finishTransaction({purchase, isConsumable: true});
 
       await checkINAppPurchase(purchase);
       setpostsucessShowModal(true);

@@ -61,6 +61,7 @@ import {
   endConnection,
   getProducts,
   requestPurchase,
+  useIAP,
 } from 'react-native-iap';
 
 const ListPropertyDetailScreen = () => {
@@ -1246,6 +1247,7 @@ const ListPropertyDetailScreen = () => {
 
   const [products, setProducts] = useState([]);
   const [isIAPReady, setIsIAPReady] = useState(false);
+  const {finishTransaction} = useIAP();
 
   const productIds = {
     '50_coins': 'com.axces.coins.50',
@@ -1332,7 +1334,7 @@ const ListPropertyDetailScreen = () => {
       }
 
       // Finish the transaction
-      // await finishTransaction(purchase);
+      await finishTransaction({purchase, isConsumable: true});
 
       await checkINAppPurchase(purchase);
     } catch (error) {

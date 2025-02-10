@@ -47,6 +47,7 @@ import {
   endConnection,
   getProducts,
   requestPurchase,
+  useIAP,
 } from 'react-native-iap';
 import axios from 'axios';
 
@@ -441,6 +442,7 @@ const PropertyScreen = ({route}: any) => {
     }
   };
 
+  const {finishTransaction} = useIAP();
   const [products, setProducts] = useState([]);
   const [isIAPReady, setIsIAPReady] = useState(false);
 
@@ -529,7 +531,7 @@ const PropertyScreen = ({route}: any) => {
       }
 
       // Finish the transaction
-      // await finishTransaction(purchase);
+      await finishTransaction({purchase, isConsumable: true});
 
       await checkINAppPurchase(purchase);
       setpostsucessShowModal(true);

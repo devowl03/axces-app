@@ -41,12 +41,7 @@ import {onRecharge} from '../../redux/ducks/Coins/recharge';
 import {viewWishList} from '../../redux/ducks/WishList/viewList';
 import RazorpayCheckout from 'react-native-razorpay';
 import {onGetUserProfile} from '../../redux/ducks/User/viewProfile';
-import {
-  initConnection,
-  endConnection,
-  getProducts,
-  requestPurchase,
-} from 'react-native-iap';
+import {requestPurchase, useIAP} from 'react-native-iap';
 import axios from 'axios';
 
 interface Props {
@@ -551,6 +546,7 @@ const PropertyCard: React.FC<Props> = ({
     }
   };
 
+  const {finishTransaction} = useIAP();
   const products = iapProducts;
   const isIAPReady = iapProducts?.length > 0;
 
@@ -606,7 +602,7 @@ const PropertyCard: React.FC<Props> = ({
       }
 
       // Finish the transaction
-      // await finishTransaction(purchase);
+      await finishTransaction({purchase, isConsumable: true});
 
       await checkINAppPurchase(purchase);
       setpostsucessShowModal(true);
