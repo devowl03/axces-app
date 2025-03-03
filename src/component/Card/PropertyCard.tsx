@@ -629,7 +629,7 @@ const PropertyCard: React.FC<Props> = ({
   item,
   isWishlist = false,
 }) => {
-  console.log('itemwishlist', item);
+  console.log('itemwishlist', item?.property_type);
 
   const navigation = useNavigation<StackNavigationProp<RootStackParamList>>();
   const dispatch = useDispatch();
@@ -1089,6 +1089,72 @@ const PropertyCard: React.FC<Props> = ({
     }
   };
 
+  const {finishTransaction} = useIAP();
+  const products = iapProducts;
+  const isIAPReady = iapProducts?.length > 0;
+
+  const productIds = {
+    '30_coins': 'com.axces.coins.30',
+    '50_coins': 'com.axces.coins.50',
+    '100_coins': 'com.axces.coins.100',
+    '200_coins': 'com.axces.coins.200',
+    '500_coins': 'com.axces.coins.500',
+    '1000_coins': 'com.axces.coins.1000',
+  };
+
+  const checkINAppPurchase = async purchaseItem => {
+    const token = await getAccessToken();
+
+    const data = {
+      ...purchaseItem,
+    };
+
+    try {
+      const response = await axios.post(
+        'https://backend.axces.in/api/validate-purchase',
+        data,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            'Content-Type': 'application/json',
+          },
+        },
+      );
+
+      if (response.status === 200) {
+        SetInvoicedata(response.data?.invoice_url);
+      } else {
+        Alert.alert('Error', `Error: ${response.data.message}`);
+      }
+    } catch (error) {
+      Alert.alert('Network Error', 'Failed to connect to the server');
+    }
+  };
+
+  const handleIOSPurchase = async () => {
+    try {
+      const productId = productIds[`${amount}_coins`];
+      if (!productId) {
+        Alert.alert('Error', 'Invalid amount selected');
+        return;
+      }
+
+      const purchase = await requestPurchase({sku: productId});
+
+      if (!purchase) {
+        throw new Error('Purchase result is null or undefined');
+      }
+
+      // Finish the transaction
+      await finishTransaction({purchase, isConsumable: true});
+
+      await checkINAppPurchase(purchase);
+      setpostsucessShowModal(true);
+    } catch (error) {
+      Alert.alert('Purchase Failed', 'Failed to complete the purchase');
+    }
+  };
+
   const managepayment = orderdata => {
     const ordernumber = orderdata?.data?.order?.id;
 
@@ -1284,19 +1350,20 @@ const PropertyCard: React.FC<Props> = ({
       Alert.alert('Error', 'An error occurred while deleting the property.');
     }
   };
-
   return (
     <ScrollView
       contentContainerStyle={{
         flex: 1,
         justifyContent: 'center',
         alignSelf: 'center',
-        width: '85%',
+        width: '100%',
         backgroundColor: '#FFFFFF',
         // borderWidth:1,
       }}
       style={{marginBottom: 20}}>
-      <TouchableOpacity onPress={handlePropertyPress} style={{width: '100%'}}>
+      <TouchableOpacity
+        onPress={handlePropertyPress}
+        style={{width: '88%', alignSelf: 'center'}}>
         <View className="w-full bg-white rounded-xl">
           <View className="w-full h-[129px] rounded-t-xl overflow-hidden relative">
             <CardSwiper images={item?.images} />
@@ -1324,9 +1391,18 @@ const PropertyCard: React.FC<Props> = ({
             )}
             <View className="flex flex-row items-start">
               <View className="flex-1">
-                <Text className="text-lg font-bold text-[#1A1E25]">
-                  {item?.building_name}
-                </Text>
+                <View
+                  style={{
+                    maxWidth: '65%',
+                  }}
+                  className="flex flex-row items-center justify-start space-x-2">
+                  <Text className="text-lg font-bold text-[#1A1E25]">
+                    {item?.building_name}
+                  </Text>
+                  <Text className="text-base capitalize text-[#2F4858] bg-[#F2F8F6] px-2 py-1 rounded-full">
+                    {item?.property_type}
+                  </Text>
+                </View>
                 <Text className="text-base text-[#2F4858]">
                   {item?.address}
                 </Text>
@@ -1352,19 +1428,35 @@ const PropertyCard: React.FC<Props> = ({
               </TouchableOpacity>
             </View>
             <View className="flex flex-row items-center justify-start p-1 rounded-md bg-[#F2F8F6] mt-1 mb-3">
-              <Text className="text-sm text-[#738D9C]">
-                {item?.bedrooms} BHK
-              </Text>
-              <View className="w-[6px] h-[6px] rounded-full bg-[#738D9C] mx-2" />
+              {item?.property_type !== 'commercial' && (
+                <>
+                  <Text className="text-sm text-[#738D9C]">
+                    {item?.bedrooms} BHK
+                  </Text>
+                  <View className="w-[6px] h-[6px] rounded-full bg-[#738D9C] mx-2" />
+                </>
+              )}
               <Text className="text-sm text-[#738D9C]">
                 {item?.area_sqft} Sq.ft
               </Text>
               <View className="w-[6px] h-[6px] rounded-full bg-[#738D9C] mx-2" />
-              <Text className="text-sm text-[#738D9C]">
-                {item?.furnish_type}
+              {item?.property_type !== 'commercial' && (
+                <>
+                  <Text className="text-sm text-[#738D9C]">
+                    {item?.furnish_type}
+                  </Text>
+                  <View className="w-[6px] h-[6px] rounded-full bg-[#738D9C] mx-2" />
+                </>
+              )}
+              <Text
+                style={{
+                  maxWidth: '16%',
+                }}
+                numberOfLines={1}
+                ellipsizeMode="tail"
+                className="text-sm text-[#738D9C]">
+                {item?.owner_name}
               </Text>
-              <View className="w-[6px] h-[6px] rounded-full bg-[#738D9C] mx-2" />
-              <Text className="text-sm text-[#738D9C]">{item?.owner_name}</Text>
             </View>
             <View className="flex flex-row justify-between">
               <View className="flex flex-row ">
@@ -1448,6 +1540,15 @@ const PropertyCard: React.FC<Props> = ({
           )}
         </View>
       </TouchableOpacity>
+      {/* Show Separoter */}
+      <View
+        style={{
+          height: 1,
+          backgroundColor: '#E5E5E5',
+          width: '100%',
+          marginTop: 20,
+        }}
+      />
       {showModal && contectdetailsmodal()}
       {modalVisiblecontact && contactusermodal()}
       {rechargemodal && addrechargemodal()}

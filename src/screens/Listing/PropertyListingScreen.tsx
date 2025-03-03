@@ -24,7 +24,7 @@ import {TextInput} from 'react-native-gesture-handler';
 import {onGetLocation} from '../../redux/ducks/User/getLocation';
 import {useDispatch} from 'react-redux';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import Ionic from 'react-native-vector-icons/Ionicons'
+import Ionic from 'react-native-vector-icons/Ionicons';
 
 const PropertyListingScreen = () => {
   const [list, setList] = useState([]);
@@ -35,7 +35,6 @@ const PropertyListingScreen = () => {
   const [filteredData, setFilteredData] = useState([]);
 
   const getProperties = useAppSelector(state => state.getProperties.data);
-  console.log('getProperties', getProperties);
 
   const route = useRoute();
   const {appliedFilters} = route?.params || {};
@@ -43,8 +42,47 @@ const PropertyListingScreen = () => {
   const [latitude, setLatitude] = useState<number>(route?.params?.latitude);
   const [longitude, setLongitude] = useState<number>(route?.params?.longitude);
 
-  console.log('route?.params?.longitude', latitude);
-  console.log('route?.params?.lattitude', longitude);
+  const [products, setProducts] = useState([]);
+
+  const productIds = {
+    '30_coins': 'com.axces.coins.30',
+    '50_coins': 'com.axces.coins.50',
+    '100_coins': 'com.axces.coins.100',
+    '200_coins': 'com.axces.coins.200',
+    '500_coins': 'com.axces.coins.500',
+    '1000_coins': 'com.axces.coins.1000',
+  };
+
+  const initializeIAP = async () => {
+    try {
+      if (Platform.OS === 'ios') {
+        await initConnection();
+        const iapProducts = await getProducts({
+          skus: Object.values(productIds),
+        });
+        const sortedProducts = iapProducts.sort(
+          (a, b) =>
+            parseInt(a.productId.replace('com.axces.coins.', '')) -
+            parseInt(b.productId.replace('com.axces.coins.', '')),
+        );
+        setProducts(sortedProducts);
+      }
+    } catch (error) {
+      Alert.alert('Error', 'Failed to initialize in-app purchases proper');
+    }
+  };
+
+  useEffect(() => {
+    if (Platform.OS === 'ios') {
+      initializeIAP();
+    }
+
+    return () => {
+      if (Platform.OS === 'ios') {
+        endConnection();
+      }
+    };
+  }, []);
 
   useFocusEffect(
     useCallback(() => {
@@ -130,9 +168,6 @@ const PropertyListingScreen = () => {
   };
 
   const handleSelectSuggestion = (item: any) => {
-    console.log('====================================');
-    console.log('item', item);
-    console.log('====================================');
     setInput(item?.place_name);
     const {latitude, longitude} = item?.coordinates;
     setLatitude(latitude);
@@ -161,7 +196,6 @@ const PropertyListingScreen = () => {
 
   const loadFilters = async () => {
     const filters = await AsyncStorage.getItem('propertyFilters');
-    console.log('applyfilter', filters);
 
     if (filters) {
       const parsedFilters = JSON.parse(filters);
@@ -211,109 +245,104 @@ const PropertyListingScreen = () => {
 
   const clearLookingFor = () => {
     clearFilter('lookingFor', setLookingFor);
-     setLoading(true);
-     fetchProperties()
-      setLoading(false);
+    setLoading(true);
+    fetchProperties();
+    setLoading(false);
     // setAppliedFilters(prev => ({...prev, lookingFor: undefined}));
   };
 
   const clearPurpose = () => {
     clearFilter('purpose', setPurpose);
-     setLoading(true);
-     fetchProperties();
-     setLoading(false);
+    setLoading(true);
+    fetchProperties();
+    setLoading(false);
     // setAppliedFilters(prev => ({...prev, purpose: undefined}));
   };
 
   const clearPropType = () => {
     clearFilter('propType', setPropType);
-     setLoading(true);
-     fetchProperties();
-     setLoading(false);
+    setLoading(true);
+    fetchProperties();
+    setLoading(false);
     // setAppliedFilters(prev => ({...prev, propType: undefined}));
   };
 
   const clearListedFor = () => {
     clearFilter('listedFor', setListedFor);
-     setLoading(true);
-     fetchProperties();
-     setLoading(false);
+    setLoading(true);
+    fetchProperties();
+    setLoading(false);
     // setAppliedFilters(prev => ({...prev, listedFor: undefined}));
   };
 
   const clearSize = () => {
     clearFilter('size', setSize);
-     setLoading(true);
-     fetchProperties();
-     setLoading(false);
+    setLoading(true);
+    fetchProperties();
+    setLoading(false);
     // setAppliedFilters(prev => ({...prev, size: undefined}));
   };
 
   const clearFurnish = () => {
     clearFilter('furnish', setFurnish);
-     setLoading(true);
-     fetchProperties();
-     setLoading(false);
+    setLoading(true);
+    fetchProperties();
+    setLoading(false);
     // setAppliedFilters(prev => ({...prev, furnish: undefined}));
   };
 
   const clearPreferred = () => {
     clearFilter('preferred', setPreferred);
-     setLoading(true);
-     fetchProperties();
-     setLoading(false);
+    setLoading(true);
+    fetchProperties();
+    setLoading(false);
     // setAppliedFilters(prev => ({...prev, preferred: undefined}));
   };
 
-    const fetchProperties = async () => {
-      setLoading(true);
-      const url = `https://backend.axces.in/api/property/list`;
+  const fetchProperties = async () => {
+    setLoading(true);
+    const url = `https://backend.axces.in/api/property/list`;
 
-      const token = await getAccessToken();
+    const token = await getAccessToken();
 
-      console.log('latitude:', latitude);
-      console.log('longitude:', longitude);
-      console.log('appliedFilters:', appliedFilters);
+    try {
+      const response = await fetch(url, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          userLatitude: latitude,
+          userLongitude: longitude,
+          filters: appliedFilters || {},
+        }),
+      });
 
-      try {
-        const response = await fetch(url, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            Authorization: `Bearer ${token}`,
-          },
-          body: JSON.stringify({
-            userLatitude: latitude,
-            userLongitude: longitude,
-            filters: appliedFilters || {},
-          }),
-        });
-
-        if (!response.ok) {
-          const errorText = await response.text();
-          console.error('Error response:', errorText);
-          throw new Error(`HTTP error! status: ${response.status}`);
-        }
-
-        const result = await response.json();
-        console.log('Fetched Data:', result);
-
-        if (result.data !== null) {
-          const filteredData = result.data.filter(
-            property => property.listing_type === 'buy',
-          );
-          setList(filteredData);
-          loadFilters();
-        }
-      } catch (error) {
-        console.error('Fetch Properties Error:', error);
-        errorMessage(error.message);
-      } finally {
-          setTimeout(() => {
-        setLoading(false);
-          }, 200);
+      if (!response.ok) {
+        const errorText = await response.text();
+        console.error('Error response:', errorText);
+        throw new Error(`HTTP error! status: ${response.status}`);
       }
-    };
+
+      const result = await response.json();
+      console.log('Properties Data', result);
+
+      if (result.data !== null) {
+        const filteredData = result.data.filter(
+          property => property.listing_type === 'buy',
+        );
+        setList(filteredData);
+        loadFilters();
+      }
+    } catch (error) {
+      errorMessage(error.message);
+    } finally {
+      setTimeout(() => {
+        setLoading(false);
+      }, 200);
+    }
+  };
 
   useEffect(() => {
     fetchProperties();
@@ -375,7 +404,6 @@ const PropertyListingScreen = () => {
   // }, [appliedFilters]);
 
   useEffect(() => {
-    // Update the list with filtered getProperties data
     if (Array.isArray(getProperties)) {
       const filteredData = getProperties;
       setList(filteredData);
@@ -384,10 +412,6 @@ const PropertyListingScreen = () => {
       setList([]);
     }
   }, [getProperties]);
-
-  console.log('====================================');
-  console.log('lookingFor', purpose);
-  console.log('====================================');
 
   return (
     <SafeAreaView className="bg-[#181A53]">
@@ -416,28 +440,23 @@ const PropertyListingScreen = () => {
             // borderWidth:1,
             width: '90%',
           }}>
-          {suggestions.map(
-            (item: any, index: number) => (
-              console.log('item', item),
-              (
-                <TouchableOpacity
-                  key={index}
-                  onPress={() => handleSelectSuggestion(item)}
-                  style={{
-                    padding: 10,
-                  }}>
-                  <Text
-                    style={{
-                      fontSize: 16,
-                      color: '#181A53',
-                      paddingBottom: 10,
-                    }}>
-                    {item.place_name}
-                  </Text>
-                </TouchableOpacity>
-              )
-            ),
-          )}
+          {suggestions.map((item: any, index: number) => (
+            <TouchableOpacity
+              key={index}
+              onPress={() => handleSelectSuggestion(item)}
+              style={{
+                padding: 10,
+              }}>
+              <Text
+                style={{
+                  fontSize: 16,
+                  color: '#181A53',
+                  paddingBottom: 10,
+                }}>
+                {item.place_name}
+              </Text>
+            </TouchableOpacity>
+          ))}
         </Animated.View>
       )}
       <Loader loading={loading} />
@@ -623,6 +642,9 @@ const PropertyListingScreen = () => {
       </View>
       <ScrollView
         className="mt-2"
+        contentContainerStyle={{
+          paddingBottom: 150,
+        }}
         style={{
           backgroundColor: '#FFFFFF',
           minHeight: Dimensions.get('window').height,
@@ -659,7 +681,6 @@ const PropertyListingScreen = () => {
 };
 
 export default PropertyListingScreen;
-
 
 const styles = StyleSheet.create({
   container: {
@@ -765,8 +786,8 @@ const styles = StyleSheet.create({
 //       <StatusBar barStyle={'light-content'} backgroundColor={'#181A53'} />
 //       <Header showSearch={true} />
 //       <Loader loading={loading} />
-//       <ScrollView className=" flex-1 px-6 pt-6">
-//         <View className=" w-full mb-4">
+//       <ScrollView className="flex-1 px-6 pt-6 ">
+//         <View className="w-full mb-4 ">
 //           <FlatList
 //             contentContainerStyle={{ gap: 20 }}
 //             data={list}

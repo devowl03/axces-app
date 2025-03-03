@@ -127,3 +127,6 @@ export const DeleteFilled =
 
 export const Transaction =
   'https://img.icons8.com/?size=1000&id=P1YG1sk94HiB&format=png&color=000000';
+
+export const nortFaceIcon =
+  'https://img.icons8.com/?size=100&id=53431&format=png&color=000000';

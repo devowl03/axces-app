@@ -114,8 +114,6 @@ const ListPropertyDetailScreen = () => {
     (item?.available_from && formattedDate) || null,
   );
 
-  console.log('item?.facilities', item?.facilities);
-
   const [tenant, setTenant] = useState<string>(item?.preferred_tenant || '');
   const [landMark, setLandMark] = useState<string>(item?.landmark || '');
   const [aboutProp, setAboutProp] = useState<string>(item?.description);
@@ -763,7 +761,6 @@ const ListPropertyDetailScreen = () => {
           building_name: propertyName,
         };
 
-        console.log('updatedPropertyDetails', updatedPropertyDetails);
         const token = await getAccessToken();
 
         const editResponse = await fetch(
@@ -1234,6 +1231,104 @@ const ListPropertyDetailScreen = () => {
     } catch (error) {
       Alert.alert('Network Error', 'Failed to connect to the server');
       console.error(error);
+    }
+  };
+
+  const [products, setProducts] = useState([]);
+  const [isIAPReady, setIsIAPReady] = useState(false);
+  const {finishTransaction} = useIAP();
+
+  const productIds = {
+    '30_coins': 'com.axces.coins.30',
+    '50_coins': 'com.axces.coins.50',
+    '100_coins': 'com.axces.coins.100',
+    '200_coins': 'com.axces.coins.200',
+    '500_coins': 'com.axces.coins.500',
+    '1000_coins': 'com.axces.coins.1000',
+  };
+
+  const initializeIAP = async () => {
+    try {
+      if (Platform.OS === 'ios') {
+        await initConnection();
+        const iapProducts = await getProducts({
+          skus: Object.values(productIds),
+        });
+        const sortedProducts = iapProducts.sort(
+          (a, b) =>
+            parseInt(a.productId.replace('com.axces.coins.', '')) -
+            parseInt(b.productId.replace('com.axces.coins.', '')),
+        );
+        setProducts(sortedProducts);
+        setIsIAPReady(true);
+      }
+    } catch (error) {
+      Alert.alert('Error', 'Failed to initialize in-app purchases');
+    }
+  };
+
+  useEffect(() => {
+    if (Platform.OS === 'ios') {
+      initializeIAP();
+    }
+
+    return () => {
+      if (Platform.OS === 'ios') {
+        endConnection();
+      }
+    };
+  }, []);
+
+  const checkINAppPurchase = async purchaseItem => {
+    const token = await getAccessToken();
+
+    const data = {
+      ...purchaseItem,
+    };
+
+    try {
+      const response = await axios.post(
+        'https://backend.axces.in/api/validate-purchase',
+        data,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            'Content-Type': 'application/json',
+          },
+        },
+      );
+      dispatch(onRecharge(amount));
+      if (response.status === 200) {
+        setcoinmodal(true);
+        SetInvoicedata(response.data?.invoice_url);
+      } else {
+        Alert.alert('Error', `Error: ${response.data.message}`);
+      }
+    } catch (error) {
+      Alert.alert('Network Error', 'Failed to connect to the server');
+    }
+  };
+
+  const handleIOSPurchase = async () => {
+    try {
+      const productId = productIds[`${amount}_coins`];
+      if (!productId) {
+        Alert.alert('Error', 'Invalid amount selected');
+        return;
+      }
+
+      const purchase = await requestPurchase({sku: productId});
+
+      if (!purchase) {
+        throw new Error('Purchase result is null or undefined');
+      }
+
+      // Finish the transaction
+      await finishTransaction({purchase, isConsumable: true});
+
+      await checkINAppPurchase(purchase);
+    } catch (error) {
+      Alert.alert('Purchase Failed', 'Failed to complete the purchase');
     }
   };
 
@@ -1940,7 +2035,7 @@ const ListPropertyDetailScreen = () => {
             value={aboutProp}
             onChangeHandler={text => setAboutProp(text)}
           />
-          {console.log('facilities', facilities)}
+
           {propertyType?.toLowerCase() !== 'commercial' && (
             <Facilities
               filterName="Property Facilities *"

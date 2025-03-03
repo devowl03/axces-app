@@ -403,6 +403,105 @@ const PropertyScreen = ({route}: any) => {
     }
   };
 
+  const {finishTransaction} = useIAP();
+  const [products, setProducts] = useState([]);
+  const [isIAPReady, setIsIAPReady] = useState(false);
+
+  const productIds = {
+    '30_coins': 'com.axces.coins.30',
+    '50_coins': 'com.axces.coins.50',
+    '100_coins': 'com.axces.coins.100',
+    '200_coins': 'com.axces.coins.200',
+    '500_coins': 'com.axces.coins.500',
+    '1000_coins': 'com.axces.coins.1000',
+  };
+
+  const initializeIAP = async () => {
+    try {
+      if (Platform.OS === 'ios') {
+        await initConnection();
+        const iapProducts = await getProducts({
+          skus: Object.values(productIds),
+        });
+        const sortedProducts = iapProducts.sort(
+          (a, b) =>
+            parseInt(a.productId.replace('com.axces.coins.', '')) -
+            parseInt(b.productId.replace('com.axces.coins.', '')),
+        );
+        setProducts(sortedProducts);
+        setIsIAPReady(true);
+      }
+    } catch (error) {
+      console.error(error);
+      Alert.alert('Error', 'Failed to initialize in-app purchases');
+    }
+  };
+
+  useEffect(() => {
+    if (Platform.OS === 'ios') {
+      initializeIAP();
+    }
+
+    return () => {
+      if (Platform.OS === 'ios') {
+        endConnection();
+      }
+    };
+  }, []);
+
+  const checkINAppPurchase = async purchaseItem => {
+    const token = await getAccessToken();
+
+    const data = {
+      ...purchaseItem,
+    };
+
+    try {
+      const response = await axios.post(
+        'https://backend.axces.in/api/validate-purchase',
+        data,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            'Content-Type': 'application/json',
+          },
+        },
+      );
+
+      if (response.status === 200) {
+        SetInvoicedata(response.data?.invoice_url);
+      } else {
+        Alert.alert('Error', `Error: ${response.data.message}`);
+      }
+    } catch (error) {
+      Alert.alert('Network Error', 'Failed to connect to the server');
+    }
+  };
+
+  const handleIOSPurchase = async () => {
+    try {
+      const productId = productIds[`${amount}_coins`];
+      if (!productId) {
+        Alert.alert('Error', 'Invalid amount selected');
+        return;
+      }
+
+      const purchase = await requestPurchase({sku: productId});
+
+      if (!purchase) {
+        throw new Error('Purchase result is null or undefined');
+      }
+
+      // Finish the transaction
+      await finishTransaction({purchase, isConsumable: true});
+
+      await checkINAppPurchase(purchase);
+      setpostsucessShowModal(true);
+    } catch (error) {
+      Alert.alert('Purchase Failed', 'Failed to complete the purchase');
+    }
+  };
+
   const managepayment = orderdata => {
     const ordernumber = orderdata?.data?.order?.id;
 
@@ -577,11 +676,12 @@ const PropertyScreen = ({route}: any) => {
           </View>
         )}
 
-        {(activeSection === 'All' || activeSection === 'Facilities') && (
-          <View style={{marginBottom: 12}}>
-            <Facilities item={data} />
-          </View>
-        )}
+        {(activeSection === 'All' || activeSection === 'Facilities') &&
+          data?.property_type !== 'commercial' && (
+            <View style={{marginBottom: 12}}>
+              <Facilities item={data} />
+            </View>
+          )}
 
         {(activeSection === 'All' || activeSection === 'Owner') && (
           <View
@@ -676,6 +776,9 @@ const PropertyScreen = ({route}: any) => {
           <Text className=" text-[#0E0E0C99] text-sm">
             {data?.address}, {data?.landmark}
           </Text>
+          <Text className=" text-[#0E0E0C99] text-sm capitalize">
+            {data?.property_type}
+          </Text>
         </View>
         <ScrollView
           horizontal={true}
@@ -718,18 +821,20 @@ const PropertyScreen = ({route}: any) => {
             onPress={() => setActiveSection('Details')}>
             <Text style={{fontSize: 16, color: 'black'}}>Details</Text>
           </TouchableOpacity>
-          <TouchableOpacity
-            style={{
-              backgroundColor: 'white',
-              paddingVertical: 12,
-              paddingHorizontal: 24,
-              borderBottomWidth: 2,
-              borderBottomColor:
-                activeSection === 'Facilities' ? '#BDEA09' : 'transparent',
-            }}
-            onPress={() => setActiveSection('Facilities')}>
-            <Text style={{fontSize: 16, color: 'black'}}>Facilities</Text>
-          </TouchableOpacity>
+          {data?.property_type !== 'commercial' && (
+            <TouchableOpacity
+              style={{
+                backgroundColor: 'white',
+                paddingVertical: 12,
+                paddingHorizontal: 24,
+                borderBottomWidth: 2,
+                borderBottomColor:
+                  activeSection === 'Facilities' ? '#BDEA09' : 'transparent',
+              }}
+              onPress={() => setActiveSection('Facilities')}>
+              <Text style={{fontSize: 16, color: 'black'}}>Facilities</Text>
+            </TouchableOpacity>
+          )}
           <TouchableOpacity
             style={{
               backgroundColor: 'white',
