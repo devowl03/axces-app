@@ -1,28 +1,27 @@
-import { postApi } from "../../../utils";
-import { propertiesList } from "../../../utils/api";
+import {postApi} from '../../../utils';
+import {propertiesList} from '../../../utils/api';
 
-const GET_PROPERTIES = 'properties/getProperties'
+const GET_PROPERTIES = 'properties/getProperties';
 
 const initialState = {
-    called: false,
-    data: null,
-    status: '',
-    message: '',
-}
+  called: false,
+  data: null,
+  status: '',
+  message: '',
+};
 
 export default function (state = initialState, action: any) {
-    switch (action.type) {
-        case GET_PROPERTIES:
-            return { ...state, ...action.payload };
-        default:
-            return { ...state, called: false };
-    }
+  switch (action.type) {
+    case GET_PROPERTIES:
+      return {...state, ...action.payload};
+    default:
+      return {...state, called: false};
+  }
 }
 
 export function getPropertiesAction(res: any): any {
-    return { type: GET_PROPERTIES, payload: { ...res, called: true } };
+  return {type: GET_PROPERTIES, payload: {...res, called: true}};
 }
-
 
 export const getPropertiesList =
   (
@@ -70,7 +69,7 @@ export const getPropertiesList =
 
     postApi(url, body, headers)
       .then((res: any) => {
-        console.log('res++++++++=', res.data);
+        console.log('Property List ', res.data);
 
         dispatch(getPropertiesAction({...res.data}));
       })
@@ -83,6 +82,4 @@ export const getPropertiesList =
           );
         }
       });
-  }; 
-
-
+  };

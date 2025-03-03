@@ -245,6 +245,7 @@ const ProfileScreen = () => {
   const [isIAPReady, setIsIAPReady] = useState(false);
 
   const productIds = {
+    '30_coins': 'com.axces.coins.30',
     '50_coins': 'com.axces.coins.50',
     '100_coins': 'com.axces.coins.100',
     '200_coins': 'com.axces.coins.200',

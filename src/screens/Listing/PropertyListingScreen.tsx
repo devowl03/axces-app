@@ -38,7 +38,6 @@ const PropertyListingScreen = () => {
   const [filteredData, setFilteredData] = useState([]);
 
   const getProperties = useAppSelector(state => state.getProperties.data);
-  console.log('getProperties', getProperties);
 
   const route = useRoute();
   const {appliedFilters} = route?.params || {};
@@ -46,12 +45,10 @@ const PropertyListingScreen = () => {
   const [latitude, setLatitude] = useState<number>(route?.params?.latitude);
   const [longitude, setLongitude] = useState<number>(route?.params?.longitude);
 
-  console.log('route?.params?.longitude', latitude);
-  console.log('route?.params?.lattitude', longitude);
-
   const [products, setProducts] = useState([]);
 
   const productIds = {
+    '30_coins': 'com.axces.coins.30',
     '50_coins': 'com.axces.coins.50',
     '100_coins': 'com.axces.coins.100',
     '200_coins': 'com.axces.coins.200',
@@ -174,9 +171,6 @@ const PropertyListingScreen = () => {
   };
 
   const handleSelectSuggestion = (item: any) => {
-    console.log('====================================');
-    console.log('item', item);
-    console.log('====================================');
     setInput(item?.place_name);
     const {latitude, longitude} = item?.coordinates;
     setLatitude(latitude);
@@ -205,7 +199,6 @@ const PropertyListingScreen = () => {
 
   const loadFilters = async () => {
     const filters = await AsyncStorage.getItem('propertyFilters');
-    console.log('applyfilter', filters);
 
     if (filters) {
       const parsedFilters = JSON.parse(filters);
@@ -315,10 +308,6 @@ const PropertyListingScreen = () => {
 
     const token = await getAccessToken();
 
-    console.log('latitude:', latitude);
-    console.log('longitude:', longitude);
-    console.log('appliedFilters:', appliedFilters);
-
     try {
       const response = await fetch(url, {
         method: 'POST',
@@ -340,7 +329,7 @@ const PropertyListingScreen = () => {
       }
 
       const result = await response.json();
-      console.log('Fetched Data:', result);
+      console.log('Properties Data', result);
 
       if (result.data !== null) {
         const filteredData = result.data.filter(
@@ -350,7 +339,6 @@ const PropertyListingScreen = () => {
         loadFilters();
       }
     } catch (error) {
-      console.error('Fetch Properties Error:', error);
       errorMessage(error.message);
     } finally {
       setTimeout(() => {
@@ -419,7 +407,6 @@ const PropertyListingScreen = () => {
   // }, [appliedFilters]);
 
   useEffect(() => {
-    // Update the list with filtered getProperties data
     if (Array.isArray(getProperties)) {
       const filteredData = getProperties;
       setList(filteredData);
@@ -428,10 +415,6 @@ const PropertyListingScreen = () => {
       setList([]);
     }
   }, [getProperties]);
-
-  console.log('====================================');
-  console.log('lookingFor', purpose);
-  console.log('====================================');
 
   return (
     <SafeAreaView className="bg-[#181A53]">
@@ -460,28 +443,23 @@ const PropertyListingScreen = () => {
             // borderWidth:1,
             width: '90%',
           }}>
-          {suggestions.map(
-            (item: any, index: number) => (
-              console.log('item', item),
-              (
-                <TouchableOpacity
-                  key={index}
-                  onPress={() => handleSelectSuggestion(item)}
-                  style={{
-                    padding: 10,
-                  }}>
-                  <Text
-                    style={{
-                      fontSize: 16,
-                      color: '#181A53',
-                      paddingBottom: 10,
-                    }}>
-                    {item.place_name}
-                  </Text>
-                </TouchableOpacity>
-              )
-            ),
-          )}
+          {suggestions.map((item: any, index: number) => (
+            <TouchableOpacity
+              key={index}
+              onPress={() => handleSelectSuggestion(item)}
+              style={{
+                padding: 10,
+              }}>
+              <Text
+                style={{
+                  fontSize: 16,
+                  color: '#181A53',
+                  paddingBottom: 10,
+                }}>
+                {item.place_name}
+              </Text>
+            </TouchableOpacity>
+          ))}
         </Animated.View>
       )}
       <Loader loading={loading} />
@@ -667,6 +645,9 @@ const PropertyListingScreen = () => {
       </View>
       <ScrollView
         className="mt-2"
+        contentContainerStyle={{
+          paddingBottom: 150,
+        }}
         style={{
           backgroundColor: '#FFFFFF',
           minHeight: Dimensions.get('window').height,

@@ -447,6 +447,7 @@ const PropertyScreen = ({route}: any) => {
   const [isIAPReady, setIsIAPReady] = useState(false);
 
   const productIds = {
+    '30_coins': 'com.axces.coins.30',
     '50_coins': 'com.axces.coins.50',
     '100_coins': 'com.axces.coins.100',
     '200_coins': 'com.axces.coins.200',
@@ -722,11 +723,12 @@ const PropertyScreen = ({route}: any) => {
           </View>
         )}
 
-        {(activeSection === 'All' || activeSection === 'Facilities') && (
-          <View style={{marginBottom: 12}}>
-            <Facilities item={data} />
-          </View>
-        )}
+        {(activeSection === 'All' || activeSection === 'Facilities') &&
+          data?.property_type !== 'commercial' && (
+            <View style={{marginBottom: 12}}>
+              <Facilities item={data} />
+            </View>
+          )}
 
         {(activeSection === 'All' || activeSection === 'Owner') && (
           <View
@@ -821,6 +823,9 @@ const PropertyScreen = ({route}: any) => {
           <Text className=" text-[#0E0E0C99] text-sm">
             {data?.address}, {data?.landmark}
           </Text>
+          <Text className=" text-[#0E0E0C99] text-sm capitalize">
+            {data?.property_type}
+          </Text>
         </View>
         <ScrollView
           horizontal={true}
@@ -863,18 +868,20 @@ const PropertyScreen = ({route}: any) => {
             onPress={() => setActiveSection('Details')}>
             <Text style={{fontSize: 16, color: 'black'}}>Details</Text>
           </TouchableOpacity>
-          <TouchableOpacity
-            style={{
-              backgroundColor: 'white',
-              paddingVertical: 12,
-              paddingHorizontal: 24,
-              borderBottomWidth: 2,
-              borderBottomColor:
-                activeSection === 'Facilities' ? '#BDEA09' : 'transparent',
-            }}
-            onPress={() => setActiveSection('Facilities')}>
-            <Text style={{fontSize: 16, color: 'black'}}>Facilities</Text>
-          </TouchableOpacity>
+          {data?.property_type !== 'commercial' && (
+            <TouchableOpacity
+              style={{
+                backgroundColor: 'white',
+                paddingVertical: 12,
+                paddingHorizontal: 24,
+                borderBottomWidth: 2,
+                borderBottomColor:
+                  activeSection === 'Facilities' ? '#BDEA09' : 'transparent',
+              }}
+              onPress={() => setActiveSection('Facilities')}>
+              <Text style={{fontSize: 16, color: 'black'}}>Facilities</Text>
+            </TouchableOpacity>
+          )}
           <TouchableOpacity
             style={{
               backgroundColor: 'white',

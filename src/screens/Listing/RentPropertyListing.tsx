@@ -31,13 +31,12 @@ const RentPropertyListing = () => {
   const [loading, setLoading] = useState(false);
   const dispatch = useDispatch();
   const route = useRoute();
-  console.log('route?.params?.latitude', route?.params?.latitude);
 
   const [latitude, setLatitude] = useState<number>(route?.params?.latitude);
   const [longitude, setLongitude] = useState<number>(route?.params?.longitude);
 
   const getProperties = useAppSelector(state => state.getProperties.data);
-  console.log('getProperties', getProperties);
+
   const [input, setInput] = useState('');
   const [suggestions, setSuggestions] = useState([]);
   const [modalVisible, setModalVisible] = useState(false);
@@ -48,6 +47,7 @@ const RentPropertyListing = () => {
   const [products, setProducts] = useState([]);
 
   const productIds = {
+    '30_coins': 'com.axces.coins.30',
     '50_coins': 'com.axces.coins.50',
     '100_coins': 'com.axces.coins.100',
     '200_coins': 'com.axces.coins.200',
@@ -564,6 +564,9 @@ const RentPropertyListing = () => {
       </View>
       <ScrollView
         className="mt-2"
+        contentContainerStyle={{
+          paddingBottom: 150,
+        }}
         style={{
           backgroundColor: '#FFFFFF',
           minHeight: Dimensions.get('window').height,

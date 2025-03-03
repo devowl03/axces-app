@@ -122,8 +122,6 @@ const ListPropertyDetailScreen = () => {
     (item?.available_from && formattedDate) || null,
   );
 
-  console.log('item?.facilities', item?.facilities);
-
   const [tenant, setTenant] = useState<string>(item?.preferred_tenant || '');
   const [landMark, setLandMark] = useState<string>(item?.landmark || '');
   const [aboutProp, setAboutProp] = useState<string>(item?.description);
@@ -771,7 +769,6 @@ const ListPropertyDetailScreen = () => {
           building_name: propertyName,
         };
 
-        console.log('updatedPropertyDetails', updatedPropertyDetails);
         const token = await getAccessToken();
 
         const editResponse = await fetch(
@@ -1250,6 +1247,7 @@ const ListPropertyDetailScreen = () => {
   const {finishTransaction} = useIAP();
 
   const productIds = {
+    '30_coins': 'com.axces.coins.30',
     '50_coins': 'com.axces.coins.50',
     '100_coins': 'com.axces.coins.100',
     '200_coins': 'com.axces.coins.200',
@@ -2083,7 +2081,7 @@ const ListPropertyDetailScreen = () => {
             value={aboutProp}
             onChangeHandler={text => setAboutProp(text)}
           />
-          {console.log('facilities', facilities)}
+
           {propertyType?.toLowerCase() !== 'commercial' && (
             <Facilities
               filterName="Property Facilities *"

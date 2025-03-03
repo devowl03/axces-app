@@ -1,6 +1,6 @@
-import axios from "axios";
-import { ACCESS_TOKEN, BASE_URL, LOCATION_URL, USER_ID } from "../constants";
-import { showMessage } from "react-native-flash-message";
+import axios from 'axios';
+import {ACCESS_TOKEN, BASE_URL, LOCATION_URL, USER_ID} from '../constants';
+import {showMessage} from 'react-native-flash-message';
 import SInfo from 'react-native-sensitive-info';
 
 export async function getHeaders() {
@@ -12,7 +12,7 @@ export async function getHeaders() {
   }
 }
 
-// API Collection 
+// API Collection
 export async function apiReq(
   endPoint: string,
   data: any,
@@ -20,7 +20,7 @@ export async function apiReq(
   headers: any,
 ) {
   return new Promise(async (res, rej) => {
-    const token = await getHeaders()
+    const token = await getHeaders();
 
     headers = {
       ...token,
@@ -30,7 +30,7 @@ export async function apiReq(
     const axiosObj: any = {
       method,
       url: endPoint,
-      headers
+      headers,
     };
 
     if ((axiosObj.headers['Content-Type'] = 'application/json')) {
@@ -42,10 +42,8 @@ export async function apiReq(
       }
       axiosObj.data = formData;
     }
-    console.log("axios obj>>>>", axiosObj)
     axios(axiosObj)
       .then((result: any) => {
-        console.log('API Result :->', result);
         if (result?.data?.status === 'fail') {
           return rej(result?.data);
         }
@@ -53,7 +51,6 @@ export async function apiReq(
       })
       .catch((error: any) => {
         console.log('API error =>', error);
-
         if (error?.response?.data) {
           if (!error?.response?.data?.message) {
             return rej({
@@ -63,7 +60,7 @@ export async function apiReq(
           }
           return rej(error?.response?.data);
         } else {
-          return rej({ message: 'Network Error', msg: 'Network Error' });
+          return rej({message: 'Network Error', msg: 'Network Error'});
         }
       });
   });
@@ -77,19 +74,11 @@ export function deleteApi(endPoint: string, data: any, headers = {}) {
   return apiReq(BASE_URL + endPoint, data, 'delete', headers);
 }
 
-export function getApi(
-  endPoint?: any,
-  data?: any,
-  headers = {},
-) {
+export function getApi(endPoint?: any, data?: any, headers = {}) {
   return apiReq(BASE_URL + endPoint, data, 'get', headers);
 }
 
-export function getLocationApi(
-  endPoint?: any,
-  data?: any,
-  headers = {},
-) {
+export function getLocationApi(endPoint?: any, data?: any, headers = {}) {
   return apiReq(
     endPoint,
     data,
@@ -105,7 +94,6 @@ export function putApi(endPoint: string, data: any, headers = {}) {
   return apiReq(BASE_URL + endPoint, data, 'put', headers);
 }
 
-
 //Toast Collection
 
 export function successMessage(message: any) {
@@ -118,7 +106,7 @@ export function successMessage(message: any) {
     icon: 'success',
     position: 'top',
     autoHide: true,
-  })
+  });
 }
 
 export function errorMessage(message: any) {
@@ -131,7 +119,7 @@ export function errorMessage(message: any) {
     icon: 'danger',
     position: 'top',
     autoHide: true,
-  })
+  });
 }
 
 // Local Storage
